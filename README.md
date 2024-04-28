@@ -12,7 +12,11 @@ Commit Diff use opensource LLMs API (llama 3) to automatically generate insightf
 - Integration with Git workflow: Seamlessly integrates with your existing Git commands and processes.
 
 ### Getting Started:
-1. Clone the repository: git clone https://github.com/your-username/your-repo-name.git
+1. Clone the repository: 
+
+```
+git clone https://github.com/octrow/commit_diff.git
+```
 
 2. Install dependencies: `pip install -r requirements.txt`
 
