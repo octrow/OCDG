@@ -1,9 +1,14 @@
 import os
+
+from clients import create_client
 from config import load_configuration
 import argparse
-from clients import create_client
-from data_access import CommitDatabase
-from git_utils import GitAnalyzer
+
+from data_access import Database
+from git_repo import GitAnalyzer
+# from clients import create_client
+# from data_access import CommitDatabase
+# from git_utils import GitAnalyzer
 from message_generation import MessageGenerator
 
 # Import other necessary modules
@@ -17,14 +22,13 @@ def main():
     args = parser.parse_args()
     config = load_configuration()
     os.makedirs(config['COMMIT_DIFF_DIRECTORY'], exist_ok=True)
-    api_key = config[args.client]["api_key"]
 
     # Create client instance
-    client = create_client(args.client, api_key)
+    client = create_client(args.client)
     repo = args.repo_url
     commits = repo.get_commits()
 
-    db = CommitDatabase()
+    db = Database()
     analyzer = GitAnalyzer(args.repo_url)
     generator = MessageGenerator(client)
 

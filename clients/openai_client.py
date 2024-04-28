@@ -1,12 +1,12 @@
 import openai
 
 from clients.base_client import Client
-
+import config
 
 class OpenAIClient(Client):
     def __init__(self, api_key):
         super().__init__(api_key)
-        openai.api_key = api_key
+        openai.api_key = config.load_configuration()['OPENAI_API_KEY']
 
     def generate_text(self, prompt, **kwargs):
         response = openai.Completion.create(
