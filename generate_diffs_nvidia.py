@@ -26,12 +26,12 @@ commit_diff_dir = "commit_diff"
 os.makedirs(commit_diff_dir, exist_ok=True)
 print(f"Created directory: {commit_diff_dir}")
 
-# Initialize the OpenAI client
+# Initialize the OpenAI clients
 client = OpenAI(
   base_url = "https://integrate.api.nvidia.com/v1",
   api_key = NVIDIA_API_KEY
 )
-print("Initialized the OpenAI client")
+print("Initialized the OpenAI clients")
 
 # Create a SQLite3 database and table for storing commit information
 conn = sqlite3.connect('commits.db')

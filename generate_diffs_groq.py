@@ -25,11 +25,11 @@ commit_diff_dir = "commit_diff"
 os.makedirs(commit_diff_dir, exist_ok=True)
 print(f"Created directory: {commit_diff_dir}")
 
-# Initialize the Groq client
+# Initialize the Groq clients
 client = Groq(
     api_key=GROQ_API_KEY,
 )
-print("Initialized the Groq client")
+print("Initialized the Groq clients")
 
 # Create a SQLite3 database and table for storing commit information
 conn = sqlite3.connect('commits.db')
