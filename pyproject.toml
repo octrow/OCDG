@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "commit-diff"
+version = "0.1.0"
+description = "Commit Diff use opensource LLMs API (llama 3) to automatically generate insightful and informative commit messages from past for your Git repositories."
+authors = ["octrow <octrow@yandex.ru>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+openai = "^1.23.6"
+dotenv = "^0.0.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
