@@ -9,8 +9,11 @@ import commit_message_generator
 import llm_integration
 import repository_updater
 import utils
+from dotenv import load_dotenv
+
 
 def main():
+    load_dotenv()
     # Setup argument parser
     parser = argparse.ArgumentParser(description="Revitalize old commit messages using LLMs.")
     parser.add_argument("repo_path", help="Path to the Git repository (local path or URL).")
@@ -52,20 +55,21 @@ def main():
         return
 
     # 3. Initialize LLM Interface
+
+    NVIDIA_API_KEY = os.environ.get("NVIDIA_API_KEY")
     logging.info(f"Initializing {args.llm} LLM interface...")
     # llm = llm_integration.LLMInterface(args.llm)  # Add LLM specific arguments here
     try:
-        llm = llm_integration.NvidiaLLM()
+        llm = llm_integration.LLMInterface()
     except Exception as e:
         logging.error(f"Failed to initialize LLM interface: {e}")
         logging.error(f'traceback.format_exc(): {traceback.format_exc()}')
         return
-    # llm = llm_integration.NvidiaLLM()
 
     # 4. Generate New Commit Messages
     logging.info("Generating new commit messages using LLM...")
-    commit_message_generator.update_commit_messages(history, llm)
-
+    # commit_message_generator.update_commit_messages(history, llm)
+    llm_integration.generate_commit_description(history, llm)
     # 5. Update Repository
     logging.info("Updating commit messages in the repository...")
     # repository_updater.update_repository(args.repo_path, history)

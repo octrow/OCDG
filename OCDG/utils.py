@@ -5,12 +5,18 @@ from loguru import logger
 
 def run_git_command(command, repo_path="."):
     """Executes a Git command and returns the output."""
+    logger.debug(f"Running git command: git {command}")
+    result = subprocess.run(["git"] + command, cwd=repo_path, capture_output=True, text=True, check=True, encoding="cp437")
     try:
-        logger.debug(f"Running git command: git {command}")
-        result = subprocess.run(["git"] + command, cwd=repo_path, capture_output=True, text=True, check=True)
-        return result.stdout
+        # result = subprocess.run(["git"] + command, cwd=repo_path, capture_output=True, text=True, check=True)
+        result.check_returncode()
+        output = result.stdout
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"Git command failed: {e.stderr}") from e
+    except UnicodeDecodeError:
+        # If decoding as UTF-8 fails, try decoding as ISO-8859-1 (Latin-1) instead
+        output = result.stdout.decode('ISO-8859-1')
+    return output
 
 def validate_repo_path(repo_path):
     """Checks if the provided path is a valid Git repository."""
