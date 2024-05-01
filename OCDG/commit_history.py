@@ -16,6 +16,10 @@ class Commit:
         self.diff = diff
         self.new_message = None  # To be populated later
 
+    def delete(self):
+        del self
+
+
 
 class CommitHistory:
     """Manages a collection of Commit objects and provides methods to access them."""
@@ -77,3 +81,5 @@ class CommitHistory:
     def get_oldest_commit(self):
         """Returns the oldest commit in the history."""
         return self.commits[-1]  # Assuming commits are ordered from newest to oldest
+
+

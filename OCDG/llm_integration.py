@@ -41,8 +41,13 @@ def generate_prompt(diff_chunk, old_description, is_partial=False):
     prompt = prompt_template.format()
     return prompt
 
-def generate_commit_description(diff, old_description):
+def generate_commit_description(history):
     """Generates a commit description for a potentially large diff."""
+    logger.info(f'history.get_oldest_commit.diff: {history.get_oldest_commit().diff[:100]}')
+    logger.info(f'history.get_oldest_commit.description: {history.get_oldest_commit().message}')
+    logger.info(f'delete oldest_commit: {history.get_oldest_commit().delete()}')
+    logger.info(f'history.get_oldest_commit.description: {history.get_oldest_commit().message}')
+    diff, old_description = history
     if len(diff) <= 2000:
         # Diff is small enough, process directly
         prompt = generate_prompt(diff, old_description)
@@ -100,76 +105,76 @@ def generate_commit_description(diff, old_description):
 #         return new_message
 
 #########################################################################
-from langchain import PromptTemplate
-from langchain_nvidia_ai_endpoints import ChatNVIDIA
-from dotenv import load_dotenv
-load_dotenv()
-
-class LLMInterface:
-    def __init__(self):
-        self.api_key = os.getenv("NVIDIA_API_KEY")
-        self.llm = ChatNVIDIA(model="meta/llama3-70b-instruct")  # Initialize Llama 3
-        self.chunk_size = 1800  # Set chunk size below token limit
-        self.prompt_template = PromptTemplate(
-            input_variables=["diff", "old_message", "chunk_index", "total_chunks"],
-            template="""
-            ## Code Changes:
-            ```diff
-            {diff}
-            ```
-            ## Old Commit Message:
-            {old_message}
-
-            ## Instructions:
-            You are a helpful AI assistant for generating commit messages based on code changes and conventional guidelines. 
-
-            {chunk_info}
-
-            Please provide a concise and informative commit message that accurately summarizes the changes in the code.
-            """
-        )
-
-    def generate_commit_message(self, diff, old_message, chunk_index=None, total_chunks=None):
-        logger.info(f"Generating commit message for chunk {chunk_index} of {total_chunks}..." if chunk_index is not None else "Generating commit message...")
-        try:
-            if chunk_index is not None:
-                chunk_info = f"This is part {chunk_index + 1} of {total_chunks}."
-            else:
-                chunk_info = ""
-
-            if len(diff) > self.chunk_size:
-                # Split diff into chunks
-                chunks = [diff[i:i + self.chunk_size] for i in range(0, len(diff), self.chunk_size)]
-                responses = []
-                for i, chunk in enumerate(chunks):
-                    prompt = self.prompt_template.format(
-                        diff=chunk,
-                        old_message=old_message,
-                        chunk_index=i,
-                        total_chunks=len(chunks),
-                        chunk_info=chunk_info)
-                    response = self.llm(prompt)
-                    responses.append(response.content)
-                    # Merge chunked responses
-                    merge_prompt = f"Combine these commit message parts into a single coherent commit message:\n\n" + "\n\n".join(responses)
-                final_response = self.llm(merge_prompt)
-                logger.success(f"Generated new message from chunks: {final_response.content}")
-                return final_response.content
-            else:
-                # Generate commit message directly
-                prompt = self.prompt_template.format(
-                    diff=diff,
-                    old_message=old_message,
-                    chunk_index=None,
-                    total_chunks=None,
-                    chunk_info=chunk_info)
-                response = self.llm(prompt)
-                logger.success(f"Generated new message: {response.content}")
-                return response.content
-        except Exception as e:
-            logger.error(f"Failed to generate commit message: {e}")
-            logger.error(f'traceback.format_exc(): {traceback.format_exc()}')
-            raise
+# from langchain import PromptTemplate
+# from langchain_nvidia_ai_endpoints import ChatNVIDIA
+# from dotenv import load_dotenv
+# load_dotenv()
+#
+# class LLMInterface:
+#     def __init__(self):
+#         self.api_key = os.getenv("NVIDIA_API_KEY")
+#         self.llm = ChatNVIDIA(model="meta/llama3-70b-instruct")  # Initialize Llama 3
+#         self.chunk_size = 1800  # Set chunk size below token limit
+#         self.prompt_template = PromptTemplate(
+#             input_variables=["diff", "old_message", "chunk_index", "total_chunks"],
+#             template="""
+#             ## Code Changes:
+#             ```diff
+#             {diff}
+#             ```
+#             ## Old Commit Message:
+#             {old_message}
+#
+#             ## Instructions:
+#             You are a helpful AI assistant for generating commit messages based on code changes and conventional guidelines.
+#
+#             {chunk_info}
+#
+#             Please provide a concise and informative commit message that accurately summarizes the changes in the code.
+#             """
+#         )
+#
+#     def generate_commit_message(self, diff, old_message, chunk_index=None, total_chunks=None):
+#         logger.info(f"Generating commit message for chunk {chunk_index} of {total_chunks}..." if chunk_index is not None else "Generating commit message...")
+#         try:
+#             if chunk_index is not None:
+#                 chunk_info = f"This is part {chunk_index + 1} of {total_chunks}."
+#             else:
+#                 chunk_info = ""
+#
+#             if len(diff) > self.chunk_size:
+#                 # Split diff into chunks
+#                 chunks = [diff[i:i + self.chunk_size] for i in range(0, len(diff), self.chunk_size)]
+#                 responses = []
+#                 for i, chunk in enumerate(chunks):
+#                     prompt = self.prompt_template.format(
+#                         diff=chunk,
+#                         old_message=old_message,
+#                         chunk_index=i,
+#                         total_chunks=len(chunks),
+#                         chunk_info=chunk_info)
+#                     response = self.llm(prompt)
+#                     responses.append(response.content)
+#                     # Merge chunked responses
+#                     merge_prompt = f"Combine these commit message parts into a single coherent commit message:\n\n" + "\n\n".join(responses)
+#                 final_response = self.llm(merge_prompt)
+#                 logger.success(f"Generated new message from chunks: {final_response.content}")
+#                 return final_response.content
+#             else:
+#                 # Generate commit message directly
+#                 prompt = self.prompt_template.format(
+#                     diff=diff,
+#                     old_message=old_message,
+#                     chunk_index=None,
+#                     total_chunks=None,
+#                     chunk_info=chunk_info)
+#                 response = self.llm(prompt)
+#                 logger.success(f"Generated new message: {response.content}")
+#                 return response.content
+#         except Exception as e:
+#             logger.error(f"Failed to generate commit message: {e}")
+#             logger.error(f'traceback.format_exc(): {traceback.format_exc()}')
+#             raise
 #############################################################################
 # from langchain_nvidia_ai_endpoints import ChatNVIDIA
 # from langchain_core.output_parsers import StrOutputParser
