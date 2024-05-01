@@ -13,6 +13,7 @@ langchain = "^0.1.17"
 loguru = "^0.7.2"
 langchain-community = "^0.0.36"
 langchain-openai = "^0.1.4"
+langchain-nvidia-ai-endpoints = "^0.0.12"
 
 
 [build-system]
