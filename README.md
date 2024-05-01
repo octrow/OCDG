@@ -26,7 +26,7 @@ I'm hope OCDG helps you improve the quality and clarity of your commit messages,
 
 1. Clone the Repository:
 ```shell
-git clone https://github.com/your-username/ocdg.git
+git clone https://github.com/octrow/commit_diff.git
 ```
 2. Install Dependencies:
 ```shell
