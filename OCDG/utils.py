@@ -1,10 +1,12 @@
 import logging
 import subprocess
 import os
+from loguru import logger
 
 def run_git_command(command, repo_path="."):
     """Executes a Git command and returns the output."""
     try:
+        logger.debug(f"Running git command: git {command}")
         result = subprocess.run(["git"] + command, cwd=repo_path, capture_output=True, text=True, check=True)
         return result.stdout
     except subprocess.CalledProcessError as e:

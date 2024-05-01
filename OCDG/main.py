@@ -1,5 +1,7 @@
 import argparse
 import logging
+import os
+import traceback
 
 import backup_manager
 import commit_history
@@ -11,8 +13,8 @@ import utils
 def main():
     # Setup argument parser
     parser = argparse.ArgumentParser(description="Revitalize old commit messages using LLMs.")
-    parser.add_argument("repo_path", help="Path to the Git repository.")
-    parser.add_argument("-b", "--backup_dir", help="Directory for repository backup.")
+    parser.add_argument("repo_path", help="Path to the Git repository (local path or URL).")
+    parser.add_argument("-b", "--backup_dir", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "backup"), help="Directory for repository backup.")
     parser.add_argument("-l", "--llm", choices=["llama3", "openai", "gemini"], default="openai", help="Choice of LLM.")
     # Add more arguments for LLM-specific settings as needed
 
@@ -20,6 +22,18 @@ def main():
 
     # Configure logging
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+    # Determine repository type and get URL
+    if args.repo_path.startswith(("http", "git@")):
+        repo_url = args.repo_path
+    else:
+        # Get absolute path for local repositories
+        repo_path = os.path.abspath(args.repo_path)
+        logging.info(f"Using local repository path: {repo_path}")
+        repo_url = commit_history.CommitHistory().get_repo_url(repo_path)
+        if not repo_url:
+            logging.error("Failed to get repository URL from local path. Exiting...")
+            return
 
     # 1. Backup Repository
     if args.backup_dir:
@@ -32,10 +46,21 @@ def main():
     logging.info("Loading commit history...")
     history = commit_history.CommitHistory()
     history.load_from_repo(args.repo_path)
+    logging.info(f"Loaded {len(history.commits)} commits from repository.")
+    if not history.commits:
+        logging.error("Failed to load commit history. Exiting...")
+        return
 
     # 3. Initialize LLM Interface
     logging.info(f"Initializing {args.llm} LLM interface...")
-    llm = llm_integration.LLMInterface(args.llm)  # Add LLM specific arguments here
+    # llm = llm_integration.LLMInterface(args.llm)  # Add LLM specific arguments here
+    try:
+        llm = llm_integration.NvidiaLLM()
+    except Exception as e:
+        logging.error(f"Failed to initialize LLM interface: {e}")
+        logging.error(f'traceback.format_exc(): {traceback.format_exc()}')
+        return
+    # llm = llm_integration.NvidiaLLM()
 
     # 4. Generate New Commit Messages
     logging.info("Generating new commit messages using LLM...")
@@ -43,7 +68,7 @@ def main():
 
     # 5. Update Repository
     logging.info("Updating commit messages in the repository...")
-    repository_updater.update_repository(args.repo_path, history)
+    # repository_updater.update_repository(args.repo_path, history)
 
     # 6. Verification and Completion
     logging.info("Commit messages updated successfully!")
