@@ -30,8 +30,9 @@ git clone https://github.com/octrow/commit_diff.git
 ```
 2. Install Dependencies:
 ```shell
-cd ocdg
-pip install -r requirements.txt
+cd OCDG
+poetry install
+poetry shell
 ```
 3. Configure LLM Settings:
 - Edit the main.py file and provide the necessary credentials or API keys for your chosen LLM.
