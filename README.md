@@ -4,6 +4,9 @@
 
 The Old Commit Description Generator (OCDG) is a Python-based tool designed to improve the quality and consistency of commit messages within a Git repository. It utilizes Large Language Models (LLMs) to automatically generate new, descriptive commit messages based on the commit diffs and existing messages. OCDG ensures a safe and controlled update process with robust backup and rollback mechanisms.
 
+### Disclaimer
+**NOT READY FOR USE!!!**
+
 #### Features
 
 - Intelligent Message Generation: Leverages LLMs like Llama3, OpenAI, or Gemini to create informative and conventional commit messages.
@@ -12,9 +15,6 @@ The Old Commit Description Generator (OCDG) is a Python-based tool designed to i
 - Error Handling & Rollback: Implements robust error handling and rollback mechanisms to maintain repository integrity.
 - Logging: Provides informative logging messages to track the progress and identify potential issues.
 - Customization: Offers options to configure the LLM settings, commit message conventions, and backup locations.
-
-### Disclaimer
-**NOT READY FOR USE!!!**
 
 **OCDG modifies the Git history of your repository.** 
 
