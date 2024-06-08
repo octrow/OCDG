@@ -6,9 +6,7 @@ import git
 import logging
 import subprocess
 from OCDG.utils import run_git_command
-
-logger = logging.getLogger(__name__)
-
+from loguru import logger
 
 class Commit:
     """Represents a single commit with its metadata and diff."""

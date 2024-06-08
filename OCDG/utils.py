@@ -1,4 +1,3 @@
-import logging
 import subprocess
 import os
 import re
@@ -72,8 +71,8 @@ def parse_output_string(output_string: str) -> dict:
 
 def split_text_at_boundaries(text, max_chunk_size=5000):
     """Splits text into chunks, attempting to break at code block boundaries."""
-    logging.info(f"Splitting text into chunks, attempting to break at code block boundaries...")
-    logging.debug(f"Full text being split: \n{text}\n") # Print the full diff for inspection
+    logger.info(f"Splitting text into chunks, attempting to break at code block boundaries...")
+    logger.debug(f"Full text being split: \n{text}\n") # Print the full diff for inspection
     try:
         # Define a regular expression to find code block boundaries
         code_block_boundary = re.compile(r'```(?:\w+)?\n')  # Matches "```" followed by optional language specifier
@@ -99,9 +98,9 @@ def split_text_at_boundaries(text, max_chunk_size=5000):
             chunks.append(current_chunk)
 
         # Log chunk sizes
-        logging.info(f"Split text into {len(chunks)} chunks.")
+        logger.info(f"Split text into {len(chunks)} chunks.")
         for i, chunk in enumerate(chunks):
-            logging.debug(f"Chunk {i+1} size: {len(chunk)} characters")
+            logger.debug(f"Chunk {i+1} size: {len(chunk)} characters")
 
         return chunks
     except Exception as e:
@@ -111,20 +110,20 @@ def split_text_at_boundaries(text, max_chunk_size=5000):
 def split_diff_intelligently(diff, max_chunk_size=5000, min_chunk_size=1000):
     """Splits a large diff intelligently, first trying logical boundaries then fallback to aggressive."""
     try:
-        logging.info(f"Splitting diff into chunks, trying to preserve logical boundaries...")
+        logger.info(f"Splitting diff into chunks, trying to preserve logical boundaries...")
 
         # First, attempt to split at code block boundaries
         chunks = split_text_at_boundaries(diff, max_chunk_size)
 
         # If no logical splits were found or chunks are too small, use a more aggressive splitting
         if len(chunks) == 1 or any(len(chunk) < min_chunk_size for chunk in chunks):
-            logging.info(f"No logical splits found or chunks too small. Using aggressive splitting...")
+            logger.info(f"No logical splits found or chunks too small. Using aggressive splitting...")
             chunks = list(split_text_aggressively(diff, max_chunk_size)) # Convert to list
 
-        logging.info(f"Split diff into {len(chunks)} final chunks.")
+        logger.info(f"Split diff into {len(chunks)} final chunks.")
         return chunks
     except Exception as e:
-        logging.error(f'Error in split diff intelligently: {e}')
+        logger.error(f'Error in split diff intelligently: {e}')
         raise
 
 
@@ -132,7 +131,7 @@ def split_text_aggressively(text, max_chunk_size=5000, overlap=200):
     """
     Yields chunks of text with overlap without creating full copies in memory.
     """
-    logging.info(f"Splitting text aggressively into chunks of at most {max_chunk_size} characters with {overlap} overlap...")
+    logger.info(f"Splitting text aggressively into chunks of at most {max_chunk_size} characters with {overlap} overlap...")
     try:
         start_index = 0
         while start_index < len(text):
@@ -143,12 +142,11 @@ def split_text_aggressively(text, max_chunk_size=5000, overlap=200):
             yield text[start_index:end_index]
             start_index = end_index - overlap
     except Exception as e:
-        logging.error(f'Error in split text aggressively: {e}')
+        logger.error(f'Error in split text aggressively: {e}')
         raise
 
 def generate_commit_multi(diff: str, commit_message: str, client: Any, model: str, chunk_size=4000) -> List[Dict[str, str]]:
     """Splits a diff into chunks and generates a commit message for each chunk."""
-    # Skip if diff is small or message is already good (example)
     logger.info("Split diff into chunks")
     try:
         diff_chunks = [diff[i:i + 6000] for i in range(0, len(diff), 6000)]
@@ -187,6 +185,7 @@ def generate_commit_multi(diff: str, commit_message: str, client: Any, model: st
                 # commit_messages.append(json.loads(chat_completion))
             except json.JSONDecodeError as e:
                 logger.error(f"Error decoding JSON: {e} - {chat_completion}")
+        logger.success(f"Generated {len(commit_messages)} commit messages.")
         return commit_messages
     except Exception as e:
         logger.error(f'Error in generate commit multi: {e}')
@@ -214,6 +213,7 @@ def combine_messages(multi_commit: List[Dict[str, str]], client: Any, model: str
         # Extract JSON using a regular expression
         json_match = re.search(r'\{.*\}', combined_message, re.DOTALL)
         if json_match:
+            logger.success(f"Combined messages: {json_match.group(0)}")
             return json.loads(json_match.group(0))
         else:
             logger.error(f"No valid JSON found in response: {combined_message}")
@@ -265,6 +265,7 @@ def generate_commit_description(diff: str, old_description: str, client: Any, mo
         ).strip()
         # Check if new_description is not empty
         if new_description:
+            logger.success(f"Generated commit message: {new_description}")
             return new_description
         else:
             logger.warning("Generated commit message is empty. Skipping commit.")

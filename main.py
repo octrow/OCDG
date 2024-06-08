@@ -5,7 +5,7 @@ import shutil
 import tempfile
 import traceback
 from typing import List, Any, Dict, Tuple
-
+from loguru import logger
 import git
 
 from OCDG.commit_history import CommitHistory
@@ -16,7 +16,6 @@ from config import load_configuration
 from git_repo import GitAnalyzer
 from OCDG.utils import run_git_command, log_message, find_closing_brace_index, parse_output_string, generate_commit_multi, generate_commit_description
 
-logger = logging.getLogger(__name__)
 # Import other necessary modules
 
 def user_confirms_rewrite(commit_history):
@@ -218,6 +217,10 @@ def main():
 
         commit_history = CommitHistory()
         commit_history.commits = commits  # Assign the commits to the history object
+        counter = 0
+        for commit in commits:
+            logger.info(f"Commit {counter}: {commit.hash}")
+            counter += 1
     except Exception as e:
         logging.error(f"Failed to load commit history: {e}")
         return
@@ -226,6 +229,7 @@ def main():
 
     # 3. Initialize LLM Interface
     client = create_client(args.llm, config)
+    logging.info(f"Initialized LLM client: {client}")
 
     # 4. Process each commit
     initial_commit_hash = run_git_command(['rev-list', '--max-parents=0', 'HEAD'], repo_path).strip()
