@@ -1,3 +1,7 @@
 /.venv/
 .env
 /OCDG/backup/*
+/backup/*
+/backup
+/commit_diff
+/commit_diff/*

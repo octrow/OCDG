@@ -8,6 +8,7 @@ def load_configuration():
     config = {
         'GROQ_API_KEY': os.getenv('GROQ_API_KEY'),
         'NVIDIA_API_KEY': os.getenv('NVIDIA_API_KEY'),
+        'OPENAI_API_KEY': os.getenv('OPENAI_API_KEY'),
         'COMMIT_DIFF_DIRECTORY': 'commit_diff'
     }
 
