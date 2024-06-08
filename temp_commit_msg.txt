@@ -1,0 +1,3 @@
+Refactor OpenAI client, GitAnalyzer, and backup/commit update
+
+Updated OpenAI client to use NVIDIA API key and base URL. Refactored GitAnalyzer and Commit classes to improve functionality. Refactored the logic for backing up repositories and updating commit messages. Improved error handling and logging.

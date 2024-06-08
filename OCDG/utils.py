@@ -1,6 +1,7 @@
 import logging
 import subprocess
 import os
+import re
 import json
 from loguru import logger
 from typing import Any, List, Dict
@@ -113,7 +114,7 @@ def combine_messages(multi_commit: List[Dict[str, str]], client: Any, model: str
     ```json
     {json.dumps(multi_commit)}
     ```
-    Output only in JSON Format
+    Output only in JSON Format, without any additional text or code blocks.
     {{
     "Short analysis": "str",
     "New Commit Title": "str",
@@ -126,7 +127,14 @@ def combine_messages(multi_commit: List[Dict[str, str]], client: Any, model: str
         model=model
     )
     try:
-        return json.loads(combined_message)
+        # Extract JSON using a regular expression
+        json_match = re.search(r'\{.*\}', combined_message, re.DOTALL)
+        if json_match:
+            return json.loads(json_match.group(0))
+        else:
+            logger.error(f"No valid JSON found in response: {combined_message}")
+            return {}
+        # return json.loads(combined_message)
     except json.JSONDecodeError as e:
         logger.error(f"Error decoding JSON: {e} - {combined_message}")
         return {}
@@ -171,7 +179,12 @@ def generate_commit_description(diff: str, old_description: str, client: Any, mo
                 generated_message.get("New Detailed Commit Message", ""),
             ]
         ).strip()
-        return new_description
+        # Check if new_description is not empty
+        if new_description:
+            return new_description
+        else:
+            logger.warning("Generated commit message is empty. Skipping commit.")
+            return None
     except Exception as e:
         logger.error(f"Error generating commit description: {e}")
         return None
