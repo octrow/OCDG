@@ -31,6 +31,7 @@ def validate_repo_path(repo_path):
 
 def log_message(message, level="info"):
     """Logs a message with the specified severity level."""
+    import logging
     log_function = getattr(logging, level)
     log_function(message)
 
@@ -69,7 +70,7 @@ def parse_output_string(output_string: str) -> dict:
                 data[key] = match.group(1).strip()
     return data
 
-def split_text_at_boundaries(text, max_chunk_size=5000):
+def split_text_at_boundaries(text, max_chunk_size=7900):
     """Splits text into chunks, attempting to break at code block boundaries."""
     logger.info(f"Splitting text into chunks, attempting to break at code block boundaries...")
     logger.debug(f"Full text being split: \n{text}\n") # Print the full diff for inspection
@@ -107,7 +108,7 @@ def split_text_at_boundaries(text, max_chunk_size=5000):
         logger.error(f'Error in split text at boundaries: {e}')
         raise
 
-def split_diff_intelligently(diff, max_chunk_size=5000, min_chunk_size=1000):
+def split_diff_intelligently(diff, max_chunk_size=7900, min_chunk_size=2000):
     """Splits a large diff intelligently, first trying logical boundaries then fallback to aggressive."""
     try:
         logger.info(f"Splitting diff into chunks, trying to preserve logical boundaries...")
@@ -127,7 +128,7 @@ def split_diff_intelligently(diff, max_chunk_size=5000, min_chunk_size=1000):
         raise
 
 
-def split_text_aggressively(text, max_chunk_size=5000, overlap=200):
+def split_text_aggressively(text, max_chunk_size=7900, overlap=200):
     """
     Yields chunks of text with overlap without creating full copies in memory.
     """
@@ -145,11 +146,11 @@ def split_text_aggressively(text, max_chunk_size=5000, overlap=200):
         logger.error(f'Error in split text aggressively: {e}')
         raise
 
-def generate_commit_multi(diff: str, commit_message: str, client: Any, model: str, chunk_size=4000) -> List[Dict[str, str]]:
+def generate_commit_multi(diff: str, commit_message: str, client: Any, model: str, chunk_size=7900) -> List[Dict[str, str]]:
     """Splits a diff into chunks and generates a commit message for each chunk."""
     logger.info("Split diff into chunks")
     try:
-        diff_chunks = [diff[i:i + 6000] for i in range(0, len(diff), 6000)]
+        diff_chunks = [diff[i:i + chunk_size] for i in range(0, len(diff), chunk_size)]
         commit_messages = []
         # Create an iterator from the generator
         # diff_chunk_iterator = split_diff_intelligently(diff, chunk_size)
@@ -226,7 +227,7 @@ def combine_messages(multi_commit: List[Dict[str, str]], client: Any, model: str
 def generate_commit_description(diff: str, old_description: str, client: Any, model: str) -> str | None:
     """Generates a commit description for a potentially large diff."""
     try:
-        if len(diff) >= 6000:
+        if len(diff) >= 7900:
             logger.info("Diff is too long. Start splitting it into chunks.")
             multi_commit = generate_commit_multi(diff, old_description, client, model)
             if not multi_commit:

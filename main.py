@@ -1,6 +1,7 @@
 import argparse
 import os
 import logging
+import re
 import shutil
 import tempfile
 import traceback
@@ -16,7 +17,30 @@ from config import load_configuration
 from git_repo import GitAnalyzer
 from OCDG.utils import run_git_command, log_message, find_closing_brace_index, parse_output_string, generate_commit_multi, generate_commit_description
 
-# Import other necessary modules
+# Global variable to store log file path
+COMMIT_MESSAGES_LOG_FILE = "commit_messages.log"
+
+# Define file/folder paths and patterns to ignore ENTIRE SECTIONS
+IGNORED_SECTION_PATTERNS = {
+    r'venv.*',  # Ignore any path containing 'venv'
+    r'.idea.*'  # Ignore any path containing '.idea'
+    r'node_modules.*',  # Ignore any path containing 'node_modules'
+    r'__pycache__.*',  # Ignore any path containing '__pycache__
+}
+
+# Define file extensions and patterns to ignore
+IGNORED_LINE_PATTERNS = {
+    r'.*\.(png|jpg|jpeg|gif|bmp|tiff|svg|ico|raw|psd|ai)$',
+    r'.*\.(xlsx|xls|docx|pptx|pdf)$', r'.*\.(pack|idx|DS_Store|sys|ini|bat|plist)$',
+    r'.*\.(exe|dll|so|bin)$', r'.*\.(zip|rar|7z|tar|gz|bz2)$',
+    r'.*\.(mp3|wav|aac|flac)$', r'.*\.(mp4|avi|mov|wmv|flv)$',
+    r'.*\.(db|sqlitedb|mdb)$', r'.*\.(ttf|otf|woff|woff2)$',
+    r'.*\.(tmp|temp|swp|swo)$', r'.*\.(o|obj|pyc|class)$',
+    r'.*\.(cer|pem|crt|key)$', r'.*\.(conf|cfg|config)$',
+    r'.*\.(env)$', r'node_modules', r'.*\.(pyo)$',
+    r'(package-lock\.json|poetry\.lock|yarn\.lock|Gemfile\.lock)',
+    r'.*\.(err|stderr|stdout|log)$', r'.*\.(cache|cached)$'
+}
 
 def user_confirms_rewrite(commit_history):
     """Presents the proposed changes to the user and asks for confirmation."""
@@ -143,6 +167,47 @@ if __name__ == "__main__":
 """
             )
 
+def save_commit_messages_to_log(commit_history: CommitHistory):
+    """Saves old and new commit messages to the log file."""
+    try:
+        with open(COMMIT_MESSAGES_LOG_FILE, "a") as log_file:
+            for commit in commit_history.commits:
+                if commit.new_message:
+                    log_file.write(f"Commit: {commit.hash}\n")
+                    log_file.write(f"Old Message: {commit.message}\n")
+                    log_file.write(f"New Message: {commit.new_message}\n\n")
+        logging.info(f"Old and new commit messages saved to '{COMMIT_MESSAGES_LOG_FILE}'")
+    except Exception as e:
+        logging.error(f"Failed to save commit messages to log file: {e}")
+
+def filter_diff(diff: str) -> str:
+    """Removes unwanted lines from the diff based on file extensions and patterns."""
+    filtered_lines = []
+    skip_section = False  # Flag to skip entire diff sections
+
+    for line in diff.splitlines():
+        # Section-Level Filtering
+        if line.startswith('diff --git '):
+            if any(re.search(pattern, line) for pattern in IGNORED_SECTION_PATTERNS):
+                skip_section = True
+                logging.info(f"Skipping section: {line}")
+                continue
+            else:
+                skip_section = False  # Reset the flag for the new section
+                filtered_lines.append(line) # Add the 'diff --git' line if not skipped
+        else:
+            # Line-Level Filtering (only if not skipping the section)
+            if not skip_section:
+                # Extract potential file paths (using the improved regex from before)
+                match = re.search(r'^(?:\+\+\+ |--- |diff --git |index |Binary files )?(.*?)[ \t]', line)
+                if match:
+                    file_path = match.group(1).strip()
+                    if any(re.search(pattern, file_path) for pattern in IGNORED_LINE_PATTERNS):
+                        logging.info(f"Skipping line: {line}")
+                        continue  # Skip the line
+                filtered_lines.append(line)
+
+    return "\n".join(filtered_lines)
 
 def main():
     # Parse command-line arguments
@@ -164,7 +229,7 @@ def main():
     args = parser.parse_args()
 
     # Configure logging
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+    # logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
     # Load configuration
     config = load_configuration()
@@ -241,8 +306,9 @@ def main():
                 diff = ""  # Or handle the initial commit differently
             else:
                 diff = analyzer.get_commit_diff(commit.hash) # Fetch diff here
+            filtered_diff = filter_diff(diff)
             new_message = generate_commit_description(
-                diff, commit.message, client, args.model
+                filtered_diff, commit.message, client, args.model
             )
 
             if new_message is None:
@@ -264,6 +330,7 @@ def main():
         # updater = RepositoryUpdater(repo_path)
         try:
             logging.info("Rewriting commit messages...")
+            save_commit_messages_to_log(commit_history)
             updater.rewrite_commit_messages(commit_history)
         except Exception as e:
             logging.critical(
