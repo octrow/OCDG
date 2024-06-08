@@ -7,3 +7,6 @@
 /backup
 /commit_diff
 /commit_diff/*
+/__pycache__
+/.idea
+/OCDG/__pycache__
