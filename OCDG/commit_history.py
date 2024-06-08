@@ -1,12 +1,3 @@
-import os
-import re
-import tempfile
-
-from loguru import logger
-
-from git_repo import Commit
-from OCDG.utils import run_git_command, log_message
-
 
 class CommitHistory:
     """Manages a collection of Commit objects."""
@@ -22,7 +13,7 @@ class CommitHistory:
                 return commit
         return None
 
-    def get_oldest_commit(self):
-        """Returns the oldest commit in the history."""
-        return self.commits[-1]  # Assuming commits are ordered from newest to oldest
+    # def get_oldest_commit(self):
+    #     """Returns the oldest commit in the history."""
+    #     return self.commits[-1]  # Assuming commits are ordered from newest to oldest
 

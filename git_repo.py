@@ -18,7 +18,7 @@ class Commit:
         self.message = message
         self.repo = repo
         self.diff = ""
-        self.status = False  # Add status attribute
+        # self.status = False  # Add status attribute
 
     def __str__(self):
         """Returns a string representation of the Commit object."""
@@ -27,8 +27,6 @@ class Commit:
     def diff(self, commit: git.Commit):
         return self.repo.git.diff(f'{self.hash}~1', f'{self.hash}')
 
-    def delete(self):
-        del self
 
 class GitAnalyzer:
     def __init__(self, repo_path="."):
@@ -59,16 +57,6 @@ class GitAnalyzer:
         """
         # Initialize an empty list to store Commit objects
         commits = []
-        # Define the Git log command to get commit information with diff
-        # - "log": The basic Git command for showing commit history
-        # - "--pretty=format:%H,%an <%ae>,%ad,%s": Specifies the format of output:
-        #     - %H: Commit hash (SHA-1)
-        #     - %an: Author name
-        #     - %ae: Author email
-        #     - %ad: Author date (short format)
-        #     - %s: Commit subject (first line of the commit message)
-        # - "--date=short": Display dates in short format (YYYY-MM-DD)
-        # - "--patch": Include the diff of each commit
         log_command = [
             "log",
             "--pretty=format:%H,%an <%ae>,%ad,%s",
@@ -94,10 +82,6 @@ class GitAnalyzer:
             commits.append(Commit(parts[0], parts[1], parts[2], parts[3], self.repo))
 
         return commits
-        # for line in os.popen("git log --pretty=format:'%H,%an <%ae>,%ad,%s' --date=format:%Y-%m-%d").read().strip().split('\n'):
-        #     hash, author, date, message = line.split(',', maxsplit=3)
-        #     commits.append(Commit(hash, author, date, message, self.repo))
-        # return commits
 
     def get_commit_diff(self, commit_hash: str):
         """Fetches the diff for a specific commit."""
@@ -125,24 +109,8 @@ class GitAnalyzer:
 
             subprocess.run(['git', 'rebase', '--continue'], cwd=self.repo.working_dir, check=True,
                            input=open('temp_commit_msg.txt', 'rb').read())
-
             # Remove the temporary file
             os.remove('temp_commit_msg.txt')
-            # # Refresh Git index before amending
-            # self.repo.git.add('.')
-            #
-            # # Amend the commit using repo.git.commit()
-            # result = self.repo.git.commit('--amend', '-m', new_message,
-            #                      author=f"{commit.author}")  # Use commit.author directly
-            # # Check if the result is not an empty string, indicating success
-            # if result != "":
-            #     logging.info(f"Updated commit message for commit {commit.hash} with result: {result}")
-            #     # Refresh Git index after amending commit
-            #     self.repo.git.add('.')  # Add all changes to the index
-            # else:
-            #     logging.error(
-            #         f"Failed to update commit message for commit {commit.hash}. Git command returned an empty result.")
-            #     raise RuntimeError("Git commit amend failed.")
         except Exception as e:
             logging.error(f"Error updating commit message for commit {commit.hash}: {e}")
             raise

@@ -2,10 +2,8 @@ import argparse
 import os
 import logging
 import re
-import shutil
 import tempfile
 import traceback
-from typing import List, Any, Dict, Tuple
 from loguru import logger
 import git
 
@@ -13,9 +11,8 @@ from OCDG.commit_history import CommitHistory
 from clients import create_client
 from config import load_configuration
 
-# from data_access import Database
 from git_repo import GitAnalyzer
-from OCDG.utils import run_git_command, log_message, find_closing_brace_index, parse_output_string, generate_commit_multi, generate_commit_description
+from OCDG.utils import run_git_command, generate_commit_description
 
 # Global variable to store log file path
 COMMIT_MESSAGES_LOG_FILE = "commit_messages.log"
@@ -372,59 +369,6 @@ def main():
         logging.info("Rewrite cancelled by user.")
 
     logging.info("OCDG process completed!")
-
-    # for i, commit in enumerate(commits):
-    #     logging.info(f"Processing commit {i + 1}/{len(commits)}: {commit.hash}")
-    #     try:
-    #         if commit.hash == initial_commit_hash:
-    #             logging.info(f"Skipping diff for initial commit: {commit.hash}")
-    #             diff = ""  # Or handle the initial commit differently
-    #             return
-    #         else:
-    #             diff = repo.git.diff(f'{commit.hash}~1', f'{commit.hash}')
-    #         new_message = generate_commit_description(diff, commit.message, client, args.model)
-    #         if new_message is None:
-    #             logging.warning(f"Skipping commit {commit.hash} - No new message generated")
-    #             continue
-    #
-    #         # 5. Update Commit Message
-    #         try:
-    #             if user_confirms_rewrite():
-    #                 updater = RepositoryUpdater(repo_path)
-    #                 updater.rewrite_commit_messages(commit_history)
-    #             # Save old and new messages to the log file
-    #             with open("commit_messages.log", "a") as log_file:
-    #                 log_file.write(f"Commit: {commit.hash}\n")
-    #                 log_file.write(f"Old Message: {commit.message}\n")
-    #                 log_file.write(f"New Message: {new_message}\n\n")
-    #
-    #             # Update commit message in Git
-    #             analyzer.update_commit_message(commit, new_message)  # Call the function
-    #
-    #             # Check if the commit message was updated successfully
-    #             if analyzer.get_commit_message(commit.hash) == new_message:
-    #                 logging.info(f"Updated commit message for commit {commit.hash}")
-    #             else:
-    #                 logging.error(f"Failed to update commit message for {commit.hash} with new message: {new_message}")
-    #         except Exception as e:
-    #             logging.error(f"Error updating commit message for commit {commit.hash}: {e}")
-    #             return
-    #
-    #     except Exception as e:
-    #         logging.error(f"Error processing commit {commit.hash}: {traceback.format_exc()} {e}")
-    #         return
-
-    # # Push changes to the remote repository
-    # if args.force_push:
-    #     logging.info("Force pushing changes to remote repository...")
-    #     try:
-    #         repo.git.push('--force-with-lease', 'origin', repo.active_branch.name)
-    #         logging.info("Successfully pushed changes to remote.")
-    #     except Exception as e:
-    #         logging.error(f"Error force pushing changes: {e}")
-    #
-    # logging.info("OCDG process completed!")
-
 
 if __name__ == "__main__":
     main()
