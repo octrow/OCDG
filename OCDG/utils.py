@@ -1,6 +1,7 @@
 import logging
 import subprocess
 import os
+import json
 from loguru import logger
 from typing import Any, List, Dict
 
@@ -81,7 +82,7 @@ def generate_commit_multi(diff: str, commit_message: str, client: Any, model: st
             ```
             {diff_chunk}
             ```
-            Generate a new commit message based on these changes. Output only in JSON Format
+            Generate a new commit message based on these changes. Output only in JSON Format, without any additional text or code blocks.
             {{
             "Short analysis": "str",
             "New Commit Title": "str",
@@ -95,7 +96,13 @@ def generate_commit_multi(diff: str, commit_message: str, client: Any, model: st
             model=model
         )
         try:
-            commit_messages.append(json.loads(chat_completion))
+            # Extract JSON using a regular expression
+            json_match = re.search(r'\{.*\}', chat_completion, re.DOTALL)
+            if json_match:
+                commit_messages.append(json.loads(json_match.group(0)))
+            else:
+                logger.error(f"No valid JSON found in response: {chat_completion}")
+            # commit_messages.append(json.loads(chat_completion))
         except json.JSONDecodeError as e:
             logger.error(f"Error decoding JSON: {e} - {chat_completion}")
     return commit_messages

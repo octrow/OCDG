@@ -12,7 +12,7 @@ from config import load_configuration
 
 from data_access import Database
 from git_repo import GitAnalyzer
-from OCDG.utils import run_git_command, log_message, find_closing_brace_index, parse_output_string, generate_commit_multi
+from OCDG.utils import run_git_command, log_message, find_closing_brace_index, parse_output_string, generate_commit_multi, generate_commit_description
 
 logger = logging.getLogger(__name__)
 # Import other necessary modules
@@ -53,32 +53,32 @@ def main():
             return
 
     # 1. Backup Repository
-    backup_dir = os.path.join(args.backup_dir, os.path.basename(repo_url))
-    if os.path.exists(backup_dir):
-        user_input = input(
-            f"Backup directory '{backup_dir}' already exists. Do you want to overwrite it? (yes/no): "
-        ).lower()
-        if user_input != 'yes':
-            print("Exiting...")
-            return
-
-        try:
-            shutil.rmtree(backup_dir)
-            print(f"Removed existing backup directory: {backup_dir}")
-        except Exception as e:
-            print(f"Error removing existing backup directory: {e}")
-            return
-
-    if args.backup_dir:
-        logging.info("Creating repository backup...")
-        try:
-            run_git_command(["clone", "--mirror", repo_url, backup_dir])
-            logging.info(f"Repository backed up to '{backup_dir}'")
-        except Exception as e:
-            logging.error(f"Error creating backup: {e}")
-            return
-    else:
-        logging.warning("Skipping repository backup. Proceed with caution!")
+    # backup_dir = os.path.join(args.backup_dir, os.path.basename(repo_url))
+    # if os.path.exists(backup_dir):
+    #     user_input = input(
+    #         f"Backup directory '{backup_dir}' already exists. Do you want to overwrite it? (yes/no): "
+    #     ).lower()
+    #     if user_input != 'yes':
+    #         print("Exiting...")
+    #         return
+    #
+    #     try:
+    #         shutil.rmtree(backup_dir)
+    #         print(f"Removed existing backup directory: {backup_dir}")
+    #     except Exception as e:
+    #         print(f"Error removing existing backup directory: {e}")
+    #         return
+    #
+    # if args.backup_dir:
+    #     logging.info("Creating repository backup...")
+    #     try:
+    #         run_git_command(["clone", "--mirror", repo_url, backup_dir])
+    #         logging.info(f"Repository backed up to '{backup_dir}'")
+    #     except Exception as e:
+    #         logging.error(f"Error creating backup: {e}")
+    #         return
+    # else:
+    #     logging.warning("Skipping repository backup. Proceed with caution!")
 
     # 2. Load Commit History
     logging.info("Loading commit history...")
@@ -98,25 +98,29 @@ def main():
 
     # 4. Process each commit
     for i, commit in enumerate(commits):
-        logging.info(f"Processing commit {i + 1}/{len(commits)}: {commit.hexsha}")
+        logging.info(f"Processing commit {i + 1}/{len(commits)}: {commit.hash}")
         try:
-            diff = repo.git.diff(f'{commit.hexsha}~1', f'{commit.hexsha}')
+            initial_commit_hash = run_git_command(['rev-list', '--max-parents=0', 'HEAD'], repo_path).strip()
+            if commit.hash == initial_commit_hash:
+                logging.info(f"Skipping diff for initial commit: {commit.hash}")
+                diff = ""  # Or handle the initial commit differently
+            else:
+                diff = repo.git.diff(f'{commit.hash}~1', f'{commit.hash}')
             new_message = generate_commit_description(diff, commit.message, client, args.model)
             if new_message is None:
-                logging.warning(f"Skipping commit {commit.hexsha} - No new message generated")
+                logging.warning(f"Skipping commit {commit.hash} - No new message generated")
                 continue
 
             # 5. Update Commit Message
             try:
-                with repo.commit(commit.hexsha).edit() as commit_editor:
-                    commit_editor.message = new_message
-                logging.info(f"Updated commit message for commit {commit.hexsha}")
+                analyzer.update_commit_message(commit, new_message)  # Call the function
+                logging.info(f"Updated commit message for commit {commit.hash}")
             except Exception as e:
-                logging.error(f"Error updating commit message for commit {commit.hexsha}: {e}")
+                logging.error(f"Error updating commit message for commit {commit.hash}: {e}")
                 return
 
         except Exception as e:
-            logging.error(f"Error processing commit {commit.hexsha}: {traceback.format_exc()} {e}")
+            logging.error(f"Error processing commit {commit.hash}: {traceback.format_exc()} {e}")
             return
 
     logging.info("OCDG process completed!")
