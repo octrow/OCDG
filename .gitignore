@@ -1,4 +1,6 @@
 /.venv/
+/venv
+/venv/*
 .env
 /OCDG/backup/*
 /backup/*
