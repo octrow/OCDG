@@ -70,43 +70,127 @@ def parse_output_string(output_string: str) -> dict:
                 data[key] = match.group(1).strip()
     return data
 
-def generate_commit_multi(diff: str, commit_message: str, client: Any, model: str) -> List[Dict[str, str]]:
-    """Splits a diff into chunks and generates a commit message for each chunk."""
-    diff_chunks = [diff[i:i + 6000] for i in range(0, len(diff), 6000)]
-    commit_messages = []
-    for i, diff_chunk in enumerate(diff_chunks):
-        system_prompt = (
-            f""""
-            You are a helpful AI assistant that generates commit messages based on code changes and previous descriptions. Follow the commit guidelines of the GitHub repository.
-            Previous commit message: {commit_message}
-            Code changes: {'(partial)' if i != len(diff_chunks) - 1 else ''} 
-            ```
-            {diff_chunk}
-            ```
-            Generate a new commit message based on these changes. Output only in JSON Format, without any additional text or code blocks.
-            {{
-            "Short analysis": "str",
-            "New Commit Title": "str",
-            "New Detailed Commit Message": "str",
-            "Code Changes": {{"filename": "str", "filename2": "str"}}
-            }}
-            """
-        )
-        chat_completion = client.generate_text(
-            system_prompt,
-            model=model
-        )
-        try:
-            # Extract JSON using a regular expression
-            json_match = re.search(r'\{.*\}', chat_completion, re.DOTALL)
-            if json_match:
-                commit_messages.append(json.loads(json_match.group(0)))
+def split_text_at_boundaries(text, max_chunk_size=5000):
+    """Splits text into chunks, attempting to break at code block boundaries."""
+    logging.info(f"Splitting text into chunks, attempting to break at code block boundaries...")
+    logging.debug(f"Full text being split: \n{text}\n") # Print the full diff for inspection
+    try:
+        # Define a regular expression to find code block boundaries
+        code_block_boundary = re.compile(r'```(?:\w+)?\n')  # Matches "```" followed by optional language specifier
+
+        chunks = []
+        current_chunk = ""
+        last_split_index = 0
+        for match in code_block_boundary.finditer(text):
+            end_index = match.start()
+            chunk = text[last_split_index:end_index]
+
+            if len(current_chunk) + len(chunk) > max_chunk_size:
+                chunks.append(current_chunk)
+                current_chunk = chunk
             else:
-                logger.error(f"No valid JSON found in response: {chat_completion}")
-            # commit_messages.append(json.loads(chat_completion))
-        except json.JSONDecodeError as e:
-            logger.error(f"Error decoding JSON: {e} - {chat_completion}")
-    return commit_messages
+                current_chunk += chunk
+
+            last_split_index = end_index
+
+        # Add the remaining text after the last code block
+        current_chunk += text[last_split_index:]
+        if current_chunk:
+            chunks.append(current_chunk)
+
+        # Log chunk sizes
+        logging.info(f"Split text into {len(chunks)} chunks.")
+        for i, chunk in enumerate(chunks):
+            logging.debug(f"Chunk {i+1} size: {len(chunk)} characters")
+
+        return chunks
+    except Exception as e:
+        logger.error(f'Error in split text at boundaries: {e}')
+        raise
+
+def split_diff_intelligently(diff, max_chunk_size=5000, min_chunk_size=1000):
+    """Splits a large diff intelligently, first trying logical boundaries then fallback to aggressive."""
+    try:
+        logging.info(f"Splitting diff into chunks, trying to preserve logical boundaries...")
+
+        # First, attempt to split at code block boundaries
+        chunks = split_text_at_boundaries(diff, max_chunk_size)
+
+        # If no logical splits were found or chunks are too small, use a more aggressive splitting
+        if len(chunks) == 1 or any(len(chunk) < min_chunk_size for chunk in chunks):
+            logging.info(f"No logical splits found or chunks too small. Using aggressive splitting...")
+            chunks = list(split_text_aggressively(diff, max_chunk_size)) # Convert to list
+
+        logging.info(f"Split diff into {len(chunks)} final chunks.")
+        return chunks
+    except Exception as e:
+        logging.error(f'Error in split diff intelligently: {e}')
+        raise
+
+
+def split_text_aggressively(text, max_chunk_size=5000, overlap=200):
+    """
+    Yields chunks of text with overlap without creating full copies in memory.
+    """
+    logging.info(f"Splitting text aggressively into chunks of at most {max_chunk_size} characters with {overlap} overlap...")
+    try:
+        start_index = 0
+        while start_index < len(text):
+            end_index = min(start_index + max_chunk_size, len(text))
+            newline_index = text.rfind('\n', start_index, end_index)
+            if newline_index != -1:
+                end_index = newline_index + 1
+            yield text[start_index:end_index]
+            start_index = end_index - overlap
+    except Exception as e:
+        logging.error(f'Error in split text aggressively: {e}')
+        raise
+
+def generate_commit_multi(diff: str, commit_message: str, client: Any, model: str, chunk_size=4000) -> List[Dict[str, str]]:
+    """Splits a diff into chunks and generates a commit message for each chunk."""
+    # Skip if diff is small or message is already good (example)
+    logger.info("Split diff into chunks")
+    try:
+        diff_chunks = [diff[i:i + 6000] for i in range(0, len(diff), 6000)]
+        commit_messages = []
+        # Create an iterator from the generator
+        # diff_chunk_iterator = split_diff_intelligently(diff, chunk_size)
+        for i, diff_chunk in enumerate(diff_chunks):
+            system_prompt = (
+                f""""
+                You are a helpful AI assistant that generates commit messages based on code changes and previous descriptions. Follow the commit guidelines of the GitHub repository.
+                Previous commit message: {commit_message}
+                Code changes: {'(partial)' if i != len(diff_chunks) - 1 else ''} 
+                ```
+                {diff_chunk}
+                ```
+                Generate a new commit message based on these changes. Output only in JSON Format, without any additional text or code blocks.
+                {{
+                "Short analysis": "str",
+                "New Commit Title": "str",
+                "New Detailed Commit Message": "str",
+                "Code Changes": {{"filename": "str", "filename2": "str"}}
+                }}
+                """
+            )
+            chat_completion = client.generate_text(
+                system_prompt,
+                model=model
+            )
+            try:
+                # Extract JSON using a regular expression
+                json_match = re.search(r'\{.*\}', chat_completion, re.DOTALL)
+                if json_match:
+                    commit_messages.append(json.loads(json_match.group(0)))
+                else:
+                    logger.error(f"No valid JSON found in response: {chat_completion}")
+                # commit_messages.append(json.loads(chat_completion))
+            except json.JSONDecodeError as e:
+                logger.error(f"Error decoding JSON: {e} - {chat_completion}")
+        return commit_messages
+    except Exception as e:
+        logger.error(f'Error in generate commit multi: {e}')
+        raise
 
 def combine_messages(multi_commit: List[Dict[str, str]], client: Any, model: str) -> dict:
     """Combines multiple commit messages into a single commit message."""
@@ -139,7 +223,7 @@ def combine_messages(multi_commit: List[Dict[str, str]], client: Any, model: str
         logger.error(f"Error decoding JSON: {e} - {combined_message}")
         return {}
 
-def generate_commit_description(diff: str, old_description: str, client: Any, model: str) -> str:
+def generate_commit_description(diff: str, old_description: str, client: Any, model: str) -> str | None:
     """Generates a commit description for a potentially large diff."""
     try:
         if len(diff) >= 6000:
