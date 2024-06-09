@@ -64,23 +64,25 @@ class RepositoryUpdater:
 
     def __init__(self, repo_path: str):
         self.repo_path = repo_path
-        self.refs_backup_file = os.path.join(self.repo_path, ".git", "refs_backup")
+        self.repo = git.Repo(repo_path)
 
     def backup_refs(self):
         """Backs up refs using git for-each-ref to a file."""
         try:
-            run_git_command(
-                [
-                    "for-each-ref",
-                    "--format='%(refname)'",
-                    "refs/heads/",
-                    "refs/remotes/",
-                    "refs/tags/",
-                    ">",
-                    self.refs_backup_file,
-                ],
-                self.repo_path,
-            )
+            with tempfile.NamedTemporaryFile(mode="w", delete=False) as temp_file:
+                self.refs_backup_file = temp_file.name
+                run_git_command(
+                    [
+                        "for-each-ref",
+                        "--format='%(refname)'",
+                        "refs/heads/",
+                        "refs/remotes/",
+                        "refs/tags/",
+                        ">",
+                        self.refs_backup_file,
+                    ],
+                    self.repo_path,
+                )
             logging.info("Backed up refs to '.git/refs_backup'")
         except Exception as e:
             logging.error(f"Error backing up refs: {e}")
@@ -89,9 +91,9 @@ class RepositoryUpdater:
     def restore_refs(self):
         """Restores refs from the backup file."""
         try:
-            if not os.path.exists(self.refs_backup_file):
+            if not hasattr(self, 'refs_backup_file') or not os.path.exists(self.refs_backup_file):
                 logging.warning(
-                    f"Refs backup file '{self.refs_backup_file}' not found. Skipping restore."
+                    f"Refs backup file not found. Skipping restore."
                 )
                 return
             run_git_command(
@@ -103,39 +105,36 @@ class RepositoryUpdater:
             raise
         finally:
             # Clean up the backup file after restore attempt
-            if os.path.exists(self.refs_backup_file):
+            if hasattr(self, 'refs_backup_file') and os.path.exists(self.refs_backup_file):
                 os.remove(self.refs_backup_file)
 
-    def rewrite_commit_messages(self, commit_history):
-        """Rewrites commit messages using git filter-branch."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            filter_script_path = os.path.join(temp_dir, "filter_script.py")
-            self.generate_filter_script(commit_history, filter_script_path)
+    def rewrite_commit_messages(self, commit_history: 'CommitHistory'):
+        """Rewrites commit messages using git rebase -i."""
+        try:
+            self.backup_refs()
 
-            try:
-                self.backup_refs()  # Backup before rewriting!
+            # Start an interactive rebase
+            rebase_process = self.repo.git.rebase('-i', f'{commit_history.get_oldest_commit().hash}~1',
+                                                  interactive=True)
 
-                filter_branch_cmd = [
-                    "filter-branch",
-                    "-f",
-                    "--msg-filter",
-                    f"python {filter_script_path}",
-                    "--tag-name-filter",
-                    "cat",
-                    "--",
-                    "HEAD",
-                ]
-                run_git_command(filter_branch_cmd, self.repo_path)
-                logging.info("Commit messages rewritten successfully.")
+            # Construct the rebase instructions based on commit messages
+            rebase_instructions = []
+            for commit in commit_history.commits:
+                if commit.new_message:
+                    rebase_instructions.append(f'reword {commit.hash} {commit.new_message}')
+                else:
+                    rebase_instructions.append(f'pick {commit.hash} {commit.message}')
 
-            except Exception as e:
-                logging.error(f"Error rewriting commit messages: {e}")
-                self.restore_refs()  # Attempt restore on error
-                raise
-            finally:
-                backup_file = os.path.join(self.repo_path, ".git/refs_backup")
-                if os.path.exists(backup_file):
-                    os.remove(backup_file)
+            # Pass the instructions to the rebase process
+            rebase_process.stdin.write('\n'.join(rebase_instructions))
+            rebase_process.stdin.close()
+
+            logging.info("Commit messages rewritten successfully.")
+
+        except Exception as e:
+            logging.error(f"Error rewriting commit messages: {e}")
+            self.restore_refs()  # Attempt restore on error
+            raise
 
     def generate_filter_script(self, commit_history, script_path):
         """Generates the Python script for git filter-branch."""
@@ -169,10 +168,14 @@ class CommitHistory:
     """Manages a collection of Commit objects."""
 
     def __init__(self):
-        self.commits = []
+        self.commits: List['Commit'] = []
+
+    def get_oldest_commit(self) -> 'Commit':
+        """Returns the oldest commit in the history."""
+        return self.commits[0] if self.commits else None
 
 
-    def get_commit(self, commit_hash):
+    def get_commit(self, commit_hash: str) -> 'Commit':
         """Retrieves a specific commit by its hash."""
         for commit in self.commits:
             if commit.hash == commit_hash:
@@ -180,7 +183,7 @@ class CommitHistory:
         return None
 
 
-def save_commit_messages_to_log(commit_history: CommitHistory):
+def save_commit_messages_to_log(commit_history: 'CommitHistory'):
     """Saves old and new commit messages to the log file."""
     try:
         with open(COMMIT_MESSAGES_LOG_FILE, "a") as log_file:
@@ -218,23 +221,18 @@ def filter_diff(diff: str) -> str:
 
 
 
-def run_git_command(command, repo_path="."):
+def run_git_command(command: List[str], repo_path: str = ".") -> str:
     """Executes a Git command and returns the output."""
-    logger.debug(f"Running git command: git {command}")
-    result = subprocess.run(["git"] + command, cwd=repo_path, capture_output=True, text=True, check=True, encoding="cp437", timeout=10)
+    logger.debug(f"Running git command: git {' '.join(command)}")
+    repo = git.Repo(repo_path)
     try:
-        # result = subprocess.run(["git"] + command, cwd=repo_path, capture_output=True, text=True, check=True, timeout=10)
-        result.check_returncode()
-        output = result.stdout
-    except subprocess.CalledProcessError as e:
+        output = repo.git.execute(['git', *command])
+        return output.strip()
+    except git.GitCommandError as e:
         raise RuntimeError(f"Git command failed: {e.stderr}") from e
-    except UnicodeDecodeError:
-        # If decoding as UTF-8 fails, try decoding as ISO-8859-1 (Latin-1) instead
-        output = result.stdout.decode('ISO-8859-1')
-    return output
 
 
-def validate_repo_path(repo_path):
+def validate_repo_path(repo_path: str):
     """Checks if the provided path is a valid Git repository."""
     if not os.path.isdir(repo_path):
         raise ValueError(f"Invalid repository path: {repo_path}")
@@ -244,31 +242,7 @@ def validate_repo_path(repo_path):
         raise ValueError(f"{repo_path} is not a valid Git repository.")
 
 
-# def parse_output_string(output_string: str) -> dict:
-#     """Parses the output string generated by the AI model into a dictionary."""
-#     data = {}
-#     patterns = {
-#         'short_analysis': r'\*\*Short analysis\*\*: (.+?)\n',
-#         'commit_title': r'\*\*New Commit Title\*\*: (.+?)\n',
-#         'detailed_commit_message': r'\*\*New Detailed Commit Message\*\*:\n(.+?)\n\n\*\*Code Changes\*\*:',
-#         'code_changes': r'\*\*Code Changes\*\*:\n```\n(\{.+\})\n```'
-#     }
-#
-#     for key, pattern in patterns.items():
-#         match = re.search(pattern, output_string, re.DOTALL)
-#         if match:
-#             if key == 'code_changes':
-#                 try:
-#                     data[key] = json.loads(match.group(1))
-#                 except json.JSONDecodeError as e:
-#                     logger.error(f"Error decoding JSON: {e} - {match.group(1)}")
-#                     return {}
-#             else:
-#                 data[key] = match.group(1).strip()
-#     return data
-
-
-def _split_text_at_boundaries(text, max_chunk_size=7900):
+def _split_text_at_boundaries(text: str, max_chunk_size: int = 7900) -> List[str]:
     """Splits text into chunks, attempting to break at code block boundaries."""
     logger.info(f"Splitting text into chunks, attempting to break at code block boundaries...")
     logger.debug(f"Full text being split: \n{text}\n") # Print the full diff for inspection
@@ -283,23 +257,18 @@ def _split_text_at_boundaries(text, max_chunk_size=7900):
             end_index = match.start()
             chunk = text[last_split_index:end_index]
 
-            # FIX: The logic here was flawed.
-            # It should append 'current_chunk' even if adding 'chunk' exceeds the limit.
-            # Then, it should start a new 'current_chunk' with the exceeding 'chunk'
             if len(current_chunk) + len(chunk) > max_chunk_size:
-                chunks.append(current_chunk) # Append even if adding 'chunk' goes over
+                chunks.append(current_chunk)  # Append even if adding 'chunk' goes over
                 current_chunk = chunk # Start a new chunk with the exceeding part
             else:
                 current_chunk += chunk
 
             last_split_index = end_index
 
-        # Add the remaining text after the last code block
         current_chunk += text[last_split_index:]
         if current_chunk:
             chunks.append(current_chunk)
 
-        # Log chunk sizes
         logger.info(f"Split text into {len(chunks)} chunks.")
         for i, chunk in enumerate(chunks):
             logger.debug(f"Chunk {i+1} size: {len(chunk)} characters")
@@ -310,7 +279,7 @@ def _split_text_at_boundaries(text, max_chunk_size=7900):
         raise
 
 
-def _split_diff_intelligently(diff, max_chunk_size=7900, min_chunk_size=1000):
+def _split_diff_intelligently(diff: str, max_chunk_size: int = 7900, min_chunk_size: int = 1000) -> List[str]:
     """Splits a large diff intelligently, first trying logical boundaries then fallback to aggressive."""
     try:
         logger.info(f"Splitting diff into chunks, trying to preserve logical boundaries...")
@@ -330,22 +299,25 @@ def _split_diff_intelligently(diff, max_chunk_size=7900, min_chunk_size=1000):
         raise
 
 
-def _split_text_aggressively(text, max_chunk_size=7900, overlap=200):
+def _split_text_aggressively(text: str, max_chunk_size: int = 7900, overlap: int = 200) -> str:
     """Yields chunks of text with overlap."""
     logger.info(f"Splitting text aggressively into chunks of at most {max_chunk_size}"
                 f" characters with {overlap} overlap...")
     try:
         start_index = 0
         while start_index < len(text):
+            logger.info(f"Splitting at index start_index: {start_index}, length: {len(text)}")
             end_index = min(start_index + max_chunk_size, len(text))
-            newline_index = text.rfind('\n', start_index, end_index)
-            if newline_index != -1:
-                end_index = newline_index + 1
+            logger.info(f"Splitting at index end_index: {end_index}")
             yield text[start_index:end_index]
-            start_index = end_index
+            logger.info(f"Text: {text[start_index:end_index]}")
+
+            start_index = max(0, end_index - overlap)  # Ensure start_index is not negative
+            logger.info(f'New start index after overlap correction: {start_index}')
     except Exception as e:
         logger.error(f'Error in split text aggressively: {e}')
         raise
+
 
 def _generate_single_commit_message_json(
     diff_chunk: str,
@@ -388,14 +360,12 @@ def _generate_single_commit_message_json(
         logger.error(f"Error decoding JSON: {e} - {chat_completion}")
         return {}
 
-def _generate_commit_message_parts(diff: str, commit_message: str, client: Any, model: str, chunk_size=7900) -> List[Dict[str, str]]:
+def _generate_commit_message_parts(diff: str, commit_message: str, client: Any, model: str, chunk_size: int = 7900) -> List[Dict[str, str]]:
     """Splits a diff into chunks and generates a commit message for each chunk."""
     logger.info("Split diff into chunks")
     try:
-        diff_chunks = [diff[i:i + chunk_size] for i in range(0, len(diff), chunk_size)]
-        # diff_chunks = _split_diff_intelligently(diff, chunk_size)
+        diff_chunks = list(_split_text_aggressively(diff, chunk_size))
         commit_messages = []
-        # Create an iterator from the generator
         for i, diff_chunk in enumerate(diff_chunks):
             commit_messages.append(
                 _generate_single_commit_message_json(
@@ -436,13 +406,12 @@ def combine_messages(multi_commit: List[Dict[str, str]], client: Any, model: str
         else:
             logger.error(f"No valid JSON found in response: {combined_message}")
             return {}
-        # return json.loads(combined_message)
     except json.JSONDecodeError as e:
         logger.error(f"Error decoding JSON: {e} - {combined_message}")
         return {}
 
 
-# Simplified generate_commit_description
+
 def generate_commit_description(diff: str, old_description: str, client: Any, model: str) -> str | None:
     """Generates a commit description for a potentially large diff."""
     try:
@@ -457,16 +426,14 @@ def generate_commit_description(diff: str, old_description: str, client: Any, mo
             generated_message = _generate_single_commit_message_json(
                 diff, old_description, client, model, 0, 1
             )
-        # FIX: Moved the .strip() to the end of the joined string
         new_description = "\n".join(
             [
                 generated_message.get("New Commit Title", ""),
-                "",  # Add an empty line between title and body
+                "",
                 generated_message.get("New Detailed Commit Message", ""),
             ]
         ).strip()
 
-        # Check if new_description is not empty
         if new_description:
             logger.success(f"Generated commit message: {new_description}")
             return new_description
@@ -488,8 +455,7 @@ class Commit:
         self.message = message
         self.repo = repo
         self.diff = ""
-        self.new_message = None  # Add new_message attribute
-        # self.status = False  # Add status attribute
+        self.new_message = None
 
     def __str__(self):
         """Returns a string representation of the Commit object."""
@@ -504,7 +470,7 @@ class GitAnalyzer:
     def __init__(self, repo_path="."):
         self.repo = git.Repo(repo_path)
 
-    def get_repo_url(self):
+    def get_repo_url(self) -> str:
         """Retrieves the remote repository URL."""
         remote_command = ["remote", "get-url", "origin"]
         try:
@@ -513,21 +479,20 @@ class GitAnalyzer:
             logger.error(f"Error retrieving repository URL: {e}", level="error")
             return None
 
-    def get_commit_message(self, commit_hash: str) -> str | None:
+    def get_commit_message(self, commit_hash: str) -> str:
         """Retrieves the commit message for a specific commit hash."""
         try:
             commit = self.repo.commit(commit_hash)
             return commit.message.strip()
         except Exception as e:
             logging.error(f"Error getting commit message for {commit_hash}: {e}")
-            return None
+            raise
 
-    def get_commits(self, limit=None, since=None):
+    def get_commits(self, limit=None, since=None) -> List['Commit']:
         """
         Retrieves commits with optional limit and since parameters.
         Diffs are NOT fetched at this stage.
         """
-        # Initialize an empty list to store Commit objects
         commits = []
         log_command = [
             "log",
@@ -538,11 +503,9 @@ class GitAnalyzer:
             log_command.append(f"-n {limit}")
         if since:
             log_command.append(f"--since={since}")
-        # Execute the Git command and capture the output
+
         log_output = run_git_command(log_command, self.repo.working_dir)
-        print(f"Log output length: {len(log_output)}")  # Check output length
-        print(f"First 50 characters: {log_output[:50]}")  # Check output content
-        # If the log output is empty (no commits), log a warning and return the empty list
+
         if not log_output:
             logging.warning(
                 "Repository seems to be empty. No commits found."
@@ -551,94 +514,30 @@ class GitAnalyzer:
 
         for line in log_output.splitlines():
             parts = line.split(",", maxsplit=3)
-            commit = Commit(parts[0], parts[1], parts[2], parts[3], self.repo)
-            commits.append(commit)  # Add commit without fetching diff
+            commit = Commit(parts[0], parts[1], parts[2], parts[3].strip(), self.repo)
+            commits.append(commit)
 
         return commits
 
-    def get_commit_diff(self, commit_hash: str, commit: Commit):
+
+    def get_commit_diff(self, commit_hash: str, commit: 'Commit'):
         """Fetches the diff for a specific commit."""
         return self.repo.git.diff(f"{commit_hash}~1", f"{commit.hash}")
-    #
-    # def get_diff(self, commit):
-    #     return commit.diff(commit.parents[0]).decode()
 
-    def update_commit_message(self, commit, new_message):
+
+    def update_commit_message(self, commit: 'Commit', new_message: str):
         """Updates the commit message using Git commands."""
         try:
-            # Create a temporary file with the new commit message
-            with open('temp_commit_msg.txt', 'w') as temp_file:
-                temp_file.write(new_message)
-
-            # Use subprocess to run Git commands
-            subprocess.run(['git', 'rebase', '-i', f'{commit.hash}~1'], cwd=self.repo.working_dir, check=True,
-                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10)  # Suppress output
-            subprocess.run(['sed', '-i', f's/^pick {commit.hash}.*/reword {commit.hash}/',
-                            os.path.join(self.repo.git_dir, 'rebase-merge', 'git-rebase-todo')], check=True,
-                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10)  # Suppress output
-            # Simulate saving the 'git-rebase-todo' file
-            with open(os.path.join(self.repo.git_dir, 'rebase-merge', 'git-rebase-todo'), 'w') as f:
-                f.truncate()  # "Empty" the file (Git seems to expect this)
-
-            subprocess.run(['git', 'rebase', '--continue'], cwd=self.repo.working_dir, check=True,
-                           input=open('temp_commit_msg.txt', 'rb').read(), timeout=10)
-            # Remove the temporary file
-            os.remove('temp_commit_msg.txt')
+            commit.repo.git.commit(
+                '--amend',
+                '-m', new_message,
+                author=commit.author
+            )
         except Exception as e:
             logging.error(f"Error updating commit message for commit {commit.hash}: {e}")
             raise
 
 
-# def update_repository(repo_path, commit_history):
-#     """Updates commit messages in the repository using git filter-branch."""
-#     # Create a temporary directory for the filter script
-#     with tempfile.TemporaryDirectory() as temp_dir:
-#         filter_script_path = os.path.join(temp_dir, "filter_script.py")
-#
-#         # Generate and save the filter script
-#         generate_filter_script(commit_history, filter_script_path)
-#
-#         # Backup refs before running filter-branch
-#         run_git_command(["for-each-ref", "--format='%(refname)'", "refs/heads/", "refs/remotes/", "refs/tags/", ">",
-#                          ".git/refs_backup"], repo_path)
-#
-#         try:
-#             # Run git filter-branch with the filter script
-#             filter_branch_cmd = ["filter-branch", "-f", "--msg-filter", f"python {filter_script_path}",
-#                                  "--tag-name-filter", "cat", "--", "HEAD"]
-#             run_git_command(filter_branch_cmd, repo_path)
-#         except Exception as e:
-#             logger.error(f"Error updating repository: {e}", level="error")
-#             # Restore refs from backup
-#             run_git_command(["update-ref", "--stdin", "<", ".git/refs_backup"], repo_path)
-#             raise
-#
-#         # Remove backup file
-#         os.remove(os.path.join(repo_path, ".git/refs_backup"))
-#         logger.info("Repository update completed.", level="info")
-#
-
-# def generate_filter_script(commit_history, script_path):
-#     """Generates the filter script to replace commit messages."""
-#     with open(script_path, "w") as f:
-#         f.write("""
-# import sys
-#
-# def filter_message(message):
-#     # Mapping of old commit hashes to new messages
-#     message_map = {
-# """)
-#         for commit in commit_history.commits:
-#             f.write(f"        '{commit.hash}': '{commit.new_message}',\n")
-#         f.write("""
-#     }
-#
-#     commit_hash = sys.stdin.readline().strip()
-#     return message_map.get(commit_hash, message)
-#
-# if __name__ == "__main__":
-#     print(filter_message(sys.stdin.readline().strip()))
-# """)
 
 def main():
     # Parse command-line arguments
@@ -658,9 +557,6 @@ def main():
     )
     # Add more arguments as needed...
     args = parser.parse_args()
-
-    # Configure logging
-    # logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
     # Load configuration
     config = load_configuration()
@@ -713,10 +609,8 @@ def main():
 
         commit_history = CommitHistory()
         commit_history.commits = commits  # Assign the commits to the history object
-        counter = 0
-        for commit in commits:
-            logger.info(f"Commit {counter}: {commit.hash}")
-            counter += 1
+        for i, commit in enumerate(commits):
+            logger.info(f"Commit {i + 1}/{len(commits)}: {commit.hash}")
     except Exception as e:
         logging.error(f"Failed to load commit history: {e}")
         return
