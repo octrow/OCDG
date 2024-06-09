@@ -67,7 +67,7 @@ poetry shell
                  [-f]
                  [-r]
 ```
-- Replace `/path/to/your/repository` with the path to your Git repository.
+- Replace `/path/to/your/repository` with the path/url to your Git repository.
 - **Optional Arguments:**
   - `-b /path/to/backup/dir`: Specify a custom directory for backing up the repository.
   - `-l <llm_choice>`: Choose the LLM provider (e.g., `openai`, `ollama`). The default is `ollama`.
@@ -82,10 +82,6 @@ poetry shell
 
 ## Customization
 
-- **API Keys:**  If using providers other than Ollama, set your API keys in the `.env` file.
-- **LLM Provider and Model:**  Use the `-l` and `-m` arguments to choose the desired LLM and model. Ollama is the default LLM provider. 
-- **Backup Location:** Configure the backup directory with the `-b` argument.
-- **Force Push:** Use the `-f` flag carefully to force push changes.
 - **Ignored Files and Patterns:** Modify `IGNORED_SECTION_PATTERNS` and `IGNORED_LINE_PATTERNS` in `config.py` to exclude specific files or patterns from diff analysis. 
 
 ## Contributing
