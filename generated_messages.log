@@ -1,0 +1,4207 @@
+-------------------- Time: 2024-06-09 22:18:08.758214 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: update
+Code changes: 
+```
+diff --git a/.gitignore b/.gitignore
+index 72cc44c..32aa0f6 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -6,4 +6,7 @@
+ /backup/*
+ /backup
+ /commit_diff
+-/commit_diff/*
+\ No newline at end of file
++/commit_diff/*
++/__pycache__
++/.idea
++/OCDG/__pycache__
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+deleted file mode 100644
+index 13566b8..0000000
+--- a/.idea/.gitignore
++++ /dev/null
+@@ -1,8 +0,0 @@
+-# Default ignored files
+-/shelf/
+-/workspace.xml
+-# Editor-based HTTP Client requests
+-/httpRequests/
+-# Datasource local storage ignored files
+-/dataSources/
+-/dataSources.local.xml
+diff --git a/.idea/commit_diff.iml b/.idea/commit_diff.iml
+deleted file mode 100644
+index d0876a7..0000000
+--- a/.idea/commit_diff.iml
++++ /dev/null
+@@ -1,8 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<module type="PYTHON_MODULE" version="4">
+-  <component name="NewModuleRootManager">
+-    <content url="file://$MODULE_DIR$" />
+-    <orderEntry type="inheritedJdk" />
+-    <orderEntry type="sourceFolder" forTests="false" />
+-  </component>
+-</module>
+\ No newline at end of file
+diff --git a/.idea/inspectionProfiles/profiles_settings.xml b/.idea/inspectionProfiles/profiles_settings.xml
+deleted file mode 100644
+index 105ce2d..0000000
+--- a/.idea/inspectionProfiles/profiles_settings.xml
++++ /dev/null
+@@ -1,6 +0,0 @@
+-<component name="InspectionProjectProfileManager">
+-  <settings>
+-    <option name="USE_PROJECT_PROFILE" value="false" />
+-    <version value="1.0" />
+-  </settings>
+-</component>
+\ No newline at end of file
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+deleted file mode 100644
+index bfb0a0e..0000000
+--- a/.idea/misc.xml
++++ /dev/null
+@@ -1,7 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="Black">
+-    <option name="sdkName" value="Python 3.11.8 WSL (Ubuntu): (/home/octrow/Dev/commit_diff/.venv/bin/python)" />
+-  </component>
+-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11.8 WSL (Ubuntu): (/home/octrow/Dev/commit_diff/.venv/bin/python)" project-jdk-type="Python SDK" />
+-</project>
+\ No newline at end of file
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+deleted file mode 100644
+index 4e8c73b..0000000
+--- a/.idea/modules.xml
++++ /dev/null
+@@ -1,8 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="ProjectModuleManager">
+-    <modules>
+-      <module fileurl="file://$PROJECT_DIR$/.idea/commit_diff.iml" filepath="$PROJECT_DIR$/.idea/commit_diff.iml" />
+-    </modules>
+-  </component>
+-</project>
+\ No newline at end of file
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+deleted file mode 100644
+index 46e160d..0000000
+--- a/.idea/vcs.xml
++++ /dev/null
+@@ -1,7 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="VcsDirectoryMappings">
+-    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+-    <mapping directory="$PROJECT_DIR$/commit_diff/OCDG" vcs="Git" />
+-  </component>
+-</project>
+\ No newline at end of file
+```
+
+Generated Text: { 
+"short_analysis": "Removed IntelliJ IDEA configuration files", 
+"new_commit_title": "feat: Remove IntelliJ IDEA config files - Simplify project setup", 
+"new_detailed_commit_message": " Removed unnecessary IntelliJ IDEA configuration files to simplify the project setup. This change affects no code changes, but rather cleans up the project's directory structure.", 
+"code_changes": { 
+  "files_changed": [], 
+  "functions_modified": [], 
+  "other_observations": ["Removed IntelliJ IDEA config files", "Simplified project setup"] 
+}}
+
+-------------------- Time: 2024-06-09 22:18:10.374301 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: Clean up: Remove unnecessary files
+Code changes: (partial)
+```
+diff --git a/OCDG/utils.py b/OCDG/utils.py
+index 19bcc3c..77b116e 100644
+--- a/OCDG/utils.py
++++ b/OCDG/utils.py
+@@ -1,6 +1,7 @@
+ import logging
+ import subprocess
+ import os
++import json
+ from loguru import logger
+ from typing import Any, List, Dict
+ 
+@@ -81,7 +82,7 @@ def generate_commit_multi(diff: str, commit_message: str, client: Any, model: st
+             ```
+             {diff_chunk}
+             ```
+-            Generate a new commit message based on these changes. Output only in JSON Format
++            Generate a new commit message based on these changes. Output only in JSON Format, without any additional text or code blocks.
+             {{
+             "Short analysis": "str",
+             "New Commit Title": "str",
+@@ -95,7 +96,13 @@ def generate_commit_multi(diff: str, commit_message: str, client: Any, model: st
+             model=model
+         )
+         try:
+-            commit_messages.append(json.loads(chat_completion))
++            # Extract JSON using a regular expression
++            json_match = re.search(r'\{.*\}', chat_completion, re.DOTALL)
++            if json_match:
++                commit_messages.append(json.loads(json_match.group(0)))
++            else:
++                logger.error(f"No valid JSON found in response: {chat_completion}")
++            # commit_messages.append(json.loads(chat_completion))
+         except json.JSONDecodeError as e:
+             logger.error(f"Error decoding JSON: {e} - {chat_completion}")
+     return commit_messages
+diff --git a/clients/__init__.py b/clients/__init__.py
+index 4e0da8c..a149bda 100644
+--- a/clients/__init__.py
++++ b/clients/__init__.py
+@@ -6,7 +6,7 @@ from .base_client import Client
+ def create_client(client_type: str, config: dict) -> Client:
+     """Creates and returns an instance of the specified client type."""
+     clients = {
+-        "openai": lambda: OpenAIClient(config.get('OPENAI_API_KEY')),
++        "openai": lambda: OpenAIClient(config.get('NVIDIA_API_KEY')),
+         "groq": lambda: GroqClient(config.get('GROQ_API_KEY')),
+         "replicate": lambda: ReplicateClient(config.get('REPLICATE_API_KEY'))  # Add REPLICATE_API_KEY to config
+     }
+diff --git a/clients/openai_client.py b/clients/openai_client.py
+index a90c828..af63bdf 100644
+--- a/clients/openai_client.py
++++ b/clients/openai_client.py
+@@ -2,14 +2,26 @@ import openai
+ 
+ from clients.base_client import Client
+ 
++from openai import OpenAI
++from config import load_configuration
++
++config = load_configuration()
++
++client = OpenAI(base_url = "https://integrate.api.nvidia.com/v1", api_key=config['NVIDIA_API_KEY'])
++
+ class OpenAIClient(Client):
+     def __init__(self, api_key):
+         super().__init__(api_key)
++        openai.api_base = "https://integrate.api.nvidia.com/v1"  # NVIDIA API base URL
+         openai.api_key = api_key
+ 
+     def generate_text(self, prompt, **kwargs):
+-        response = openai.ChatCompletion.create(
++        response = client.chat.completions.create(
++            # model="meta/llama3-70b-instruct",  # or the model you want to use
+             messages=[{"role": "user", "content": prompt}],
++            # temperature=0.5,
++            # top_p=1,
++            # max_tokens=4000,
+             **kwargs
+         )
+         return response.choices[0].message.content.strip()
+\ No newline at end of file
+diff --git a/git_repo.py b/git_repo.py
+index 5256468..4f63598 100644
+--- a/git_repo.py
++++ b/git_repo.py
+@@ -1,8 +1,25 @@
+ # git_repo.py
+ import os
+ import git
++import logging
+ 
+-from .commit import Commit
++class Commit:
++    """Represents a single commit with its metadata and diff."""
++
++    def __init__(self, hash: str, author: str, date: str, message: str, repo: git.Repo):
++        self.hash = hash
++        self.author = author
++        self.date = date
++        self.message = message
++        self.repo = repo
++        self.status = False  # Add status attribute
++
++    def __str__(self):
++        """Returns a string representation of the Commit object."""
++        return f"Commit(hash={self.hash}, author={self.author}, date={self.date}, message={self.message})"
++
++    def diff(self, commit: git.Commit):
++        return self.repo.git.diff(f'{self.hash}~1', f'{self.hash}')
+ 
+ class GitAnalyzer:
+     def __init__(self, repo_path="."):
+@@ -19,6 +36,14 @@ class GitAnalyzer:
+         return commit.diff(commit.parents[0]).decode()
+ 
+     def update_commit_message(self, commit, new_message):
+-        # Implement logic to update commit message using Git commands
+-        pass
++        """Updates the commit message using Git commands."""
++        try:
++            # Amend the commit using repo.git.commit()
++            self.repo.git.commit('--amend', '-m', new_message,
++                                 author=f"{commit.author} <{commit.author}>")  # Use commit.author directly
++            logging.info(f"Updated commit message for commit {commit.hash}")
++        except Exception as e:
++            logging.error(f"Error updating commit message for commit {commit.hash}: {e}")
++            raise
++
+ 
+diff --git a/main.py b/main.py
+index 2ddc18a..cb0af86 100644
+--- a/main.py
++++ b/main.py
+@@ -12,7 +12,7 @@ from config import load_configuration
+ 
+ from data_access import Database
+ from git_repo import GitAnalyzer
+-from OCDG.utils import run_git_command, log_message, find_closing_brace_index, parse_output_string, generate_commit_multi
++from OCDG.utils import run_git_command, log_message, find_closing_brace_index, parse_output_string, generate_commit_multi, generate_commit_description
+ 
+ logger = logging.getLogger(__name__)
+ # Import other necessary modules
+@@ -53,32 +53,32 @@ def main():
+             return
+ 
+     # 1. Backup Repository
+-    backup_dir = os.path.join(args.backup_dir, os.path.basename(repo_url))
+-    if os.path.exists(backup_dir):
+-        user_input = input(
+-            f"Backup directory '{backup_dir}' already exists. Do you want to overwrite it? (yes/no): "
+-        ).lower()
+-        if user_input != 'yes':
+-            print("Exiting...")
+-            return
+-
+-        try:
+-            shutil.rmtree(backup_dir)
+-            print(f"Removed existing backup directory: {backup_dir}")
+-        except Exception as e:
+-            print(f"Error removing existing backup directory: {e}")
+-            return
+-
+-    if args.backup_dir:
+-        logging.info("Creating repository backup...")
+-        try:
+-            run_git_command(["clone", "--mirror", repo_url, backup_dir])
+-            logging.info(f"Repository backed up to '{backup_dir}'")
+-        except Exception as e:
+-            logging.error(f"Error creating backup: {e}")
+-            return
+-    else:
+-        logging.warning("Skipping repository backup. Proceed with caution!")
++    # backup_dir = os.path.join(args.backup_dir, os.path.basename(repo_url))
++    # if os.path.exists(backup_dir):
++    #     user_input = input(
++    #         f"Backup directory '{backup_dir}' already exists. Do you want to overwrite it? (yes/no): "
++    #     ).lower()
++    #     if user_input != 'yes':
++    #         print("Exiting...")
++    #         return
++    #
++    #     try:
++    #         shutil.rmtree(backup_dir)
++    #         print(f"Removed existing backup directory: {backup_dir}")
++    #     except Exception as e:
++    #         print(f"Error removing existing backup directory: {e}")
++    #         return
++    #
++    # if args.backup_dir:
++    #     logging.info("Creating repository backup...")
++    #     try:
++    #         run_git_command(["clone", "--mirror", repo_url, backup_dir])
++    #         logging.info(f"Repository backed up to '{backup_dir}'")
++    #     except Exception as e:
++    #         logging.error(f"Error creating backup: {e}")
++    #         return
++    # else:
++    #     logging.warning("Skipping repository backup. Proceed with caution!")
+ 
+     # 2. Load Commit History
+     logging.info("Loading commit history...")
+@@
+```
+
+Generated Text: { "commit_message": "Updated commit message for commit <commit_hash>" }
+
+-------------------- Time: 2024-06-09 22:18:13.735353 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: update
+Code changes: 
+```
+diff --git a/.gitignore b/.gitignore
+index ae32765..72cc44c 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,4 +1,6 @@
+ /.venv/
++/venv
++/venv/*
+ /OCDG/backup/*
+ /backup/*
+```
+
+Generated Text: {
+ "short_analysis": "Updated .gitignore to ignore venv and its contents",
+ "new_commit_title": "feat: Ignore venv directory and its contents - improve project structure",
+ "new_detailed_commit_message": "This commit updates the .gitignore file to include the newly created `venv` directory and its contents. This change will help keep the project's source code separate from any virtual environment-related files. The updated ignore pattern is: `/venv`, `/venv/*`.",
+ "code_changes": {
+  "files_changed": ["/.gitignore"],
+  "other_observations": [
+    "Updated .gitignore to include venv directory and its contents"
+  ]
+ }
+}
+
+-------------------- Time: 2024-06-09 22:18:15.158314 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: update
+Code changes: (partial)
+```
+diff --git a/.gitignore b/.gitignore
+index 99a1f18..ae32765 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,3 +1,7 @@
+ /.venv/
+ /OCDG/backup/*
++/backup/*
++/backup
++/commit_diff
++/commit_diff/*
+\ No newline at end of file
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+index 94a25f7..46e160d 100644
+--- a/.idea/vcs.xml
++++ b/.idea/vcs.xml
+@@ -2,5 +2,6 @@
+ <project version="4">
+   <component name="VcsDirectoryMappings">
+     <mapping directory="$PROJECT_DIR$" vcs="Git" />
++    <mapping directory="$PROJECT_DIR$/commit_diff/OCDG" vcs="Git" />
+   </component>
+ </project>
+\ No newline at end of file
+diff --git a/OCDG/commit_message_generator.py b/OCDG/commit_message_generator.py
+deleted file mode 100644
+index 93fe3ad..0000000
+--- a/OCDG/commit_message_generator.py
++++ /dev/null
+@@ -1,11 +0,0 @@
+-from utils import log_message
+-
+-def update_commit_messages(commit_history, llm_interface):
+-    """Generates new commit messages for each commit in the history using the LLM."""
+-    for commit in commit_history.commits:
+-        try:
+-            new_message = llm_interface.generate_commit_message(commit.diff, commit.message)
+-            commit.new_message = new_message
+-            log_message(f"Generated new message for commit {commit.hash[:7]}", level="info")
+-        except Exception as e:
+-            log_message(f"Error generating message for commit {commit.hash[:7]}: {e}", level="error")
+\ No newline at end of file
+diff --git a/OCDG/main.py b/OCDG/main.py
+deleted file mode 100644
+index 3da0236..0000000
+--- a/OCDG/main.py
++++ /dev/null
+@@ -1,87 +0,0 @@
+-import argparse
+-import logging
+-import os
+-import traceback
+-
+-import backup_manager
+-import commit_history
+-import commit_message_generator
+-import llm_integration
+-import repository_updater
+-import utils
+-from dotenv import load_dotenv
+-from llm_integration import generate_commit_description
+-
+-
+-def main():
+-    load_dotenv()
+-    # Setup argument parser
+-    parser = argparse.ArgumentParser(description="Revitalize old commit messages using LLMs.")
+-    parser.add_argument("repo_path", help="Path to the Git repository (local path or URL).")
+-    parser.add_argument("-b", "--backup_dir", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "backup"), help="Directory for repository backup.")
+-    parser.add_argument("-l", "--llm", choices=["llama3", "openai", "gemini"], default="openai", help="Choice of LLM.")
+-    # Add more arguments for LLM-specific settings as needed
+-
+-    args = parser.parse_args()
+-
+-    # Configure logging
+-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+-
+-    # Determine repository type and get URL
+-    if args.repo_path.startswith(("http", "git@")):
+-        repo_url = args.repo_path
+-    else:
+-        # Get absolute path for local repositories
+-        repo_path = os.path.abspath(args.repo_path)
+-        logging.info(f"Using local repository path: {repo_path}")
+-        repo_url = commit_history.CommitHistory().get_repo_url(repo_path)
+-        if not repo_url:
+-            logging.error("Failed to get repository URL from local path. Exiting...")
+-            return
+-
+-    # 1. Backup Repository
+-    if args.backup_dir:
+-        logging.info("Creating repository backup...")
+-        backup_manager.create_backup(args.repo_path, args.backup_dir)
+-    else:
+-        logging.warning("Skipping repository backup. Proceed with caution!")
+-
+-    # 2. Load Commit History
+-    logging.info("Loading commit history...")
+-    history = commit_history.CommitHistory()
+-    history.load_from_repo(args.repo_path)
+-    logging.info(f"Loaded {len(history.commits)} commits from repository.")
+-    if not history.commits:
+-        logging.error("Failed to load commit history. Exiting...")
+-        return
+-
+-    # 3. Initialize LLM Interface
+-
+-    NVIDIA_API_KEY = os.environ.get("NVIDIA_API_KEY")
+-    # logging.info(f"Initializing {args.llm} LLM interface...")
+-    # # llm = llm_integration.LLMInterface(args.llm)  # Add LLM specific arguments here
+-    # try:
+-    #     llm = llm_integration.LLMInterface()
+-    # except Exception as e:
+-    #     logging.error(f"Failed to initialize LLM interface: {e}")
+-    #     logging.error(f'traceback.format_exc(): {traceback.format_exc()}')
+-    #     return
+-
+-    # 4. Generate New Commit Messages
+-    logging.info("Generating new commit messages using LLM...")
+-    # commit_message_generator.update_commit_messages(history, llm)
+-    generate_commit_description(history)
+-    # 5. Update Repository
+-    logging.info("Updating commit messages in the repository...")
+-    # repository_updater.update_repository(args.repo_path, history)
+-
+-    # 6. Verification and Completion
+-    logging.info("Commit messages updated successfully!")
+-    logging.info("Verifying changes...")
+-    # Add verification logic here
+-
+-    logging.info("OCDG process completed!")
+-
+-
+-if __name__ == "__main__":
+-    main()
+\ No newline at end of file
+diff --git a/OCDG/utils.py b/OCDG/utils.py
+index a63b3e0..19bcc3c 100644
+--- a/OCDG/utils.py
++++ b/OCDG/utils.py
+@@ -2,6 +2,7 @@ import logging
+ import subprocess
+ import os
+ from loguru import logger
++from typing import Any, List, Dict
+ 
+ def run_git_command(command, repo_path="."):
+     """Executes a Git command and returns the output."""
+@@ -30,4 +31,140 @@ def validate_repo_path(repo_path):
+ def log_message(message, level="info"):
+     """Logs a message with the specified severity level."""
+     log_function = getattr(logging, level)
+-    log_function(message)
+\ No newline at end of file
++    log_function(message)
++
++def find_closing_brace_index(text: str) -> int:
++    """Finds the index of the closing brace that matches the first opening brace."""
++    count = 0
++    for i, char in enumerate(text):
++        if char == '{':
++            count += 1
++        elif char == '}':
++            count -= 1
++            if count == 0:
++                return i
++    raise ValueError("Unbalanced curly braces")
++
++def parse_output_string(output_string: str) -> dict:
++    """Parses the output string generated by the AI model into a dictionary."""
++    data = {}
++    patterns = {
++        'short_analysis': r'\*\*Short analysis\*\*: (.+?)\n',
++        'commit_title': r'\*\*New Commit Title\*\*: (.+?)\n',
++        'detailed_commit_message': r'\*\*New Detailed Commit Message\*\*:\n(.+?)\n\n\*\*Code Changes\*\*:',
++        'code_changes': r'\*\*Code Changes\*\*:\n```\n(\{.+\})\n```'
++    }
++
++    for key, pattern in patterns.items():
++        match = re.search(pattern, output_string, re.DOTALL)
++        if match:
++            if key == 'code_changes':
++                try:
++                    data[key] = json.loads(match.group(1))
++                except json.JSONDecodeError as e:
++                    logger.error(f"Error decoding JSON: {e} - {match.group(1)}")
++                    return {}
++            else:
++                data[key] = match.group(1).strip()
++    return data
++
++def generate_commit_multi(diff: str, commit_message: str, client: Any, model: str) -> List[Dict[str, str]]:
++    """Splits a diff into chunks and generates a commit message for each chunk."""
++    diff_chunks = [diff[i:i + 6000] for i in range(0, len(diff), 6000)]
++    commit_messages = []
++    for i, diff_chunk in enumerate(diff_chunks):
++        system_prompt = (
++            f""""
++            You are a helpful AI assistant that generates commit messages based on code changes and previous descriptions. Follow the commit guidelines of the GitHub repository.
++            Previous commit message: {commit_message}
++            Code changes: {'(partial)' if i != len(diff_chunks) - 1 else ''} 
++            ```
++            {diff_chunk}
++            ```
++            Generate a new commit message based on these changes. Output only in JSON Format
++            {{
++            "Short analysis": "str",
++            "New Commit Title": 
+```
+
+Generated Text: { }
+
+-------------------- Time: 2024-06-09 22:18:18.860460 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: Update README.md
+Code changes: 
+```
+diff --git a/README.md b/README.md
+index 9630702..b6f1a9a 100644
+--- a/README.md
++++ b/README.md
+@@ -4,6 +4,9 @@
+ 
+ The Old Commit Description Generator (OCDG) is a Python-based tool designed to improve the quality and consistency of commit messages within a Git repository. It utilizes Large Language Models (LLMs) to automatically generate new, descriptive commit messages based on the commit diffs and existing messages. OCDG ensures a safe and controlled update process with robust backup and rollback mechanisms.
+ 
++### Disclaimer
++**NOT READY FOR USE!!!**
++
+ #### Features
+ 
+ - Intelligent Message Generation: Leverages LLMs like Llama3, OpenAI, or Gemini to create informative and conventional commit messages.
+@@ -13,9 +16,6 @@ The Old Commit Description Generator (OCDG) is a Python-based tool designed to i
+ - Logging: Provides informative logging messages to track the progress and identify potential issues.
+ - Customization: Offers options to configure the LLM settings, commit message conventions, and backup locations.
+ 
+-### Disclaimer
+-**NOT READY FOR USE!!!**
+-
+ **OCDG modifies the Git history of your repository.** 
+ 
+ While the tool includes safety measures like backup and rollback, it's essential to use it cautiously and understand the potential risks associated with Git history rewrites!
+```
+
+Generated Text: { 
+  "short_analysis": "README.md updated with new content", 
+  "new_commit_title": "docs: Update README.md - Adding disclaimer and features section (<type>: <description> - max 50 chars)", 
+  "new_detailed_commit_message": "Documented the OCDG tool, including its purpose, features, and important notes about using it. Added a disclaimer to emphasize that it's not ready for use yet. This commit updates the README.md with new content. (<explain what & why, max 72 chars/line, use bullet points)", 
+  "code_changes": { 
+    "files_changed": ["README.md"], 
+    "other_observations": ["Added disclaimer and features section"] 
+  }
+}
+
+-------------------- Time: 2024-06-09 22:18:21.183798 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: Clean up: Remove unnecessary files
+Code changes: 
+```
+ -98,25 +98,29 @@ def main():
+ 
+     # 4. Process each commit
+     for i, commit in enumerate(commits):
+-        logging.info(f"Processing commit {i + 1}/{len(commits)}: {commit.hexsha}")
++        logging.info(f"Processing commit {i + 1}/{len(commits)}: {commit.hash}")
+         try:
+-            diff = repo.git.diff(f'{commit.hexsha}~1', f'{commit.hexsha}')
++            initial_commit_hash = run_git_command(['rev-list', '--max-parents=0', 'HEAD'], repo_path).strip()
++            if commit.hash == initial_commit_hash:
++                logging.info(f"Skipping diff for initial commit: {commit.hash}")
++                diff = ""  # Or handle the initial commit differently
++            else:
++                diff = repo.git.diff(f'{commit.hash}~1', f'{commit.hash}')
+             new_message = generate_commit_description(diff, commit.message, client, args.model)
+             if new_message is None:
+-                logging.warning(f"Skipping commit {commit.hexsha} - No new message generated")
++                logging.warning(f"Skipping commit {commit.hash} - No new message generated")
+                 continue
+ 
+             # 5. Update Commit Message
+             try:
+-                with repo.commit(commit.hexsha).edit() as commit_editor:
+-                    commit_editor.message = new_message
+-                logging.info(f"Updated commit message for commit {commit.hexsha}")
++                analyzer.update_commit_message(commit, new_message)  # Call the function
++                logging.info(f"Updated commit message for commit {commit.hash}")
+             except Exception as e:
+-                logging.error(f"Error updating commit message for commit {commit.hexsha}: {e}")
++                logging.error(f"Error updating commit message for commit {commit.hash}: {e}")
+                 return
+ 
+         except Exception as e:
+-            logging.error(f"Error processing commit {commit.hexsha}: {traceback.format_exc()} {e}")
++            logging.error(f"Error processing commit {commit.hash}: {traceback.format_exc()} {e}")
+             return
+ 
+     logging.info("OCDG process completed!")
+```
+
+Generated Text: { "short_analysis": "Improved logging and removed unnecessary files", 
+  "new_commit_title": "feat(logging): Update commit hash logging format - max 50 chars)", 
+  "new_detailed_commit_message": "(explain what & why, max 72 chars/line, use bullet points) \n   * Improved logging format for commit hashes.\n   * Removed unnecessary files to improve code organization.", 
+  "code_changes": { 
+    "files_changed": ["Removed unnecessary files"], 
+    "functions_modified": ["main()", "generate_commit_description()"], 
+    "other_observations": ["Improved logging"] 
+ }}
+
+-------------------- Time: 2024-06-09 22:18:23.730997 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: in progress
+Code changes: 
+```
+diff --git a/README.md b/README.md
+index 99f0375..9630702 100644
+--- a/README.md
++++ b/README.md
+@@ -30,8 +30,9 @@ git clone https://github.com/octrow/commit_diff.git
+ ```
+ 2. Install Dependencies:
+ ```shell
+-cd ocdg
+-pip install -r requirements.txt
++cd OCDG
++poetry install
++poetry shell
+ ```
+ 3. Configure LLM Settings:
+ - Edit the main.py file and provide the necessary credentials or API keys for your chosen LLM.
+```
+
+Generated Text: {
+"short_analysis": "Updated README.md with new dependencies and configurations.",
+"new_commit_title": "feat: Update dependencies and configure LLM settings (#4) - updated README",
+"new_detailed_commit_message": "This commit updates the README.md to reflect changes in dependencies installation and configuration of Large Language Model (LLM) settings. The main.py file now requires editing for credentials or API keys setup.",
+"code_changes": {
+"files_changed": [
+"a/README.md"
+],
+"functions_modified": [],
+"other_observations": []
+}
+}
+
+-------------------- Time: 2024-06-09 22:18:25.504033 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: update
+Code changes: (partial)
+```
+"str",
++            "New Detailed Commit Message": "str",
++            "Code Changes": {{"filename": "str", "filename2": "str"}}
++            }}
++            """
++        )
++        chat_completion = client.generate_text(
++            system_prompt,
++            model=model
++        )
++        try:
++            commit_messages.append(json.loads(chat_completion))
++        except json.JSONDecodeError as e:
++            logger.error(f"Error decoding JSON: {e} - {chat_completion}")
++    return commit_messages
++
++def combine_messages(multi_commit: List[Dict[str, str]], client: Any, model: str) -> dict:
++    """Combines multiple commit messages into a single commit message."""
++    prompt = f"""Combine the following messages into a single commit message in JSON format:
++    ```json
++    {json.dumps(multi_commit)}
++    ```
++    Output only in JSON Format
++    {{
++    "Short analysis": "str",
++    "New Commit Title": "str",
++    "New Detailed Commit Message": "str",
++    "Code Changes": {{"filename": "str", "filename2": "str"}}
++    }}
++    """
++    combined_message = client.generate_text(
++        prompt,
++        model=model
++    )
++    try:
++        return json.loads(combined_message)
++    except json.JSONDecodeError as e:
++        logger.error(f"Error decoding JSON: {e} - {combined_message}")
++        return {}
++
++def generate_commit_description(diff: str, old_description: str, client: Any, model: str) -> str:
++    """Generates a commit description for a potentially large diff."""
++    try:
++        if len(diff) >= 6000:
++            logger.info("Diff is too long. Start splitting it into chunks.")
++            multi_commit = generate_commit_multi(diff, old_description, client, model)
++            if not multi_commit:
++                logger.warning("Failed to generate multi-commit message. Skipping...")
++                return None
++            generated_message = combine_messages(multi_commit, client, model)
++        else:
++            system_prompt = (
++                f""""
++                You are a helpful AI assistant that generates commit messages based on code changes and previous descriptions. Follow the commit guidelines of the GitHub repository.
++                Previous commit message: {old_description}
++                Code changes: 
++                ```
++                {diff}
++                ```
++                Generate a new commit message based on these changes. Output only in JSON Format
++                {{
++                "Short analysis": "str",
++                "New Commit Title": "str",
++                "New Detailed Commit Message": "str",
++                "Code Changes": {{"filename": "str", "filename2": "str"}}
++                }}
++                """
++            )
++            chat_completion = client.generate_text(
++                system_prompt,
++                model=model
++            )
++            generated_message = json.loads(chat_completion)
++        new_description = "\n".join(
++            [
++                generated_message.get("New Commit Title", ""),
++                "",  # Add an empty line between title and body
++                generated_message.get("New Detailed Commit Message", ""),
++            ]
++        ).strip()
++        return new_description
++    except Exception as e:
++        logger.error(f"Error generating commit description: {e}")
++        return None
+\ No newline at end of file
+diff --git a/clients/__init__.py b/clients/__init__.py
+index a065227..4e0da8c 100644
+--- a/clients/__init__.py
++++ b/clients/__init__.py
+@@ -3,10 +3,13 @@ from .groq_client import GroqClient
+ from .replicate_client import ReplicateClient
+ from .base_client import Client
+ 
+-def create_client(client_type):
++def create_client(client_type: str, config: dict) -> Client:
++    """Creates and returns an instance of the specified client type."""
+     clients = {
+-        "openai": OpenAIClient,
+-        "groq": GroqClient,
+-        "replicate": ReplicateClient
++        "openai": lambda: OpenAIClient(config.get('OPENAI_API_KEY')),
++        "groq": lambda: GroqClient(config.get('GROQ_API_KEY')),
++        "replicate": lambda: ReplicateClient(config.get('REPLICATE_API_KEY'))  # Add REPLICATE_API_KEY to config
+     }
+-    return clients[client_type]
++    if client_type not in clients:
++        raise ValueError(f"Invalid client type: {client_type}")
++    return clients[client_type]()
+diff --git a/clients/base_client.py b/clients/base_client.py
+index ecee8ae..635e8fc 100644
+--- a/clients/base_client.py
++++ b/clients/base_client.py
+@@ -2,10 +2,12 @@
+ from abc import ABC, abstractmethod
+ 
+ class Client(ABC):
+-    def __init__(self, api_key):
++    """Abstract base class for LLM clients."""
++
++    def __init__(self, api_key: str):
+         self.api_key = api_key
+ 
+     @abstractmethod
+-    def generate_text(self, prompt, **kwargs):
++    def generate_text(self, prompt: str, **kwargs) -> str:
++        """Generates text using the LLM."""
+         pass
+-
+diff --git a/clients/groq_client.py b/clients/groq_client.py
+index f533a6a..8b52cb5 100644
+--- a/clients/groq_client.py
++++ b/clients/groq_client.py
+@@ -1,10 +1,15 @@
++from groq import Groq
+ from clients.base_client import Client
+ 
+ 
+ class GroqClient(Client):
+     def __init__(self, api_key):
+         super().__init__(api_key)
++        self.client = Groq(api_key=api_key)
+ 
+     def generate_text(self, prompt, **kwargs):
+-        response = self.client.query(prompt, **kwargs)
+-        return response
+\ No newline at end of file
++        chat_completion = self.client.chat.completions.create(
++            messages=[{"role": "system", "content": prompt}],
++            **kwargs
++        )
++        return chat_completion.choices[0].message.content
+\ No newline at end of file
+diff --git a/clients/openai_client.py b/clients/openai_client.py
+index 4970096..a90c828 100644
+--- a/clients/openai_client.py
++++ b/clients/openai_client.py
+@@ -1,20 +1,15 @@
+ import openai
+ 
+ from clients.base_client import Client
+-import config
+ 
+ class OpenAIClient(Client):
+     def __init__(self, api_key):
+         super().__init__(api_key)
+-        openai.api_key = config.load_configuration()['OPENAI_API_KEY']
++        openai.api_key = api_key
+ 
+     def generate_text(self, prompt, **kwargs):
+-        response = openai.Completion.create(
+-            model="meta/llama3-70b-instruct",
++        response = openai.ChatCompletion.create(
+             messages=[{"role": "user", "content": prompt}],
+-            max_tokens=2000,
+-            temperature=0.5,
+-            top_p=1,
+             **kwargs
+         )
+-        return response.choices[0].text.strip()
++        return response.choices[0].message.content.strip()
+\ No newline at end of file
+diff --git a/clients/replicate_client.py b/clients/replicate_client.py
+index a0eea79..e300ac8 100644
+--- a/clients/replicate_client.py
++++ b/clients/replicate_client.py
+@@ -1,6 +1,11 @@
+ from clients.base_client import Client
+-
++# Add implementation for Replicate client if needed
+ 
+ class ReplicateClient(Client):
+     def __init__(self, api_key):
+-        super().__init__(api_key)
+\ No newline at end of file
++        super().__init__(api_key)
++        # Initialize Replicate client
++
++    def generate_text(self, prompt, **kwargs):
++        # Implement text generation using Replicate API
++        pass
+\ No newline at end of file
+diff --git a/commit.py b/commit.py
+deleted file mode 100644
+index 84e6389..0000000
+--- a/commit.py
++++ /dev/null
+@@ -1,48 +0,0 @@
+-# commit.py
+-import os
+-import json
+-import re
+-import traceback
+-from sys import stdout
+-
+-class Commit:
+-    def __init__(self, hash, author, date, message, repo):
+-        self.hash = hash
+-        self.author = author
+-        self.date = date
+-        self.message = message
+-        self.repo = repo
+-
+-    def process_commit(self, db, client):
+-        # Format the filename using commit date and hash
+-        filename = f"{commit_di
+```
+
+Generated Text: { "message": "Improve code organization by adding type hints for function parameters", "author": "Your Name" }
+
+-------------------- Time: 2024-06-09 22:18:28.240641 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: in progress
+Code changes: 
+```
+diff --git a/README.md b/README.md
+index 7f062cf..99f0375 100644
+--- a/README.md
++++ b/README.md
+@@ -26,7 +26,7 @@ I'm hope OCDG helps you improve the quality and clarity of your commit messages,
+ 
+ 1. Clone the Repository:
+ ```shell
+-git clone https://github.com/your-username/ocdg.git
++git clone https://github.com/octrow/commit_diff.git
+ ```
+ 2. Install Dependencies:
+ ```shell
+```
+
+Generated Text: {
+"short_analysis": "Updated README.md with new repository URL",
+"new_commit_title": "fix: Update README.md to use correct repository URL",
+"new_detailed_commit_message": "Fixes issue with incorrect repository URL in README.md.\n\nChanged the `git clone` command to reflect the actual repository URL.\n\nThis change ensures that users can correctly clone the repository and avoid any confusion.",
+"code_changes": {
+    "files_changed": ["README.md"],
+    "functions_modified": [],
+    "other_observations": []
+}
+}
+
+-------------------- Time: 2024-06-09 22:18:31.627637 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: in progress
+Code changes: (partial)
+```
+diff --git a/.gitignore b/.gitignore
+index 153af3a..99a1f18 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,2 +1,3 @@
+ /.venv/
+\ No newline at end of file
++/OCDG/backup/*
+diff --git a/OCDG2/README.md b/OCDG2/README.md
+deleted file mode 100644
+index abb9451..0000000
+--- a/OCDG2/README.md
++++ /dev/null
+@@ -1,58 +0,0 @@
+-## OCDG Documentation: Revitalizing Git Commit Messages
+-
+-#### Introduction
+-
+-The Old Commit Description Generator (OCDG) is a Python-based tool designed to improve the quality and consistency of commit messages within a Git repository. It utilizes Large Language Models (LLMs) to automatically generate new, descriptive commit messages based on the commit diffs and existing messages. OCDG ensures a safe and controlled update process with robust backup and rollback mechanisms.
+-
+-#### Features
+-
+-- Intelligent Message Generation: Leverages LLMs like Llama3, OpenAI, or Gemini to create informative and conventional commit messages.
+-- Diff Analysis: Analyzes commit diffs to understand the changes made and provide context for message generation.
+-- Repository Backup: Creates a backup of the entire repository before updating commit messages, ensuring data safety.
+-- Error Handling & Rollback: Implements robust error handling and rollback mechanisms to maintain repository integrity.
+-- Logging: Provides informative logging messages to track the progress and identify potential issues.
+-- Customization: Offers options to configure the LLM settings, commit message conventions, and backup locations.
+-
+-### Disclaimer
+-**OCDG modifies the Git history of your repository.** 
+-
+-While the tool includes safety measures like backup and rollback, it's essential to use it cautiously and understand the potential risks associated with Git history rewrites!
+-
+-I'm hope OCDG helps you improve the quality and clarity of your commit messages, leading to better collaboration and understanding within your development team!
+-
+-### Installation
+-
+-1. Clone the Repository:
+-```shell
+-git clone https://github.com/your-username/ocdg.git
+-```
+-2. Install Dependencies:
+-```shell
+-cd ocdg
+-pip install -r requirements.txt
+-```
+-3. Configure LLM Settings:
+-- Edit the main.py file and provide the necessary credentials or API keys for your chosen LLM.
+-- You might need to install additional LLM-specific libraries using pip.
+-
+-### Usage
+-
+-1. Run the Script:
+-```shell
+-python main.py /path/to/your/repository [-b /path/to/backup/dir] [-l llm_choice]
+-```
+-```shell 
+-* Replace `/path/to/your/repository` with the actual path to your Git repository.
+-* Optionally, use the `-b` flag to specify a directory for repository backup.
+-* Use the `-l` flag to choose the LLM (e.g., `-l openai`, `-l llama3`).
+-```
+-2. Review and Verify:
+-- The script will create a backup of your repository (if specified), analyze the commit history, generate new commit messages, and update the repository.
+-- Review the logs and verify that the commit messages have been updated correctly.
+-
+-### Customization
+-- LLM Settings: Refer to the llm_integration.py file to configure settings specific to your chosen LLM (e.g., temperature, response length).
+-- Commit Conventions: Modify the prompt template in llm_integration.py to align with your preferred commit message conventions.
+-- Backup Location: Specify the backup directory using the -b flag when running the script.
+-
+-
+diff --git a/OCDG2/backup_manager.py b/OCDG2/backup_manager.py
+deleted file mode 100644
+index 04373e5..0000000
+--- a/OCDG2/backup_manager.py
++++ /dev/null
+@@ -1,67 +0,0 @@
+-import os
+-import re
+-import shutil
+-
+-from utils import run_git_command, validate_repo_path, log_message
+-
+-
+-def get_repo_name_from_path(repo_path):
+-    # Use regular expressions to match different types of repository paths
+-    if repo_path.endswith(".git"):
+-        # Match the name in URLs ending with .git
+-        match = re.search(r'/([^/]+)\.git$', repo_path)
+-    else:
+-        # Match the name in normal file paths
+-        match = re.search(r'([^/\\]+)$', repo_path)
+-    if match:
+-        log_message(f"Extracted repository name from path: {match.group(1)}", level="info")
+-        return match.group(1)
+-    else:
+-        abs_path = os.path.abspath(repo_path)
+-        log_message(f"Could not extract repository name from path: {abs_path}", level="error")
+-        repo_name = os.path.basename(os.path.normpath(abs_path))
+-        log_message(f"Using default repository name: {repo_name}", level="warning")
+-        return repo_name
+-        # raise ValueError(f"Could not extract repository name from path: {repo_path}")
+-
+-
+-def create_backup(repo_path, backup_base_dir):
+-    """Creates a bare clone of the repository as a backup and names the backup directory after the repository name."""
+-    log_message(f"Creating base backup folder at '{backup_base_dir}'", level="info")
+-    validate_repo_path(repo_path)
+-
+-    # Extract the repository name from the repo_path
+-    repo_name = get_repo_name_from_path(repo_path)
+-    backup_dir = os.path.join(backup_base_dir, repo_name)
+-
+-    # Create a unique backup directory path using the repository name
+-
+-    if os.path.exists(backup_dir):
+-        log_message(f"Backup directory '{backup_dir}' already exists. Overwriting...", level="warning")
+-        shutil.rmtree(backup_dir)
+-    os.makedirs(backup_dir, exist_ok=True)
+-
+-    run_git_command(["clone", "--mirror", repo_path, backup_dir])
+-    log_message(f"Repository backed up to '{backup_dir}'", level="info")
+-
+-
+-def verify_backup(backup_dir):
+-    """Checks if the backup directory is a valid Git repository."""
+-    if not os.path.isdir(backup_dir):
+-        raise ValueError(f"Backup directory '{backup_dir}' does not exist.")
+-    try:
+-        run_git_command(["rev-parse", "--is-bare-repository"], backup_dir)
+-        log_message(f"Backup at '{backup_dir}' verified.", level="info")
+-        return True
+-    except RuntimeError as e:
+-        log_message(f"Backup verification failed: {e}", level="error")
+-        return False
+-
+-
+-def get_backup_info(backup_dir):
+-    """Retrieves information about the backup."""
+-    if not verify_backup(backup_dir):
+-        return None
+-    # Get backup creation time (approximation)
+-    ctime = os.path.getctime(backup_dir)
+-    return {"path": backup_dir, "created_at": ctime}
+\ No newline at end of file
+diff --git a/OCDG2/commit_history.py b/OCDG2/commit_history.py
+deleted file mode 100644
+index 84b87e6..0000000
+--- a/OCDG2/commit_history.py
++++ /dev/null
+@@ -1,49 +0,0 @@
+-from utils import run_git_command
+-
+-class Commit:
+-    """Represents a single commit with its metadata and diff."""
+-
+-    def __init__(self, hash, author, date, message, diff):
+-        self.hash = hash
+-        self.author = author
+-        self.date = date
+-        self.message = message
+-        self.diff = diff
+-        self.new_message = None  # To be populated later
+-
+-
+-class CommitHistory:
+-    """Manages a collection of Commit objects and provides methods to access them."""
+-
+-    def __init__(self):
+-        self.commits = []
+-
+-    def load_from_repo(self, repo_path):
+-        """Extracts commit history from the repository."""
+-        # Use git log to retrieve commit data
+-        log_command = ["log", "--pretty=format:%H|%an|%ad|%s", "--date=short", "--patch"]
+-        log_output = run_git_command(log_command, repo_path)
+-
+-        # Parse the log output and create Commit objects
+-        current_commit = None
+-        for line in log_output.splitlines():
+-            if line.startswith("commit "):  # Start of a new commit
+-                if current_commit:
+-                    self.commits.append(current_commit)
+-                parts = line.split("|")
+-                current_commit = Commit(parts[0], parts[1], parts[2], parts[3], "")
+-            else:  # Part of the diff
+-                current_commit.diff += line + "\n"
+-        if current_commit:
+```
+
+Generated Text: { "title" : "Backup and Verify Git Repository", "description" : "This commit message is generated based on code diffs. The changes include refactoring the `get_repo_name_from_path` function to use regular expressions, adding a new function `create_backup` to create a bare clone of the repository as a backup, and modifying the `verify_backup` function to check if the backup directory is a valid Git repository.", "type" : "refactor", "author" : "" }
+
+-------------------- Time: 2024-06-09 22:18:34.546853 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: in progress
+Code changes: 
+```
+diff --git a/OCDG/README.md b/OCDG/README.md
+deleted file mode 100644
+index abb9451..0000000
+--- a/OCDG/README.md
++++ /dev/null
+@@ -1,58 +0,0 @@
+-## OCDG Documentation: Revitalizing Git Commit Messages
+-
+-#### Introduction
+-
+-The Old Commit Description Generator (OCDG) is a Python-based tool designed to improve the quality and consistency of commit messages within a Git repository. It utilizes Large Language Models (LLMs) to automatically generate new, descriptive commit messages based on the commit diffs and existing messages. OCDG ensures a safe and controlled update process with robust backup and rollback mechanisms.
+-
+-#### Features
+-
+-- Intelligent Message Generation: Leverages LLMs like Llama3, OpenAI, or Gemini to create informative and conventional commit messages.
+-- Diff Analysis: Analyzes commit diffs to understand the changes made and provide context for message generation.
+-- Repository Backup: Creates a backup of the entire repository before updating commit messages, ensuring data safety.
+-- Error Handling & Rollback: Implements robust error handling and rollback mechanisms to maintain repository integrity.
+-- Logging: Provides informative logging messages to track the progress and identify potential issues.
+-- Customization: Offers options to configure the LLM settings, commit message conventions, and backup locations.
+-
+-### Disclaimer
+-**OCDG modifies the Git history of your repository.** 
+-
+-While the tool includes safety measures like backup and rollback, it's essential to use it cautiously and understand the potential risks associated with Git history rewrites!
+-
+-I'm hope OCDG helps you improve the quality and clarity of your commit messages, leading to better collaboration and understanding within your development team!
+-
+-### Installation
+-
+-1. Clone the Repository:
+-```shell
+-git clone https://github.com/your-username/ocdg.git
+-```
+-2. Install Dependencies:
+-```shell
+-cd ocdg
+-pip install -r requirements.txt
+-```
+-3. Configure LLM Settings:
+-- Edit the main.py file and provide the necessary credentials or API keys for your chosen LLM.
+-- You might need to install additional LLM-specific libraries using pip.
+-
+-### Usage
+-
+-1. Run the Script:
+-```shell
+-python main.py /path/to/your/repository [-b /path/to/backup/dir] [-l llm_choice]
+-```
+-```shell 
+-* Replace `/path/to/your/repository` with the actual path to your Git repository.
+-* Optionally, use the `-b` flag to specify a directory for repository backup.
+-* Use the `-l` flag to choose the LLM (e.g., `-l openai`, `-l llama3`).
+-```
+-2. Review and Verify:
+-- The script will create a backup of your repository (if specified), analyze the commit history, generate new commit messages, and update the repository.
+-- Review the logs and verify that the commit messages have been updated correctly.
+-
+-### Customization
+-- LLM Settings: Refer to the llm_integration.py file to configure settings specific to your chosen LLM (e.g., temperature, response length).
+-- Commit Conventions: Modify the prompt template in llm_integration.py to align with your preferred commit message conventions.
+-- Backup Location: Specify the backup directory using the -b flag when running the script.
+-
+-
+```
+
+Generated Text: { "short_analysis": "Removed OCDG documentation", 
+  "new_commit_title": "docs(removing outdated documenation) - Removed old README.md file",
+  "new_detailed_commit_message": "(removed outdated documentation, no functionality impacted)",
+  "code_changes": { 
+    "files_changed": ["OCDG/README.md"], 
+    "functions_modified": [], 
+    "other_observations": [] 
+  }
+}
+
+-------------------- Time: 2024-06-09 22:18:38.139105 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: update
+Code changes: (partial)
+```
+ff_dir}/{self.date}_{self.hash}.diff"
+-        print(f"Filename: {filename}")
+-
+-        try:
+-            diff_content = self.repo.get_diff(self.hash)
+-        except Exception as e:
+-            print(f"Error executing git diff: {e}")
+-            return  # Skip this commit
+-
+-        # Write commit info and diff to the separate file
+-        self.write_commit_info_to_file(filename, diff_content)
+-
+-        # Generate new commit message
+-        status = True
+-        try:
+-            new_commit_message = self.generate_new_commit_message(diff_content, client)
+-            print(f"New commit message: {new_commit_message}...")
+-            # Save the new commit message
+-            new_message_filename = f"{commit_diff_dir}/{self.date}_{self.hash}_new_message.txt"
+-            with open(new_message_filename, 'w') as file:
+-                file.write(str(new_commit_message))
+-        except Exception as e:
+-            print(f"Exception: {traceback.format_exc()} {str(e)}")
+-            status = False
+-        finally:
+-            self.update_commit_descriptions(status)  # Update descriptions regardless of success or error
+-            if not status:
+-                raise Exception("Failed to generate new commit message")
+-            db.update_commit_status(self.hash, True)
+-
+-    # ... rest of the methods from the original code go here ...
+diff --git a/config.py b/config.py
+index 16ed044..469f7ce 100644
+--- a/config.py
++++ b/config.py
+@@ -8,6 +8,7 @@ def load_configuration():
+     config = {
+         'GROQ_API_KEY': os.getenv('GROQ_API_KEY'),
+         'NVIDIA_API_KEY': os.getenv('NVIDIA_API_KEY'),
++        'OPENAI_API_KEY': os.getenv('OPENAI_API_KEY'),
+         'COMMIT_DIFF_DIRECTORY': 'commit_diff'
+     }
+ 
+diff --git a/generate_diffs.sh b/generate_diffs.sh
+deleted file mode 100755
+index 270395d..0000000
+--- a/generate_diffs.sh
++++ /dev/null
+@@ -1,19 +0,0 @@
+-#!/bin/bash
+-
+-# Create directory for commit diffs
+-mkdir -p commit_diff
+-
+-# Extract commit information and loop over each commit
+-git log --pretty=format:'%h,%an,%ad,%s' --date=format:%Y-%m-%d | while IFS=, read -r hash author date message
+-do
+-    # Format the filename using commit date and hash
+-    filename="commit_diff/${date}_${hash}.diff"
+-
+-    # Write commit info and diff to the separate file
+-    echo "Commit: $hash" > "$filename"
+-    echo "Author: $author" >> "$filename"
+-    echo "Date: $date" >> "$filename"
+-    echo "Message: $message" >> "$filename"
+-    echo "Diff:" >> "$filename"
+-    git diff "$hash^!" >> "$filename"
+-done
+diff --git a/generate_diffs_groq.py b/generate_diffs_groq.py
+deleted file mode 100644
+index 171a271..0000000
+--- a/generate_diffs_groq.py
++++ /dev/null
+@@ -1,183 +0,0 @@
+-import json
+-import os
+-import re
+-import sqlite3
+-import time
+-import git
+-
+-# import replicate
+-from groq import Groq
+-from groq import RateLimitError, APIStatusError
+-
+-
+-from dotenv import load_dotenv
+-#
+-load_dotenv()
+-
+-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+-if GROQ_API_KEY is None:
+-    print("Please set the GROQ_API_KEY environment variable.")
+-    exit(1)
+-
+-
+-# Create directory for commit diffs
+-commit_diff_dir = "commit_diff"
+-os.makedirs(commit_diff_dir, exist_ok=True)
+-print(f"Created directory: {commit_diff_dir}")
+-
+-# Initialize the Groq clients
+-client = Groq(
+-    api_key=GROQ_API_KEY,
+-)
+-print("Initialized the Groq clients")
+-
+-# Create a SQLite3 database and table for storing commit information
+-conn = sqlite3.connect('commits.db')
+-c = conn.cursor()
+-c.execute('''CREATE TABLE IF NOT EXISTS commits
+-             (hash text PRIMARY KEY, author text, date text, message text, status boolean)''')
+-print("Created commits table")
+-
+-# Function to generate new commit message using Replicate API
+-def generate_new_commit_message(diff, commit_message, system_prompt=None):
+-    system_prompt = (f""""
+-I would like you to perform a detailed analysis of a GitHub repository's commit history. 
+-Here's what I need you to do:
+-
+-1. Analyze the code differences and provide a brief, insightful comment on what was changed 
+-and why it might have been done, considering the context of the commit message.
+-2. Compile all this information into a single new commit message following Commit Message Guidelines.
+-
+-## Commit Message Guidelines
+-Short (72 chars or less) summary
+-
+-More detailed explanatory text. Wrap it to 72 characters. The blank
+-line separating the summary from the body is critical (unless you omit
+-the body entirely).
+-
+-Write your commit message in the imperative: 'Fix bug' and not 'Fixed
+-bug' or 'Fixes bug.' This convention matches up with commit messages
+-generated by commands like git merge and git revert.
+-
+-Further paragraphs come after blank lines.
+-
+-- Bullet points are okay, too.
+-- Typically a hyphen or asterisk is used for the bullet, followed by a
+-  single space. Use a hanging indent.
+-
+-## Original Commit Message
+-{commit_message}
+-
+-## Code Differences
+-{diff}
+-
+-## Output only in JSON Format
+-{{
+-"Short analysis": "str",
+-"New Commit Title": "str",
+-"New Detailed Commit Message": "str",
+-"Code Changes: {{"filename": "str", filename2: "str"}}",
+-}}
+-""")
+-    chat_completion = client.chat.completions.create(
+-        messages=[
+-            {"role": "system", "content": system_prompt},
+-        ],
+-        model="llama3-70b-8192",  # Choose appropriate Groq model
+-        max_tokens=512,
+-        temperature=0.6,
+-    )
+-    new_commit_message = chat_completion.choices[0].message.content
+-    print(f"New commit message: {new_commit_message}")
+-    return new_commit_message
+-
+-
+-def update_commit_status(hash, status):
+-    c.execute("UPDATE commits SET status = ? WHERE hash = ?", (status, hash))
+-    conn.commit()
+-
+-
+-def write_commit_info_to_file(filename, hash, author, date, message, diff_content):
+-    with open(filename, 'w') as file:
+-        file.write(f"Commit: {hash}\n")
+-        file.write(f"Author: {author}\n")
+-        file.write(f"Date: {date}\n")
+-        file.write(f"Message: {message}\n")
+-        file.write('Diff:\n')
+-        file.write(diff_content)
+-
+-
+-def update_commit_descriptions(status):
+-    repo = git.Repo(".")  # Open the current Git repository
+-
+-    # Get commits with status=True from the database
+-    c.execute("SELECT hash, date FROM commits WHERE status=?", (status,))
+-    commits_to_update = c.fetchall()
+-
+-    for commit_hash, commit_date in commits_to_update:
+-        filename = f"{commit_diff_dir}/{commit_date}_{commit_hash}_new_message.txt"
+-
+-        # Read the new commit message from the file
+-        with open(filename, 'r') as file:
+-            new_commit_message = file.read()
+-
+-        # Get the original commit object
+-        commit = repo.commit(commit_hash)
+-
+-        # Create a new commit with the updated message
+-        new_commit = repo.index.commit(new_commit_message,
+-                                       parent_commits=(commit.parents[0],),
+-                                       author=commit.author,
+-                                       committer=commit.committer)
+-
+-        # Perform an interactive rebase to replace the old commit with the new one
+-        print(f"Rebasing commit {commit.hexsha} with {new_commit.hexsha}")
+-        print(f'new commit: {new_commit}')
+-        # repo.git.rebase('-i', commit.parents[0].hexsha, new_commit.hexsha)
+-
+-# Extract commit information and loop over each commit
+-commits = os.popen("git log --pretty=format:'%h,%an,%ad,%s' --date=format:%Y-%m-%d").read().strip().split('\n')
+-print(f"Extracted {len(commits)} commits")
+-for commit_info in commits:
+-    print(f"Processing commit: {commit_info}")
+-    hash, author, date, message = commit_info.split(',', maxsplit=3)
+-    print(f"Commit: {hash}, Author: {author}, Date: {date}, Message: {message}")
+-    # Format the filename using commit date and hash
+-    filename = f"{commit_diff_dir}/{date}_{hash}.diff"
+-    print(f
+```
+
+Generated Text: { "Short analysis": "The code changes are a significant improvement to the existing functionality, adding new features and improving performance.", "New Commit Title": "Improved Functionality and Performance", "New Detailed Commit Message": "This commit improves the existing functionality by adding new features and optimizing performance. It also fixes several issues and adds documentation for better understanding of the code.", "Code Changes: {{"  : ["filename1", "filename2"], ": ["  : ["filename3", "filename4"] }
+
+-------------------- Time: 2024-06-09 22:18:43.408949 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: in progress
+Code changes: (partial)
+```
+diff --git a/OCDG/commit_history.py b/OCDG/commit_history.py
+index 5dbb055..9cbfed9 100644
+--- a/OCDG/commit_history.py
++++ b/OCDG/commit_history.py
+@@ -16,6 +16,10 @@ class Commit:
+         self.diff = diff
+         self.new_message = None  # To be populated later
+ 
++    def delete(self):
++        del self
++
++
+ 
+ class CommitHistory:
+     """Manages a collection of Commit objects and provides methods to access them."""
+@@ -77,3 +81,5 @@ class CommitHistory:
+     def get_oldest_commit(self):
+         """Returns the oldest commit in the history."""
+         return self.commits[-1]  # Assuming commits are ordered from newest to oldest
++
++
+diff --git a/OCDG/llm_integration.py b/OCDG/llm_integration.py
+index ef51727..193210f 100644
+--- a/OCDG/llm_integration.py
++++ b/OCDG/llm_integration.py
+@@ -41,8 +41,13 @@ def generate_prompt(diff_chunk, old_description, is_partial=False):
+     prompt = prompt_template.format()
+     return prompt
+ 
+-def generate_commit_description(diff, old_description):
++def generate_commit_description(history):
+     """Generates a commit description for a potentially large diff."""
++    logger.info(f'history.get_oldest_commit.diff: {history.get_oldest_commit().diff[:100]}')
++    logger.info(f'history.get_oldest_commit.description: {history.get_oldest_commit().message}')
++    logger.info(f'delete oldest_commit: {history.get_oldest_commit().delete()}')
++    logger.info(f'history.get_oldest_commit.description: {history.get_oldest_commit().message}')
++    diff, old_description = history
+     if len(diff) <= 2000:
+         # Diff is small enough, process directly
+         prompt = generate_prompt(diff, old_description)
+@@ -100,76 +105,76 @@ def generate_commit_description(diff, old_description):
+ #         return new_message
+ 
+ #########################################################################
+-from langchain import PromptTemplate
+-from langchain_nvidia_ai_endpoints import ChatNVIDIA
+-from dotenv import load_dotenv
+-load_dotenv()
+-
+-class LLMInterface:
+-    def __init__(self):
+-        self.api_key = os.getenv("NVIDIA_API_KEY")
+-        self.llm = ChatNVIDIA(model="meta/llama3-70b-instruct")  # Initialize Llama 3
+-        self.chunk_size = 1800  # Set chunk size below token limit
+-        self.prompt_template = PromptTemplate(
+-            input_variables=["diff", "old_message", "chunk_index", "total_chunks"],
+-            template="""
+-            ## Code Changes:
+-            ```diff
+-            {diff}
+-            ```
+-            ## Old Commit Message:
+-            {old_message}
+-
+-            ## Instructions:
+-            You are a helpful AI assistant for generating commit messages based on code changes and conventional guidelines. 
+-
+-            {chunk_info}
+-
+-            Please provide a concise and informative commit message that accurately summarizes the changes in the code.
+-            """
+-        )
+-
+-    def generate_commit_message(self, diff, old_message, chunk_index=None, total_chunks=None):
+-        logger.info(f"Generating commit message for chunk {chunk_index} of {total_chunks}..." if chunk_index is not None else "Generating commit message...")
+-        try:
+-            if chunk_index is not None:
+-                chunk_info = f"This is part {chunk_index + 1} of {total_chunks}."
+-            else:
+-                chunk_info = ""
+-
+-            if len(diff) > self.chunk_size:
+-                # Split diff into chunks
+-                chunks = [diff[i:i + self.chunk_size] for i in range(0, len(diff), self.chunk_size)]
+-                responses = []
+-                for i, chunk in enumerate(chunks):
+-                    prompt = self.prompt_template.format(
+-                        diff=chunk,
+-                        old_message=old_message,
+-                        chunk_index=i,
+-                        total_chunks=len(chunks),
+-                        chunk_info=chunk_info)
+-                    response = self.llm(prompt)
+-                    responses.append(response.content)
+-                    # Merge chunked responses
+-                    merge_prompt = f"Combine these commit message parts into a single coherent commit message:\n\n" + "\n\n".join(responses)
+-                final_response = self.llm(merge_prompt)
+-                logger.success(f"Generated new message from chunks: {final_response.content}")
+-                return final_response.content
+-            else:
+-                # Generate commit message directly
+-                prompt = self.prompt_template.format(
+-                    diff=diff,
+-                    old_message=old_message,
+-                    chunk_index=None,
+-                    total_chunks=None,
+-                    chunk_info=chunk_info)
+-                response = self.llm(prompt)
+-                logger.success(f"Generated new message: {response.content}")
+-                return response.content
+-        except Exception as e:
+-            logger.error(f"Failed to generate commit message: {e}")
+-            logger.error(f'traceback.format_exc(): {traceback.format_exc()}')
+-            raise
++# from langchain import PromptTemplate
++# from langchain_nvidia_ai_endpoints import ChatNVIDIA
++# from dotenv import load_dotenv
++# load_dotenv()
++#
++# class LLMInterface:
++#     def __init__(self):
++#         self.api_key = os.getenv("NVIDIA_API_KEY")
++#         self.llm = ChatNVIDIA(model="meta/llama3-70b-instruct")  # Initialize Llama 3
++#         self.chunk_size = 1800  # Set chunk size below token limit
++#         self.prompt_template = PromptTemplate(
++#             input_variables=["diff", "old_message", "chunk_index", "total_chunks"],
++#             template="""
++#             ## Code Changes:
++#             ```diff
++#             {diff}
++#             ```
++#             ## Old Commit Message:
++#             {old_message}
++#
++#             ## Instructions:
++#             You are a helpful AI assistant for generating commit messages based on code changes and conventional guidelines.
++#
++#             {chunk_info}
++#
++#             Please provide a concise and informative commit message that accurately summarizes the changes in the code.
++#             """
++#         )
++#
++#     def generate_commit_message(self, diff, old_message, chunk_index=None, total_chunks=None):
++#         logger.info(f"Generating commit message for chunk {chunk_index} of {total_chunks}..." if chunk_index is not None else "Generating commit message...")
++#         try:
++#             if chunk_index is not None:
++#                 chunk_info = f"This is part {chunk_index + 1} of {total_chunks}."
++#             else:
++#                 chunk_info = ""
++#
++#             if len(diff) > self.chunk_size:
++#                 # Split diff into chunks
++#                 chunks = [diff[i:i + self.chunk_size] for i in range(0, len(diff), self.chunk_size)]
++#                 responses = []
++#                 for i, chunk in enumerate(chunks):
++#                     prompt = self.prompt_template.format(
++#                         diff=chunk,
++#                         old_message=old_message,
++#                         chunk_index=i,
++#                         total_chunks=len(chunks),
++#                         chunk_info=chunk_info)
++#                     response = self.llm(prompt)
++#                     responses.append(response.content)
++#                     # Merge chunked responses
++#                     merge_prompt = f"Combine these commit message parts into a single coherent commit message:\n\n" + "\n\n".join(responses)
++#                 final_response = self.llm(merge_prompt)
++#                 logger.success(f"Generated new message from chunks: {final_response.content}")
++#                 return final_response.content
++#             else:
++#                 # Generate commit message directly
++#                 prompt = self.prompt_template.format(
++#                     diff=diff,
++#        
+```
+
+Generated Text: { "short_analysis": "Code changes detected, generating commit message...", 
+  "new_commit_title": "feat: Implement code generation for commit messages - partial", 
+  "new_detailed_commit_message": "Implement code generation for commit messages. This feature is designed to automatically generate commit messages based on code changes and conventional guidelines. The code will be split into chunks and processed separately to ensure accurate summarization of the changes.", 
+  "code_changes": { 
+    "files_changed": ["OCDG/commit_history.py", "OCDG/llm_integration.py"], 
+    "functions_modified": ["generate_commit_description", "LLMInterface.generate_commit_message"], 
+    "new_functions_added": [] } }
+
+-------------------- Time: 2024-06-09 22:18:44.977224 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: in progress
+Code changes: (partial)
+```
+
+-            self.commits.append(current_commit)
+-
+-    def get_commit(self, commit_hash):
+-        """Retrieves a specific commit by its hash."""
+-        for commit in self.commits:
+-            if commit.hash == commit_hash:
+-                return commit
+-        return None
+-
+-    def get_oldest_commit(self):
+-        """Returns the oldest commit in the history."""
+-        return self.commits[-1]  # Assuming commits are ordered from newest to oldest
+diff --git a/OCDG2/commit_message_generator.py b/OCDG2/commit_message_generator.py
+deleted file mode 100644
+index 93fe3ad..0000000
+--- a/OCDG2/commit_message_generator.py
++++ /dev/null
+@@ -1,11 +0,0 @@
+-from utils import log_message
+-
+-def update_commit_messages(commit_history, llm_interface):
+-    """Generates new commit messages for each commit in the history using the LLM."""
+-    for commit in commit_history.commits:
+-        try:
+-            new_message = llm_interface.generate_commit_message(commit.diff, commit.message)
+-            commit.new_message = new_message
+-            log_message(f"Generated new message for commit {commit.hash[:7]}", level="info")
+-        except Exception as e:
+-            log_message(f"Error generating message for commit {commit.hash[:7]}: {e}", level="error")
+\ No newline at end of file
+diff --git a/OCDG2/llm_integration.py b/OCDG2/llm_integration.py
+deleted file mode 100644
+index 09ef95e..0000000
+--- a/OCDG2/llm_integration.py
++++ /dev/null
+@@ -1,37 +0,0 @@
+-from langchain.llms import OpenAI
+-from langchain.prompts import PromptTemplate
+-
+-class LLMInterface:
+-    """Handles interaction with the chosen Large Language Model using LangChain."""
+-
+-    def __init__(self, llm_type, **kwargs):
+-        """Initializes the LLM based on the provided type and settings."""
+-        if llm_type == "openai":
+-            self.llm = OpenAI(**kwargs)  # Pass OpenAI specific arguments here (e.g., api_key, temperature)
+-        # Add elif conditions for other LLMs (Llama3, Gemini) with their respective initialization
+-        else:
+-            raise ValueError(f"Unsupported LLM type: {llm_type}")
+-
+-        # Define a prompt template for commit message generation
+-        self.prompt_template = PromptTemplate(
+-            input_variables=["diff", "old_message"],
+-            template="""
+-            ## Commit Message Generation
+-
+-            **Diff:**
+-            ```diff
+-            {diff}
+-            ```
+-
+-            **Old Message:**
+-            {old_message}
+-
+-            **New Message (Conventional Commit format):**
+-            """,
+-        )
+-
+-    def generate_commit_message(self, diff, old_message):
+-        """Generates a new commit message using the LLM."""
+-        prompt = self.prompt_template.format(diff=diff, old_message=old_message)
+-        new_message = self.llm(prompt)
+-        return new_message.strip()
+\ No newline at end of file
+diff --git a/OCDG2/main.py b/OCDG2/main.py
+deleted file mode 100644
+index 813cc90..0000000
+--- a/OCDG2/main.py
++++ /dev/null
+@@ -1,58 +0,0 @@
+-import argparse
+-import logging
+-import os
+-
+-import backup_manager
+-import commit_history
+-import commit_message_generator
+-import llm_integration
+-import repository_updater
+-import utils
+-
+-def main():
+-    # Setup argument parser
+-    parser = argparse.ArgumentParser(description="Revitalize old commit messages using LLMs.")
+-    parser.add_argument("repo_path", help="Path to the Git repository.")
+-    parser.add_argument("-b", "--backup_dir", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "backup"), help="Directory for repository backup.")
+-    parser.add_argument("-l", "--llm", choices=["llama3", "openai", "gemini"], default="openai", help="Choice of LLM.")
+-    # Add more arguments for LLM-specific settings as needed
+-
+-    args = parser.parse_args()
+-
+-    # Configure logging
+-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+-
+-    # 1. Backup Repository
+-    if args.backup_dir:
+-        logging.info("Creating repository backup...")
+-        backup_manager.create_backup(args.repo_path, args.backup_dir)
+-    else:
+-        logging.warning("Skipping repository backup. Proceed with caution!")
+-
+-    # 2. Load Commit History
+-    logging.info("Loading commit history...")
+-    history = commit_history.CommitHistory()
+-    history.load_from_repo(args.repo_path)
+-
+-    # 3. Initialize LLM Interface
+-    logging.info(f"Initializing {args.llm} LLM interface...")
+-    llm = llm_integration.LLMInterface(args.llm)  # Add LLM specific arguments here
+-
+-    # 4. Generate New Commit Messages
+-    logging.info("Generating new commit messages using LLM...")
+-    commit_message_generator.update_commit_messages(history, llm)
+-
+-    # 5. Update Repository
+-    logging.info("Updating commit messages in the repository...")
+-    repository_updater.update_repository(args.repo_path, history)
+-
+-    # 6. Verification and Completion
+-    logging.info("Commit messages updated successfully!")
+-    logging.info("Verifying changes...")
+-    # Add verification logic here
+-
+-    logging.info("OCDG process completed!")
+-
+-
+-if __name__ == "__main__":
+-    main()
+\ No newline at end of file
+diff --git a/OCDG2/repository_updater.py b/OCDG2/repository_updater.py
+deleted file mode 100644
+index a1c334e..0000000
+--- a/OCDG2/repository_updater.py
++++ /dev/null
+@@ -1,56 +0,0 @@
+-import os
+-import tempfile
+-
+-from utils import run_git_command, log_message
+-
+-
+-def update_repository(repo_path, commit_history):
+-    """Updates commit messages in the repository using git filter-branch."""
+-    # Create a temporary directory for the filter script
+-    with tempfile.TemporaryDirectory() as temp_dir:
+-        filter_script_path = os.path.join(temp_dir, "filter_script.py")
+-
+-        # Generate and save the filter script
+-        generate_filter_script(commit_history, filter_script_path)
+-
+-        # Backup refs before running filter-branch
+-        run_git_command(["for-each-ref", "--format='%(refname)'", "refs/heads/", "refs/remotes/", "refs/tags/", ">",
+-                         ".git/refs_backup"], repo_path)
+-
+-        try:
+-            # Run git filter-branch with the filter script
+-            filter_branch_cmd = ["filter-branch", "-f", "--msg-filter", f"python {filter_script_path}",
+-                                 "--tag-name-filter", "cat", "--", "HEAD"]
+-            run_git_command(filter_branch_cmd, repo_path)
+-        except Exception as e:
+-            log_message(f"Error updating repository: {e}", level="error")
+-            # Restore refs from backup
+-            run_git_command(["update-ref", "--stdin", "<", ".git/refs_backup"], repo_path)
+-            raise
+-
+-        # Remove backup file
+-        os.remove(os.path.join(repo_path, ".git/refs_backup"))
+-        log_message("Repository update completed.", level="info")
+-
+-def generate_filter_script(commit_history, script_path):
+-    """Generates the filter script to replace commit messages."""
+-    with open(script_path, "w") as f:
+-        f.write("""
+-import sys
+-
+-def filter_message(message):
+-    # Mapping of old commit hashes to new messages
+-    message_map = {
+-""")
+-        for commit in commit_history.commits:
+-            f.write(f"        '{commit.hash}': '{commit.new_message}',\n")
+-        f.write("""
+-    }
+-
+-    commit_hash = sys.stdin.readline().strip()
+-    return message_map.get(commit_hash, message)
+-
+-if __name__ == "__main__":
+-    print(filter_message(sys.stdin.readline().strip()))
+-""")
+-
+diff --git a/OCDG2/utils.py b/OCDG2/utils.py
+deleted file mode 100644
+index d987810..0000000
+--- a/OCDG2/utils.py
++++ /dev/null
+@@ -1,25 +0,0 @@
+-import logging
+-import subprocess
+-import os
+-
+-def run_git_command(command, repo_path="."):
+-    """Executes a Git command and returns the output."""
+-    try:
+-        result = subprocess.run(["git"] + command, cwd=repo_path, capture_outpu
+```
+
+Generated Text: { "code": 400, "message": "/system" }
+
+-------------------- Time: 2024-06-09 22:18:47.122728 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: in progress
+Code changes: (partial)
+```
+diff --git a/OCDG/backup/commit_diff/HEAD b/OCDG/backup/commit_diff/HEAD
+deleted file mode 100644
+index cb089cd..0000000
+--- a/OCDG/backup/commit_diff/HEAD
++++ /dev/null
+@@ -1 +0,0 @@
+-ref: refs/heads/master
+diff --git a/OCDG/backup/commit_diff/config b/OCDG/backup/commit_diff/config
+deleted file mode 100644
+index 2c4d4e8..0000000
+--- a/OCDG/backup/commit_diff/config
++++ /dev/null
+@@ -1,8 +0,0 @@
+-[core]
+-	repositoryformatversion = 0
+-	filemode = true
+-	bare = true
+-[remote "origin"]
+-	url = /home/octrow/Dev/commit_diff/OCDG/..
+-	fetch = +refs/*:refs/*
+-	mirror = true
+diff --git a/OCDG/backup/commit_diff/description b/OCDG/backup/commit_diff/description
+deleted file mode 100644
+index 498b267..0000000
+--- a/OCDG/backup/commit_diff/description
++++ /dev/null
+@@ -1 +0,0 @@
+-Unnamed repository; edit this file 'description' to name the repository.
+diff --git a/OCDG/backup/commit_diff/hooks/applypatch-msg.sample b/OCDG/backup/commit_diff/hooks/applypatch-msg.sample
+deleted file mode 100755
+index a5d7b84..0000000
+--- a/OCDG/backup/commit_diff/hooks/applypatch-msg.sample
++++ /dev/null
+@@ -1,15 +0,0 @@
+-#!/bin/sh
+-#
+-# An example hook script to check the commit log message taken by
+-# applypatch from an e-mail message.
+-#
+-# The hook should exit with non-zero status after issuing an
+-# appropriate message if it wants to stop the commit.  The hook is
+-# allowed to edit the commit message file.
+-#
+-# To enable this hook, rename this file to "applypatch-msg".
+-
+-. git-sh-setup
+-commitmsg="$(git rev-parse --git-path hooks/commit-msg)"
+-test -x "$commitmsg" && exec "$commitmsg" ${1+"$@"}
+-:
+diff --git a/OCDG/backup/commit_diff/hooks/commit-msg.sample b/OCDG/backup/commit_diff/hooks/commit-msg.sample
+deleted file mode 100755
+index b58d118..0000000
+--- a/OCDG/backup/commit_diff/hooks/commit-msg.sample
++++ /dev/null
+@@ -1,24 +0,0 @@
+-#!/bin/sh
+-#
+-# An example hook script to check the commit log message.
+-# Called by "git commit" with one argument, the name of the file
+-# that has the commit message.  The hook should exit with non-zero
+-# status after issuing an appropriate message if it wants to stop the
+-# commit.  The hook is allowed to edit the commit message file.
+-#
+-# To enable this hook, rename this file to "commit-msg".
+-
+-# Uncomment the below to add a Signed-off-by line to the message.
+-# Doing this in a hook is a bad idea in general, but the prepare-commit-msg
+-# hook is more suited to it.
+-#
+-# SOB=$(git var GIT_AUTHOR_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
+-# grep -qs "^$SOB" "$1" || echo "$SOB" >> "$1"
+-
+-# This example catches duplicate Signed-off-by lines.
+-
+-test "" = "$(grep '^Signed-off-by: ' "$1" |
+-	 sort | uniq -c | sed -e '/^[ 	]*1[ 	]/d')" || {
+-	echo >&2 Duplicate Signed-off-by lines.
+-	exit 1
+-}
+diff --git a/OCDG/backup/commit_diff/hooks/fsmonitor-watchman.sample b/OCDG/backup/commit_diff/hooks/fsmonitor-watchman.sample
+deleted file mode 100755
+index 14ed0aa..0000000
+--- a/OCDG/backup/commit_diff/hooks/fsmonitor-watchman.sample
++++ /dev/null
+@@ -1,173 +0,0 @@
+-#!/usr/bin/perl
+-
+-use strict;
+-use warnings;
+-use IPC::Open2;
+-
+-# An example hook script to integrate Watchman
+-# (https://facebook.github.io/watchman/) with git to speed up detecting
+-# new and modified files.
+-#
+-# The hook is passed a version (currently 2) and last update token
+-# formatted as a string and outputs to stdout a new update token and
+-# all files that have been modified since the update token. Paths must
+-# be relative to the root of the working tree and separated by a single NUL.
+-#
+-# To enable this hook, rename this file to "query-watchman" and set
+-# 'git config core.fsmonitor .git/hooks/query-watchman'
+-#
+-my ($version, $last_update_token) = @ARGV;
+-
+-# Uncomment for debugging
+-# print STDERR "$0 $version $last_update_token\n";
+-
+-# Check the hook interface version
+-if ($version ne 2) {
+-	die "Unsupported query-fsmonitor hook version '$version'.\n" .
+-	    "Falling back to scanning...\n";
+-}
+-
+-my $git_work_tree = get_working_dir();
+-
+-my $retry = 1;
+-
+-my $json_pkg;
+-eval {
+-	require JSON::XS;
+-	$json_pkg = "JSON::XS";
+-	1;
+-} or do {
+-	require JSON::PP;
+-	$json_pkg = "JSON::PP";
+-};
+-
+-launch_watchman();
+-
+-sub launch_watchman {
+-	my $o = watchman_query();
+-	if (is_work_tree_watched($o)) {
+-		output_result($o->{clock}, @{$o->{files}});
+-	}
+-}
+-
+-sub output_result {
+-	my ($clockid, @files) = @_;
+-
+-	# Uncomment for debugging watchman output
+-	# open (my $fh, ">", ".git/watchman-output.out");
+-	# binmode $fh, ":utf8";
+-	# print $fh "$clockid\n@files\n";
+-	# close $fh;
+-
+-	binmode STDOUT, ":utf8";
+-	print $clockid;
+-	print "\0";
+-	local $, = "\0";
+-	print @files;
+-}
+-
+-sub watchman_clock {
+-	my $response = qx/watchman clock "$git_work_tree"/;
+-	die "Failed to get clock id on '$git_work_tree'.\n" .
+-		"Falling back to scanning...\n" if $? != 0;
+-
+-	return $json_pkg->new->utf8->decode($response);
+-}
+-
+-sub watchman_query {
+-	my $pid = open2(\*CHLD_OUT, \*CHLD_IN, 'watchman -j --no-pretty')
+-	or die "open2() failed: $!\n" .
+-	"Falling back to scanning...\n";
+-
+-	# In the query expression below we're asking for names of files that
+-	# changed since $last_update_token but not from the .git folder.
+-	#
+-	# To accomplish this, we're using the "since" generator to use the
+-	# recency index to select candidate nodes and "fields" to limit the
+-	# output to file names only. Then we're using the "expression" term to
+-	# further constrain the results.
+-	if (substr($last_update_token, 0, 1) eq "c") {
+-		$last_update_token = "\"$last_update_token\"";
+-	}
+-	my $query = <<"	END";
+-		["query", "$git_work_tree", {
+-			"since": $last_update_token,
+-			"fields": ["name"],
+-			"expression": ["not", ["dirname", ".git"]]
+-		}]
+-	END
+-
+-	# Uncomment for debugging the watchman query
+-	# open (my $fh, ">", ".git/watchman-query.json");
+-	# print $fh $query;
+-	# close $fh;
+-
+-	print CHLD_IN $query;
+-	close CHLD_IN;
+-	my $response = do {local $/; <CHLD_OUT>};
+-
+-	# Uncomment for debugging the watch response
+-	# open ($fh, ">", ".git/watchman-response.json");
+-	# print $fh $response;
+-	# close $fh;
+-
+-	die "Watchman: command returned no output.\n" .
+-	"Falling back to scanning...\n" if $response eq "";
+-	die "Watchman: command returned invalid output: $response\n" .
+-	"Falling back to scanning...\n" unless $response =~ /^\{/;
+-
+-	return $json_pkg->new->utf8->decode($response);
+-}
+-
+-sub is_work_tree_watched {
+-	my ($output) = @_;
+-	my $error = $output->{error};
+-	if ($retry > 0 and $error and $error =~ m/unable to resolve root .* directory (.*) is not watched/) {
+-		$retry--;
+-		my $response = qx/watchman watch "$git_work_tree"/;
+-		die "Failed to make watchman watch '$git_work_tree'.\n" .
+-		    "Falling back to scanning...\n" if $? != 0;
+-		$output = $json_pkg->new->utf8->decode($response);
+-		$error = $output->{error};
+-		die "Watchman: $error.\n" .
+-		"Falling back to scanning...\n" if $error;
+-
+-		# Uncomment for debugging watchman output
+-		# open (my $fh, ">", ".git/watchman-output.out");
+-		# close $fh;
+-
+-		# Watchman will always return all files on the first query so
+-		# return the fast "everything is dirty" flag to git and do the
+-		# Watchman query just to get it over with now so we won't pay
+-		# the cost in git to look up each individual file.
+-		my $o = watchman_clock();
+-		$error = $output->{error};
+-
+-		die "Watchman: $error.\n" .
+-		"Falling back to scanning...\n" if $error;
+-
+-		output_result($o->{clock}, ("/"));
+-		$last_update_token = $o->{clock};
+-
+-		eval { launch_watchman() };
+-		return 0;
+-	}
+-
+-	die "Watchman: $error.\n" .
+-	"Falling back to scanning...\n" if $error;
+-
+-	return 1;
+-}
+-
+-sub get_working_dir {
+-	my $working_dir;
+-	if ($^O =~ 'msys' || $^O =~ 'cygwin') {
+-		$working_dir = Win32::GetCwd();
+-		$working_dir =~ tr/\\/\//;
+-	} else {
+-		require Cwd;
+-		$working_dir = Cwd::cwd();
+-	}
+-
+-	return $working_dir;
+-}
+diff --git a/OCDG/backup/commit_diff
+```
+
+Generated Text: { "output": "Duplicate Signed-off-by lines." }
+
+-------------------- Time: 2024-06-09 22:18:52.686468 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: update
+Code changes: (partial)
+```
+"Filename: {filename}")
+-    try:
+-        diff_content = os.popen(f"git diff {hash}^!").read()
+-    except Exception as e:
+-        print(f"Error executing git diff: {e}")
+-        continue # Skip this commit
+-    # Write commit info and diff to the separate file
+-    write_commit_info_to_file(filename, hash, author, date, message, diff_content)
+-
+-    # Generate new commit message
+-    try:
+-        new_commit_message = generate_new_commit_message(diff_content, message)
+-        print(f"New commit message: {new_commit_message[0:100]}...")
+-    except RateLimitError as e:
+-        print(f"Rate limit error encountered: {e}")
+-        # Wait for the specified time before retrying
+-        match = re.search(r'Please try again in (\d+\.?\d*)', str(e))
+-        if match:
+-            retry_after = float(match.group(1))
+-        print(f"Retrying after {retry_after} seconds...")
+-        time.sleep(retry_after)
+-    except APIStatusError as e:
+-        print(f"API status error encountered: {e}")
+-        # Check type of error
+-        # groq.APIStatusError: Error code: 413 - {'error': {'message': 'Request Entity Too Large', 'type': 'invalid_request_error', 'code': 'request_too_large'}}
+-        # func for split file in two parts
+-        print(f"...")
+-    finally:
+-        update_commit_descriptions()  # Update descriptions regardless of success or error
+-
+-
+-    # Save the new commit message
+-    new_message_filename = f"{commit_diff_dir}/{date}_{hash}_new_message.txt"
+-    with open(new_message_filename, 'w') as file:
+-        file.write(new_commit_message)
+-    # Update the status of the commit in the SQLite3 table
+-    update_commit_status(hash, True)
+diff --git a/generate_diffs_nvidia.py b/generate_diffs_nvidia.py
+deleted file mode 100644
+index 9889461..0000000
+--- a/generate_diffs_nvidia.py
++++ /dev/null
+@@ -1,265 +0,0 @@
+-import json
+-import os
+-import re
+-import sqlite3
+-import time
+-import traceback
+-from sys import stdout
+-from typing import Any
+-
+-import git
+-
+-from openai import OpenAI
+-
+-from dotenv import load_dotenv
+-
+-load_dotenv()
+-
+-NVIDIA_API_KEY = os.getenv("NVIDIA_API_KEY")
+-if NVIDIA_API_KEY is None:
+-    print("Please set the NVIDIA_API_KEY environment variable.")
+-    exit(1)
+-
+-
+-# Create directory for commit diffs
+-commit_diff_dir = "commit_diff"
+-os.makedirs(commit_diff_dir, exist_ok=True)
+-print(f"Created directory: {commit_diff_dir}")
+-
+-# Initialize the OpenAI clients
+-client = OpenAI(
+-  base_url = "https://integrate.api.nvidia.com/v1",
+-  api_key = NVIDIA_API_KEY
+-)
+-print("Initialized the OpenAI clients")
+-
+-# Create a SQLite3 database and table for storing commit information
+-conn = sqlite3.connect('commits.db')
+-c = conn.cursor()
+-c.execute('''CREATE TABLE IF NOT EXISTS commits
+-             (hash text PRIMARY KEY, author text, date text, message text, status boolean)''')
+-print("Created commits table")
+-
+-
+-
+-def find_closing_brace_index(text):
+-    count = 0
+-    for i, char in enumerate(text):
+-        if char == '{':
+-            count += 1
+-        elif char == '}':
+-            count -= 1
+-            if count == 0:
+-                return i
+-    raise ValueError("Unbalanced curly braces")
+-
+-def parse_output_string(output_string):
+-    data = {}
+-    patterns = {
+-        'short_analysis': r'\*\*Short analysis\*\*: (.+?)\n',
+-        'commit_title': r'\*\*New Commit Title\*\*: (.+?)\n',
+-        'detailed_commit_message': r'\*\*New Detailed Commit Message\*\*:\n(.+?)\n\n\*\*Code Changes\*\*:',
+-        'code_changes': r'\*\*Code Changes\*\*:\n```\n(\{.+\})\n```'
+-    }
+-    # Extracting each part using regular expressions
+-    for key, pattern in patterns.items():
+-        match = re.search(pattern, output_string, re.DOTALL)
+-        if match:
+-            if key == 'code_changes':
+-                # Convert string representation of dictionary to actual dictionary
+-                data[key] = json.loads(match.group(1))
+-            else:
+-                data[key] = match.group(1).strip()
+-
+-    print(json.dump(data, fp=stdout, indent=2))
+-    return data
+-
+-def generate_commit_multi(diff, commit_message):
+-    # Split the diff into chunks of size 6000
+-    diff_chunks = [diff[i:i + 6000] for i in range(0, len(diff), 6000)]
+-
+-    # Initialize empty lists to store different parts of the commit message
+-    short_analysis = []
+-    new_commit_title = []
+-    new_detailed_commit_message = []
+-    code_changes = []
+-
+-    for diff_chunk in diff_chunks:
+-        system_prompt = (f""""
+-        I would like you to perform a detailed analysis of a GitHub repository's commit history. 
+-        Here's what I need you to do:
+-
+-        1. Analyze the code differences and provide a brief, insightful comment on what was changed 
+-        and why it might have been done, considering the context of the commit message.
+-        2. Compile all this information into a single new commit message following Commit Message Guidelines.
+-
+-        ## Commit Message Guidelines
+-        Short (72 chars or less) summary
+-
+-        More detailed explanatory text. Wrap it to 72 characters. The blank
+-        line separating the summary from the body is critical (unless you omit
+-        the body entirely).
+-
+-        Write your commit message in the imperative: 'Fix bug' and not 'Fixed
+-        bug' or 'Fixes bug.' This convention matches up with commit messages
+-        generated by commands like git merge and git revert.
+-
+-        Further paragraphs come after blank lines.
+-
+-        - Bullet points are okay, too.
+-        - Typically a hyphen or asterisk is used for the bullet, followed by a
+-          single space. Use a hanging indent.
+-
+-        ## Original Commit Message
+-        {commit_message}
+-
+-        ## Code Differences
+-        {diff_chunk}
+-
+-        ## Output only in JSON Format
+-        {{
+-        "Short analysis": "str",
+-        "New Commit Title": "str",
+-        "New Detailed Commit Message": "str",
+-        "Code Changes: {{"filename": "str", filename2: "str"}}",
+-        }}
+-            """)
+-        chat_completion = client.chat.completions.create(
+-            model="meta/llama3-70b-instruct",
+-            messages=[{"role": "user", "content": system_prompt}],
+-            max_tokens=2000,
+-            temperature=0.5,
+-            top_p=1,
+-        )
+-        generated_message = parse_output_string(chat_completion.choices[0].message.content)
+-    new_commit_message = {
+-        "Short analysis": generated_message.get("short_analysis", ""),
+-        "New Commit Title": generated_message.get("commit_title", ""),
+-        "New Detailed Commit Message": generated_message.get("detailed_commit_message", ""),
+-        "Code Changes": generated_message.get("code_changes", ""),
+-    }
+-    return new_commit_message
+-
+-
+-def combine_messages(multi_commit: dict[dict[str: Any],]) -> dict[str, Any]:
+-    prompt = f"""Combine the following messages into a single commit message:
+-    {json.dumps(multi_commit)}"""
+-    chat_completion = client.chat.completions.create(
+-        model="meta/llama3-70b-instruct",
+-        messages=[
+-            {"role": "user", "content": json.dumps(multi_commit)}
+-        ],
+-        max_tokens=2000,
+-        temperature=0.5,
+-        top_p=1,
+-    )
+-    return parse_output_string(chat_completion.choices[0].message.content)
+-
+-# Function to generate new commit message using Replicate API
+-def generate_new_commit_message(diff, commit_message, system_prompt=None):
+-    if len(diff) >= 6000:
+-        print("Diff is too long. Strat splitting it into chunks.")
+-        multi_commit = generate_commit_multi(diff, commit_message)
+-        new_commit_message = combine_messages(multi_commit)
+-        print(f"New commit combined message: {new_commit_message}")
+-        return new_commit_message
+-
+-    chat_completion = client.chat.completions.create(
+-        model="meta/llama3-70b-instruct",
+-        mess
+```
+
+Generated Text: { "braces": "[", "data": { "patterns": { "short_analysis": "r\\\\'*\\\\*Short analysis\\\\*\\\\*: (.+?)\\\\n'", "commit_title": "r\\\\'*\\\\*New Commit Title\\\\*\\\\*: (.+?)\\\\n'", "detailed_commit_message": "r\\\\'*\\\\*New Detailed Commit Message\\\\*\\\\*:\\n(.+?)\\\\n\\\\n\\\\*\\\\*Code Changes\\\\*\\"}, "def": ["parse_output_string(output_string):", "    data = {}", "    for key, pattern in patterns.items():", "        match = re.search(pattern, output_string, re.DOTALL)", "        if match:", "            if key == 'code_changes':", "                # Convert string representation of dictionary to actual dictionary", "                data[key] = json.loads(match.group(1))", "            else:", "                data[key] = match.group(1).strip()", ""], "generate_commit_multi(diff, commit_message):["
+
+-------------------- Time: 2024-06-09 22:18:56.385479 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: in progress
+Code changes: 
+```
+             old_message=old_message,
++#                     chunk_index=None,
++#                     total_chunks=None,
++#                     chunk_info=chunk_info)
++#                 response = self.llm(prompt)
++#                 logger.success(f"Generated new message: {response.content}")
++#                 return response.content
++#         except Exception as e:
++#             logger.error(f"Failed to generate commit message: {e}")
++#             logger.error(f'traceback.format_exc(): {traceback.format_exc()}')
++#             raise
+ #############################################################################
+ # from langchain_nvidia_ai_endpoints import ChatNVIDIA
+ # from langchain_core.output_parsers import StrOutputParser
+diff --git a/OCDG/main.py b/OCDG/main.py
+index 2bc53f7..3da0236 100644
+--- a/OCDG/main.py
++++ b/OCDG/main.py
+@@ -10,6 +10,7 @@ import llm_integration
+ import repository_updater
+ import utils
+ from dotenv import load_dotenv
++from llm_integration import generate_commit_description
+ 
+ 
+ def main():
+@@ -57,19 +58,19 @@ def main():
+     # 3. Initialize LLM Interface
+ 
+     NVIDIA_API_KEY = os.environ.get("NVIDIA_API_KEY")
+-    logging.info(f"Initializing {args.llm} LLM interface...")
+-    # llm = llm_integration.LLMInterface(args.llm)  # Add LLM specific arguments here
+-    try:
+-        llm = llm_integration.LLMInterface()
+-    except Exception as e:
+-        logging.error(f"Failed to initialize LLM interface: {e}")
+-        logging.error(f'traceback.format_exc(): {traceback.format_exc()}')
+-        return
++    # logging.info(f"Initializing {args.llm} LLM interface...")
++    # # llm = llm_integration.LLMInterface(args.llm)  # Add LLM specific arguments here
++    # try:
++    #     llm = llm_integration.LLMInterface()
++    # except Exception as e:
++    #     logging.error(f"Failed to initialize LLM interface: {e}")
++    #     logging.error(f'traceback.format_exc(): {traceback.format_exc()}')
++    #     return
+ 
+     # 4. Generate New Commit Messages
+     logging.info("Generating new commit messages using LLM...")
+     # commit_message_generator.update_commit_messages(history, llm)
+-    llm_integration.generate_commit_description(history, llm)
++    generate_commit_description(history)
+     # 5. Update Repository
+     logging.info("Updating commit messages in the repository...")
+     # repository_updater.update_repository(args.repo_path, history)
+```
+
+Generated Text: { "short_analysis": "Updated LLM interface initialization and added new commit message generation using LLM", 
+"new_commit_title": "feat(LLM): Improved LLM interface initialization and generated commit messages",
+"new_detailed_commit_message": "Improved LLM interface initialization by handling exceptions properly. Added functionality to generate new commit messages using LLM. This enhances the overall performance and reliability of the code.",
+"code_changes": {
+  "files_changed": ["OCDG/main.py"],
+  "functions_modified": ["main", "generate_commit_description"],
+  "other_observations": ["Updated logging statements, added error handling for LLM interface initialization"]
+}}
+
+-------------------- Time: 2024-06-09 22:18:58.543771 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: in progress
+Code changes: (partial)
+```
+t=True, text=True, check=True)
+-    except subprocess.CalledProcessError as e:
+-        raise RuntimeError(f"Git command failed: {e.stderr}") from e
+-
+-def validate_repo_path(repo_path):
+-    """Checks if the provided path is a valid Git repository."""
+-    if not os.path.isdir(repo_path):
+-        raise ValueError(f"Invalid repository path: {repo_path}")
+-    try:
+-        run_git_command(["rev-parse", "--is-inside-work-tree"], repo_path)
+-    except RuntimeError:
+-        raise ValueError(f"{repo_path} is not a valid Git repository.")
+-
+-def log_message(message, level="info"):
+-    """Logs a message with the specified severity level."""
+-    log_function = getattr(logging, level)
+-    log_function(message)
+\ No newline at end of file
+diff --git a/README.md b/README.md
+index be83dcc..7f062cf 100644
+--- a/README.md
++++ b/README.md
+@@ -1,31 +1,60 @@
+-## Commit Diff
++## OCDG Documentation: Revitalizing Git Commit Messages
+ 
+-AI-Powered (llama 3) Commit Message Generation
++#### Introduction
+ 
+-### Project Description:
+-Commit Diff use opensource LLMs API (llama 3) to automatically generate insightful and informative commit messages from past for your Git repositories.
++The Old Commit Description Generator (OCDG) is a Python-based tool designed to improve the quality and consistency of commit messages within a Git repository. It utilizes Large Language Models (LLMs) to automatically generate new, descriptive commit messages based on the commit diffs and existing messages. OCDG ensures a safe and controlled update process with robust backup and rollback mechanisms.
+ 
+-### Features:
+-- Automated analysis of code changes: Analyzes diffs to understand the context and purpose of modifications.
+-- Generative commit messages: Creates concise, descriptive commit titles and detailed explanatory messages adhering to best practices.
+-- Improved communication and collaboration: Enhances understanding of code changes for team members and future reference.
+-- Integration with Git workflow: Seamlessly integrates with your existing Git commands and processes.
++#### Features
+ 
+-### Getting Started:
+-1. Clone the repository: 
++- Intelligent Message Generation: Leverages LLMs like Llama3, OpenAI, or Gemini to create informative and conventional commit messages.
++- Diff Analysis: Analyzes commit diffs to understand the changes made and provide context for message generation.
++- Repository Backup: Creates a backup of the entire repository before updating commit messages, ensuring data safety.
++- Error Handling & Rollback: Implements robust error handling and rollback mechanisms to maintain repository integrity.
++- Logging: Provides informative logging messages to track the progress and identify potential issues.
++- Customization: Offers options to configure the LLM settings, commit message conventions, and backup locations.
+ 
++### Disclaimer
++**NOT READY FOR USE!!!**
++
++**OCDG modifies the Git history of your repository.** 
++
++While the tool includes safety measures like backup and rollback, it's essential to use it cautiously and understand the potential risks associated with Git history rewrites!
++
++I'm hope OCDG helps you improve the quality and clarity of your commit messages, leading to better collaboration and understanding within your development team!
++
++### Installation
++
++1. Clone the Repository:
++```shell
++git clone https://github.com/your-username/ocdg.git
+ ```
+-git clone https://github.com/octrow/commit_diff.git
++2. Install Dependencies:
++```shell
++cd ocdg
++pip install -r requirements.txt
+ ```
++3. Configure LLM Settings:
++- Edit the main.py file and provide the necessary credentials or API keys for your chosen LLM.
++- You might need to install additional LLM-specific libraries using pip.
+ 
+-2. Install dependencies: `pip install -r requirements.txt`
++### Usage
+ 
+-3. Configure API keys and settings.
++1. Run the Script:
++```shell
++python main.py /path/to/your/repository [-b /path/to/backup/dir] [-l llm_choice]
++```
++```shell 
++* Replace `/path/to/your/repository` with the actual path to your Git repository.
++* Optionally, use the `-b` flag to specify a directory for repository backup.
++* Use the `-l` flag to choose the LLM (e.g., `-l openai`, `-l llama3`).
++```
++2. Review and Verify:
++- The script will create a backup of your repository (if specified), analyze the commit history, generate new commit messages, and update the repository.
++- Review the logs and verify that the commit messages have been updated correctly.
+ 
+-4. Run the script to generate commit messages for your Git repository.
++### Customization
++- LLM Settings: Refer to the llm_integration.py file to configure settings specific to your chosen LLM (e.g., temperature, response length).
++- Commit Conventions: Modify the prompt template in llm_integration.py to align with your preferred commit message conventions.
++- Backup Location: Specify the backup directory using the -b flag when running the script.
+ 
+-### Technology Stack:
+-Large Language Models (LLMs): Utilizes powerful LLMs like llama 3 or similar to analyze code and generate text.
+-GitPython: Interacts with Git repositories and extracts commit information.
+-OpenAI API or similar: Connects to LLM providers for text generation.
+ 
+diff --git a/poetry.lock b/poetry.lock
+index 31cfe05..55b3563 100644
+@@ -643,6 +643,22 @@ tenacity = ">=8.1.0,<9.0.0"
+ [package.extras]
+ extended-testing = ["jinja2 (>=3,<4)"]
+ 
++[[package]]
++name = "langchain-nvidia-ai-endpoints"
++version = "0.0.12"
++description = "An integration package connecting NVIDIA AI Endpoints and LangChain"
++optional = false
++python-versions = "<4.0,>=3.8.1"
++files = [
++    {file = "langchain_nvidia_ai_endpoints-0.0.12-py3-none-any.whl", hash = "sha256:8c43caaa84c262d05c09cb433f2f0d7c3222758b9a062585a6b2fa6e9a31c1bb"},
++    {file = "langchain_nvidia_ai_endpoints-0.0.12.tar.gz", hash = "sha256:c04a951f5d91ef4a0351ae4d3fe4729fc94a65552cc259e6a3ecbb81b09d8b49"},
++]
++
++[package.dependencies]
++aiohttp = ">=3.9.1,<4.0.0"
++langchain-core = ">=0.1.27,<0.2.0"
++pillow = ">=10.0.0,<11.0.0"
++
+ [[package]]
+ name = "langchain-openai"
+ version = "0.1.4"
+@@ -973,6 +989,92 @@ files = [
+     {file = "packaging-23.2.tar.gz", hash = "sha256:048fb0e9405036518eaaf48a55953c750c11e1a1b68e0dd1a9d62ed0c092cfc5"},
+ ]
+ 
++[[package]]
++name = "pillow"
++version = "10.3.0"
++description = "Python Imaging Library (Fork)"
++optional = false
++python-versions = ">=3.8"
++files = [
++    {file = "pillow-10.3.0-cp310-cp310-macosx_10_10_x86_64.whl", hash = "sha256:90b9e29824800e90c84e4022dd5cc16eb2d9605ee13f05d47641eb183cd73d45"},
++    {file = "pillow-10.3.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:a2c405445c79c3f5a124573a051062300936b0281fee57637e706453e452746c"},
++    {file = "pillow-10.3.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:78618cdbccaa74d3f88d0ad6cb8ac3007f1a6fa5c6f19af64b55ca170bfa1edf"},
++    {file = "pillow-10.3.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:261ddb7ca91fcf71757979534fb4c128448b5b4c55cb6152d280312062f69599"},
++    {file = "pillow-10.3.0-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:ce49c67f4ea0609933d01c0731b34b8695a7a748d6c8d186f95e7d085d2fe475"},
++    {file = "pillow-10.3.0-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:b14f16f94cbc61215115b9b1236f9c18403c15dd3c52cf629072afa9d54c1cbf"},
++    {file = "pillow-10.3.0-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:d33891be6df59d93df4d846640f0e46f1a807339f09e79a8040bc887bdcd7ed3"},
++    {file = "pillow-10.3.0-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:b50811d664d392f02f7761621303eba9d1b056fb1868c8cdf4231279645c25f5"},
++    {file = "pillow-10.3.0-cp310-cp310-win32.whl", hash = "sha256:ca2870d5d10d8726a27396d3ca4cf7976cec0f3cb706debe88e3a5bd4610f7d2"},
++    {file = "pillow-10.3.0-cp310-cp310-win_amd64.whl", hash = "sha256:f0d0591a0aeaefdaf9a5e545e7485
+```
+
+Generated Text: { "code" : 200, "message" : "OK" }
+
+-------------------- Time: 2024-06-09 22:19:01.099478 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: in progress
+Code changes: (partial)
+```
+/hooks/post-update.sample b/OCDG/backup/commit_diff/hooks/post-update.sample
+deleted file mode 100755
+index ec17ec1..0000000
+--- a/OCDG/backup/commit_diff/hooks/post-update.sample
++++ /dev/null
+@@ -1,8 +0,0 @@
+-#!/bin/sh
+-#
+-# An example hook script to prepare a packed repository for use over
+-# dumb transports.
+-#
+-# To enable this hook, rename this file to "post-update".
+-
+-exec git update-server-info
+diff --git a/OCDG/backup/commit_diff/hooks/pre-applypatch.sample b/OCDG/backup/commit_diff/hooks/pre-applypatch.sample
+deleted file mode 100755
+index 4142082..0000000
+--- a/OCDG/backup/commit_diff/hooks/pre-applypatch.sample
++++ /dev/null
+@@ -1,14 +0,0 @@
+-#!/bin/sh
+-#
+-# An example hook script to verify what is about to be committed
+-# by applypatch from an e-mail message.
+-#
+-# The hook should exit with non-zero status after issuing an
+-# appropriate message if it wants to stop the commit.
+-#
+-# To enable this hook, rename this file to "pre-applypatch".
+-
+-. git-sh-setup
+-precommit="$(git rev-parse --git-path hooks/pre-commit)"
+-test -x "$precommit" && exec "$precommit" ${1+"$@"}
+-:
+diff --git a/OCDG/backup/commit_diff/hooks/pre-commit.sample b/OCDG/backup/commit_diff/hooks/pre-commit.sample
+deleted file mode 100755
+index e144712..0000000
+--- a/OCDG/backup/commit_diff/hooks/pre-commit.sample
++++ /dev/null
+@@ -1,49 +0,0 @@
+-#!/bin/sh
+-#
+-# An example hook script to verify what is about to be committed.
+-# Called by "git commit" with no arguments.  The hook should
+-# exit with non-zero status after issuing an appropriate message if
+-# it wants to stop the commit.
+-#
+-# To enable this hook, rename this file to "pre-commit".
+-
+-if git rev-parse --verify HEAD >/dev/null 2>&1
+-then
+-	against=HEAD
+-else
+-	# Initial commit: diff against an empty tree object
+-	against=$(git hash-object -t tree /dev/null)
+-fi
+-
+-# If you want to allow non-ASCII filenames set this variable to true.
+-allownonascii=$(git config --type=bool hooks.allownonascii)
+-
+-# Redirect output to stderr.
+-exec 1>&2
+-
+-# Cross platform projects tend to avoid non-ASCII filenames; prevent
+-# them from being added to the repository. We exploit the fact that the
+-# printable range starts at the space character and ends with tilde.
+-if [ "$allownonascii" != "true" ] &&
+-	# Note that the use of brackets around a tr range is ok here, (it's
+-	# even required, for portability to Solaris 10's /usr/bin/tr), since
+-	# the square bracket bytes happen to fall in the designated range.
+-	test $(git diff --cached --name-only --diff-filter=A -z $against |
+-	  LC_ALL=C tr -d '[ -~]\0' | wc -c) != 0
+-then
+-	cat <<\EOF
+-Error: Attempt to add a non-ASCII file name.
+-
+-This can cause problems if you want to work with people on other platforms.
+-
+-To be portable it is advisable to rename the file.
+-
+-If you know what you are doing you can disable this check using:
+-
+-  git config hooks.allownonascii true
+-EOF
+-	exit 1
+-fi
+-
+-# If there are whitespace errors, print the offending file names and fail.
+-exec git diff-index --check --cached $against --
+diff --git a/OCDG/backup/commit_diff/hooks/pre-merge-commit.sample b/OCDG/backup/commit_diff/hooks/pre-merge-commit.sample
+deleted file mode 100755
+index 399eab1..0000000
+--- a/OCDG/backup/commit_diff/hooks/pre-merge-commit.sample
++++ /dev/null
+@@ -1,13 +0,0 @@
+-#!/bin/sh
+-#
+-# An example hook script to verify what is about to be committed.
+-# Called by "git merge" with no arguments.  The hook should
+-# exit with non-zero status after issuing an appropriate message to
+-# stderr if it wants to stop the merge commit.
+-#
+-# To enable this hook, rename this file to "pre-merge-commit".
+-
+-. git-sh-setup
+-test -x "$GIT_DIR/hooks/pre-commit" &&
+-        exec "$GIT_DIR/hooks/pre-commit"
+-:
+diff --git a/OCDG/backup/commit_diff/hooks/pre-push.sample b/OCDG/backup/commit_diff/hooks/pre-push.sample
+deleted file mode 100755
+index 4ce688d..0000000
+--- a/OCDG/backup/commit_diff/hooks/pre-push.sample
++++ /dev/null
+@@ -1,53 +0,0 @@
+-#!/bin/sh
+-
+-# An example hook script to verify what is about to be pushed.  Called by "git
+-# push" after it has checked the remote status, but before anything has been
+-# pushed.  If this script exits with a non-zero status nothing will be pushed.
+-#
+-# This hook is called with the following parameters:
+-#
+-# $1 -- Name of the remote to which the push is being done
+-# $2 -- URL to which the push is being done
+-#
+-# If pushing without using a named remote those arguments will be equal.
+-#
+-# Information about the commits which are being pushed is supplied as lines to
+-# the standard input in the form:
+-#
+-#   <local ref> <local oid> <remote ref> <remote oid>
+-#
+-# This sample shows how to prevent push of commits where the log message starts
+-# with "WIP" (work in progress).
+-
+-remote="$1"
+-url="$2"
+-
+-zero=$(git hash-object --stdin </dev/null | tr '[0-9a-f]' '0')
+-
+-while read local_ref local_oid remote_ref remote_oid
+-do
+-	if test "$local_oid" = "$zero"
+-	then
+-		# Handle delete
+-		:
+-	else
+-		if test "$remote_oid" = "$zero"
+-		then
+-			# New branch, examine all commits
+-			range="$local_oid"
+-		else
+-			# Update to existing branch, examine new commits
+-			range="$remote_oid..$local_oid"
+-		fi
+-
+-		# Check for WIP commit
+-		commit=$(git rev-list -n 1 --grep '^WIP' "$range")
+-		if test -n "$commit"
+-		then
+-			echo >&2 "Found WIP commit in $local_ref, not pushing"
+-			exit 1
+-		fi
+-	fi
+-done
+-
+-exit 0
+diff --git a/OCDG/backup/commit_diff/hooks/pre-rebase.sample b/OCDG/backup/commit_diff/hooks/pre-rebase.sample
+deleted file mode 100755
+index 6cbef5c..0000000
+--- a/OCDG/backup/commit_diff/hooks/pre-rebase.sample
++++ /dev/null
+@@ -1,169 +0,0 @@
+-#!/bin/sh
+-#
+-# Copyright (c) 2006, 2008 Junio C Hamano
+-#
+-# The "pre-rebase" hook is run just before "git rebase" starts doing
+-# its job, and can prevent the command from running by exiting with
+-# non-zero status.
+-#
+-# The hook is called with the following parameters:
+-#
+-# $1 -- the upstream the series was forked from.
+-# $2 -- the branch being rebased (or empty when rebasing the current branch).
+-#
+-# This sample shows how to prevent topic branches that are already
+-# merged to 'next' branch from getting rebased, because allowing it
+-# would result in rebasing already published history.
+-
+-publish=next
+-basebranch="$1"
+-if test "$#" = 2
+-then
+-	topic="refs/heads/$2"
+-else
+-	topic=`git symbolic-ref HEAD` ||
+-	exit 0 ;# we do not interrupt rebasing detached HEAD
+-fi
+-
+-case "$topic" in
+-refs/heads/??/*)
+-	;;
+-*)
+-	exit 0 ;# we do not interrupt others.
+-	;;
+-esac
+-
+-# Now we are dealing with a topic branch being rebased
+-# on top of master.  Is it OK to rebase it?
+-
+-# Does the topic really exist?
+-git show-ref -q "$topic" || {
+-	echo >&2 "No such branch $topic"
+-	exit 1
+-}
+-
+-# Is topic fully merged to master?
+-not_in_master=`git rev-list --pretty=oneline ^master "$topic"`
+-if test -z "$not_in_master"
+-then
+-	echo >&2 "$topic is fully merged to master; better remove it."
+-	exit 1 ;# we could allow it, but there is no point.
+-fi
+-
+-# Is topic ever merged to next?  If so you should not be rebasing it.
+-only_next_1=`git rev-list ^master "^$topic" ${publish} | sort`
+-only_next_2=`git rev-list ^master           ${publish} | sort`
+-if test "$only_next_1" = "$only_next_2"
+-then
+-	not_in_topic=`git rev-list "^$topic" master`
+-	if test -z "$not_in_topic"
+-	then
+-		echo >&2 "$topic is already up to date with master"
+-		exit 1 ;# we could allow it, but there is no point.
+-	else
+-		exit 0
+-	fi
+-else
+-	not_in_next=`git rev-list --pretty=oneline ^${publish} "$topic"`
+-	/usr/bin/perl -e '
+-		my $topic = $ARGV[0];
+-		my $msg = "* $topic has commits already merged to public branch:\n";
+-		my (%not_in_next) = map {
+-			/^([0-9a-f]+) /;
+-			($1 => 1);
+-		} split(/\n/, $ARGV[1]);
+-		for my $elem (map {
+-				/^([0-9a-f]+) (.*)$/;
+-				[$1 => $2];
+-			} split(/\n/, $ARGV[2])) {
+-			if (!exists $not_in_next{$elem->[0]}) {
+-				if ($msg) {
+
+```
+
+Generated Text: { "status": "hooks.allownonascii true", "message": "Hooks are a set of scripts that can be used to enforce certain rules or checks before a commit is made." }
+
+-------------------- Time: 2024-06-09 22:19:03.502058 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: update
+Code changes: (partial)
+```
+ages=[{"role": "user", "content": system_prompt}],
+-        max_tokens=2000,
+-        temperature=0.5,
+-        top_p=1,
+-    )
+-    generated_message = parse_output_string(chat_completion.choices[0].message.content)
+-    new_commit_message = {
+-        "Short analysis": generated_message.get("short_analysis", ""),
+-        "New Commit Title": generated_message.get("commit_title", ""),
+-        "New Detailed Commit Message": generated_message.get("detailed_commit_message", ""),
+-        "Code Changes": generated_message.get("code_changes", {}),
+-    }
+-    print(f"New commit message: {new_commit_message}")
+-    return new_commit_message
+-
+-
+-def update_commit_status(hash, status):
+-    c.execute("UPDATE commits SET status = ? WHERE hash = ?", (status, hash))
+-    conn.commit()
+-
+-
+-def write_commit_info_to_file(filename, hash, author, date, message, diff_content):
+-    with open(filename, 'w') as file:
+-        file.write(f"Commit: {hash}\n")
+-        file.write(f"Author: {author}\n")
+-        file.write(f"Date: {date}\n")
+-        file.write(f"Message: {message}\n")
+-        file.write('Diff:\n')
+-        file.write(diff_content)
+-
+-
+-def update_commit_descriptions(status):
+-    repo = git.Repo(".")  # Open the current Git repository
+-
+-    # Get commits with status=True from the database
+-    c.execute("SELECT hash, date FROM commits WHERE status=?", (status,))
+-    commits_to_update = c.fetchall()
+-
+-    for commit_hash, commit_date in commits_to_update:
+-        filename = f"{commit_diff_dir}/{commit_date}_{commit_hash}_new_message.txt"
+-
+-        # Read the new commit message from the file
+-        with open(filename, 'r') as file:
+-            new_commit_message = file.read()
+-
+-        # Get the original commit object
+-        commit = repo.commit(commit_hash)
+-
+-        # Create a new commit with the updated message
+-        new_commit = repo.index.commit(new_commit_message,
+-                                       parent_commits=(commit.parents[0],),
+-                                       author=commit.author,
+-                                       committer=commit.committer)
+-
+-        # Perform an interactive rebase to replace the old commit with the new one
+-        print(f"Rebasing commit {commit.hexsha} with {new_commit.hexsha}")
+-        print(f'new commit: {new_commit}')
+-        # repo.git.rebase('-i', commit.parents[0].hexsha, new_commit.hexsha)
+-
+-# Extract commit information and loop over each commit
+-commits = os.popen("git log --pretty=format:'%h,%an,%ad,%s' --date=format:%Y-%m-%d").read().strip().split('\n')
+-print(f"Extracted {len(commits)} commits")
+-for commit_info in commits:
+-    print(f"Processing commit: {commit_info}")
+-    hash, author, date, message = commit_info.split(',', maxsplit=3)
+-    print(f"Commit: {hash}, Author: {author}, Date: {date}, Message: {message}")
+-    # Format the filename using commit date and hash
+-    filename = f"{commit_diff_dir}/{date}_{hash}.diff"
+-    print(f"Filename: {filename}")
+-    try:
+-        diff_content = os.popen(f"git diff {hash}^!").read()
+-    except Exception as e:
+-        print(f"Error executing git diff: {e}")
+-        continue # Skip this commit
+-    # Write commit info and diff to the separate file
+-    write_commit_info_to_file(filename, hash, author, date, message, diff_content)
+-
+-    # Generate new commit message
+-    status = True
+-    try:
+-        new_commit_message = generate_new_commit_message(diff_content, message)
+-        print(f"New commit message: {new_commit_message}...")
+-        # Save the new commit message
+-        new_message_filename = f"{commit_diff_dir}/{date}_{hash}_new_message.txt"
+-        with open(new_message_filename, 'w') as file:
+-            file.write(str(new_commit_message))
+-    except Exception as e:
+-        print(f"Exception: {traceback.format_exc()} {str(e)}")
+-        status = False
+-    finally:
+-        update_commit_descriptions(status)  # Update descriptions regardless of success or error
+-        if not status:
+-            break
+-        update_commit_status(hash, True)
+-
+-
+-
+diff --git a/generate_diffs_only.py b/generate_diffs_only.py
+deleted file mode 100644
+index 02c874b..0000000
+--- a/generate_diffs_only.py
++++ /dev/null
+@@ -1,51 +0,0 @@
+-import os
+-import sqlite3
+-import time
+-
+-# Create directory for commit diffs
+-commit_diff_dir = "commit_diff"
+-os.makedirs(commit_diff_dir, exist_ok=True)
+-print(f"Created directory: {commit_diff_dir}")
+-
+-# Create a SQLite3 database and table for storing commit information
+-conn = sqlite3.connect('commits.db')
+-c = conn.cursor()
+-c.execute('''CREATE TABLE IF NOT EXISTS commits
+-             (hash text PRIMARY KEY, author text, date text, message text, status boolean)''')
+-print("Created commits table")
+-
+-
+-def update_commit_status(hash, status):
+-    c.execute("UPDATE commits SET status = ? WHERE hash = ?", (status, hash))
+-    conn.commit()
+-
+-
+-def write_commit_info_to_file(filename, hash, author, date, message, diff_content):
+-    with open(filename, 'w') as file:
+-        file.write(f"Commit: {hash}\n")
+-        file.write(f"Author: {author}\n")
+-        file.write(f"Date: {date}\n")
+-        file.write(f"Message: {message}\n")
+-        file.write('Diff:\n')
+-        file.write(diff_content)
+-
+-# Extract commit information and loop over each commit
+-commits = os.popen("git log --pretty=format:'%h,%an,%ad,%s' --date=format:%Y-%m-%d").read().strip().split('\n')
+-print(f"Extracted {len(commits)} commits")
+-for commit_info in commits:
+-    print(f"Processing commit: {commit_info}")
+-    hash, author, date, message = commit_info.split(',', maxsplit=3)
+-    print(f"Commit: {hash}, Author: {author}, Date: {date}, Message: {message}")
+-    # Format the filename using commit date and hash
+-    filename = f"{commit_diff_dir}/{date}_{hash}.diff"
+-    print(f"Filename: {filename}")
+-    try:
+-        diff_content = os.popen(f"git diff {hash}^!").read()
+-    except Exception as e:
+-        print(f"Error executing git diff: {e}")
+-        continue # Skip this commit
+-    # Write commit info and diff to the separate file
+-    write_commit_info_to_file(filename, hash, author, date, message, diff_content)
+-
+-    # Update the status of the commit in the SQLite3 table
+-    update_commit_status(hash, True)
+diff --git a/git_repo.py b/git_repo.py
+index 74d5e64..5256468 100644
+--- a/git_repo.py
++++ b/git_repo.py
+@@ -2,19 +2,22 @@
+ import os
+ import git
+ 
++from .commit import Commit
++
+ class GitAnalyzer:
+     def __init__(self, repo_path="."):
+         self.repo = git.Repo(repo_path)
+ 
+     def get_commits(self):
+-        # Implement logic to retrieve commits based on specified range or hashes
+-        return os.popen("git log --pretty=format:'%h,%an,%ad,%s' --date=format:%Y-%m-%d").read().strip().split('\n')
++        commits = []
++        for line in os.popen("git log --pretty=format:'%h,%an,%ad,%s' --date=format:%Y-%m-%d").read().strip().split('\n'):
++            hash, author, date, message = line.split(',', maxsplit=3)
++            commits.append(Commit(hash, author, date, message, self.repo))
++        return commits
+ 
+     def get_diff(self, commit):
+         return commit.diff(commit.parents[0]).decode()
+ 
+-        # return os.popen(f"git diff {hash}^!").read()
+-
+     def update_commit_message(self, commit, new_message):
+         # Implement logic to update commit message using Git commands
+         pass
+diff --git a/main.py b/main.py
+index 960a87a..2ddc18a 100644
+--- a/main.py
++++ b/main.py
+@@ -1,59 +1,125 @@
++import argparse
+ import os
++import logging
++import shutil
++import traceback
++from typing import List, Any, Dict, Tuple
++
++import git
+ 
+ from clients import create_client
+ from config import load_configuration
+-import argparse
+ 
+ from data_access import Database
+ from git_repo import GitAnalyzer
+-# from clients import create_client
+-# from data_access import CommitDatabase
+-# from git_utils i
+```
+
+Generated Text: { "type": "commit", "hash": "02c874b", "author": "Author", "date": "Date", "message": "Message", "status": true, "diff_content": "Diff content" }
+
+-------------------- Time: 2024-06-09 22:19:06.309852 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: in progress
+Code changes: (partial)
+```
+diff --git a/OCDG/backup/commit_diff/objects/01/d5efb49c6af0cb87ca1442a4e8dfcc2dc92b99 b/OCDG/backup/commit_diff/objects/01/d5efb49c6af0cb87ca1442a4e8dfcc2dc92b99
+new file mode 100644
+index 0000000..70226a4
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/01/d5efb49c6af0cb87ca1442a4e8dfcc2dc92b99 differ
+diff --git a/OCDG/backup/commit_diff/objects/02/19211847d2ec1435ac1691aedeeb54677f9f02 b/OCDG/backup/commit_diff/objects/02/19211847d2ec1435ac1691aedeeb54677f9f02
+new file mode 100644
+index 0000000..b523ce3
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/02/19211847d2ec1435ac1691aedeeb54677f9f02 differ
+diff --git a/OCDG/backup/commit_diff/objects/02/bdfc435d8636d4f3694f39b69275cbe5f8a3b0 b/OCDG/backup/commit_diff/objects/02/bdfc435d8636d4f3694f39b69275cbe5f8a3b0
+new file mode 100644
+index 0000000..c9e7ca2
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/02/bdfc435d8636d4f3694f39b69275cbe5f8a3b0 differ
+diff --git a/OCDG/backup/commit_diff/objects/03/13988ac60c3d03779ac4ea38652043ed170df7 b/OCDG/backup/commit_diff/objects/03/13988ac60c3d03779ac4ea38652043ed170df7
+new file mode 100644
+index 0000000..22b6946
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/03/13988ac60c3d03779ac4ea38652043ed170df7 differ
+diff --git a/OCDG/backup/commit_diff/objects/03/5d3714388a81ff0ccf1fda101898dadd624db2 b/OCDG/backup/commit_diff/objects/03/5d3714388a81ff0ccf1fda101898dadd624db2
+new file mode 100644
+index 0000000..5996941
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/03/5d3714388a81ff0ccf1fda101898dadd624db2 differ
+diff --git a/OCDG/backup/commit_diff/objects/04/373e5de9b1272e519a4c955dcff3a65a19384b b/OCDG/backup/commit_diff/objects/04/373e5de9b1272e519a4c955dcff3a65a19384b
+new file mode 100644
+index 0000000..92ab0c7
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/04/373e5de9b1272e519a4c955dcff3a65a19384b differ
+diff --git a/OCDG/backup/commit_diff/objects/04/d884c68195d4cfe25a1ccfb87a21f2c0410f2b b/OCDG/backup/commit_diff/objects/04/d884c68195d4cfe25a1ccfb87a21f2c0410f2b
+new file mode 100644
+index 0000000..999139f
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/04/d884c68195d4cfe25a1ccfb87a21f2c0410f2b differ
+diff --git a/OCDG/backup/commit_diff/objects/06/737a503a68399f2e591859d76eda56e14119d6 b/OCDG/backup/commit_diff/objects/06/737a503a68399f2e591859d76eda56e14119d6
+new file mode 100644
+index 0000000..dfa97bb
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/06/737a503a68399f2e591859d76eda56e14119d6 differ
+diff --git a/OCDG/backup/commit_diff/objects/07/5f8338817212328b0ce77e9883866c0e4862e2 b/OCDG/backup/commit_diff/objects/07/5f8338817212328b0ce77e9883866c0e4862e2
+new file mode 100644
+index 0000000..0b89002
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/07/5f8338817212328b0ce77e9883866c0e4862e2 differ
+diff --git a/OCDG/backup/commit_diff/objects/0c/d3b4e203fcdab2ca33c9d511ad2226b518c5af b/OCDG/backup/commit_diff/objects/0c/d3b4e203fcdab2ca33c9d511ad2226b518c5af
+new file mode 100644
+index 0000000..dd11809
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/0c/d3b4e203fcdab2ca33c9d511ad2226b518c5af differ
+diff --git a/OCDG/backup/commit_diff/objects/0e/65548a0454776b960de0e21b7059745e410a93 b/OCDG/backup/commit_diff/objects/0e/65548a0454776b960de0e21b7059745e410a93
+new file mode 100644
+index 0000000..a9a9db3
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/0e/65548a0454776b960de0e21b7059745e410a93 differ
+diff --git a/OCDG/backup/commit_diff/objects/10/666e8bc4a03701585e0ab17bf5a053f2a5e21d b/OCDG/backup/commit_diff/objects/10/666e8bc4a03701585e0ab17bf5a053f2a5e21d
+new file mode 100644
+index 0000000..ee4d51b
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/10/666e8bc4a03701585e0ab17bf5a053f2a5e21d differ
+diff --git a/OCDG/backup/commit_diff/objects/10/fa14c5ab0134436e2ae435138bf921eb477c60 b/OCDG/backup/commit_diff/objects/10/fa14c5ab0134436e2ae435138bf921eb477c60
+new file mode 100644
+index 0000000..c32cf91
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/10/fa14c5ab0134436e2ae435138bf921eb477c60 differ
+diff --git a/OCDG/backup/commit_diff/objects/11/757bdab2137e144ed81bce1d60da77b047325b b/OCDG/backup/commit_diff/objects/11/757bdab2137e144ed81bce1d60da77b047325b
+new file mode 100644
+index 0000000..67662b1
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/11/757bdab2137e144ed81bce1d60da77b047325b differ
+diff --git a/OCDG/backup/commit_diff/objects/11/9eff6333448c9ac06a6cd092706c4fa15b08b5 b/OCDG/backup/commit_diff/objects/11/9eff6333448c9ac06a6cd092706c4fa15b08b5
+new file mode 100644
+index 0000000..7aef01b
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/11/9eff6333448c9ac06a6cd092706c4fa15b08b5 differ
+diff --git a/OCDG/backup/commit_diff/objects/12/19ecfaf54cfd2dd938cf5e3c02e3092e6620f4 b/OCDG/backup/commit_diff/objects/12/19ecfaf54cfd2dd938cf5e3c02e3092e6620f4
+new file mode 100644
+index 0000000..70bd7cc
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/12/19ecfaf54cfd2dd938cf5e3c02e3092e6620f4 differ
+diff --git a/OCDG/backup/commit_diff/objects/14/3e9ea8510f8dd31933392e9c6c0cae9095aa07 b/OCDG/backup/commit_diff/objects/14/3e9ea8510f8dd31933392e9c6c0cae9095aa07
+new file mode 100644
+index 0000000..efc67bf
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/14/3e9ea8510f8dd31933392e9c6c0cae9095aa07 differ
+diff --git a/OCDG/backup/commit_diff/objects/14/ed0aa42de0f291c0f696922110e70544c3dae2 b/OCDG/backup/commit_diff/objects/14/ed0aa42de0f291c0f696922110e70544c3dae2
+new file mode 100644
+index 0000000..41de218
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/14/ed0aa42de0f291c0f696922110e70544c3dae2 differ
+diff --git a/OCDG/backup/commit_diff/objects/15/11c75a751ae2be9d731f01145356bf934faab8 b/OCDG/backup/commit_diff/objects/15/11c75a751ae2be9d731f01145356bf934faab8
+new file mode 100644
+index 0000000..7cf6157
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/15/11c75a751ae2be9d731f01145356bf934faab8 differ
+diff --git a/OCDG/backup/commit_diff/objects/15/2b579b71575e31e4eb2aa11c093a4e1284c5d3 b/OCDG/backup/commit_diff/objects/15/2b579b71575e31e4eb2aa11c093a4e1284c5d3
+new file mode 100644
+index 0000000..8de2a22
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/15/2b579b71575e31e4eb2aa11c093a4e1284c5d3 differ
+diff --git a/OCDG/backup/commit_diff/objects/17/3c0cfc45b0114b3b57a2ddc5b79b45c4355d29 b/OCDG/backup/commit_diff/objects/17/3c0cfc45b0114b3b57a2ddc5b79b45c4355d29
+new file mode 100644
+index 0000000..61d302d
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/17/3c0cfc45b0114b3b57a2ddc5b79b45c4355d29 differ
+diff --git a/OCDG/backup/commit_diff/objects/17/70a34ebb3d35792ec7091b1fbcddff5a75c0c8 b/OCDG/backup/commit_diff/objects/17/70a34ebb3d35792ec7091b1fbcddff5a75c0c8
+new file mode 100644
+index 0000000..df6c41d
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/17/70a34ebb3d35792ec7091b1fbcddff5a75c0c8 differ
+diff --git a/OCDG/backup/commit_diff/objects/18/269c7aaceea1c584e6d5a4546a03d0e9a9f245 b/OCDG/backup/commit_diff/objects/18/269c7aaceea1c584e6d5a4546a03d0e9a9f245
+new file mode 100644
+index 0000000..835cce4
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/18/269c7aaceea1c584e6d5a4546a03d0e9a9f245 differ
+diff --git a/OCDG/backup/commit_diff/objects/18/4d9819a39d6bed3120515e4ec7ff3921795a4b b/OCDG/backup/commit_diff/objects/18/4d9819a39d6bed3120515e4ec7ff3921795a4b
+new file mode 100644
+index 0000000..cf95493
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/18/4d9819a39d6bed3120515e4ec7ff3921795a4b differ
+diff --git a/OCDG/backup/commit_diff/objects/18/6773a320fb2f7b1fc14944a24884a657cb1ee0 b/OCDG/backup/commit_diff/objects/18/6773a320fb2f7b1fc14944a24884a657cb1ee0
+new file mode 100644
+index 0000000..9e2c048
+Binary files /dev/null and b/OCDG/backup/commit_diff/objects/18/6773a320fb2f7b1fc1494
+```
+
+Generated Text: { " Fixing backup commit diff for 11 objects"
+
+-------------------- Time: 2024-06-09 22:19:08.471542 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: in progress
+Code changes: (partial)
+```
+f89910c977087e7de2b6c388aec32011e9f"},
++    {file = "pillow-10.3.0-cp310-cp310-win_arm64.whl", hash = "sha256:ccce24b7ad89adb5a1e34a6ba96ac2530046763912806ad4c247356a8f33a67b"},
++    {file = "pillow-10.3.0-cp311-cp311-macosx_10_10_x86_64.whl", hash = "sha256:5f77cf66e96ae734717d341c145c5949c63180842a545c47a0ce7ae52ca83795"},
++    {file = "pillow-10.3.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:e4b878386c4bf293578b48fc570b84ecfe477d3b77ba39a6e87150af77f40c57"},
++    {file = "pillow-10.3.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:fdcbb4068117dfd9ce0138d068ac512843c52295ed996ae6dd1faf537b6dbc27"},
++    {file = "pillow-10.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9797a6c8fe16f25749b371c02e2ade0efb51155e767a971c61734b1bf6293994"},
++    {file = "pillow-10.3.0-cp311-cp311-manylinux_2_28_aarch64.whl", hash = "sha256:9e91179a242bbc99be65e139e30690e081fe6cb91a8e77faf4c409653de39451"},
++    {file = "pillow-10.3.0-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:1b87bd9d81d179bd8ab871603bd80d8645729939f90b71e62914e816a76fc6bd"},
++    {file = "pillow-10.3.0-cp311-cp311-musllinux_1_1_aarch64.whl", hash = "sha256:81d09caa7b27ef4e61cb7d8fbf1714f5aec1c6b6c5270ee53504981e6e9121ad"},
++    {file = "pillow-10.3.0-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:048ad577748b9fa4a99a0548c64f2cb8d672d5bf2e643a739ac8faff1164238c"},
++    {file = "pillow-10.3.0-cp311-cp311-win32.whl", hash = "sha256:7161ec49ef0800947dc5570f86568a7bb36fa97dd09e9827dc02b718c5643f09"},
++    {file = "pillow-10.3.0-cp311-cp311-win_amd64.whl", hash = "sha256:8eb0908e954d093b02a543dc963984d6e99ad2b5e36503d8a0aaf040505f747d"},
++    {file = "pillow-10.3.0-cp311-cp311-win_arm64.whl", hash = "sha256:4e6f7d1c414191c1199f8996d3f2282b9ebea0945693fb67392c75a3a320941f"},
++    {file = "pillow-10.3.0-cp312-cp312-macosx_10_10_x86_64.whl", hash = "sha256:e46f38133e5a060d46bd630faa4d9fa0202377495df1f068a8299fd78c84de84"},
++    {file = "pillow-10.3.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:50b8eae8f7334ec826d6eeffaeeb00e36b5e24aa0b9df322c247539714c6df19"},
++    {file = "pillow-10.3.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9d3bea1c75f8c53ee4d505c3e67d8c158ad4df0d83170605b50b64025917f338"},
++    {file = "pillow-10.3.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:19aeb96d43902f0a783946a0a87dbdad5c84c936025b8419da0a0cd7724356b1"},
++    {file = "pillow-10.3.0-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:74d28c17412d9caa1066f7a31df8403ec23d5268ba46cd0ad2c50fb82ae40462"},
++    {file = "pillow-10.3.0-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:ff61bfd9253c3915e6d41c651d5f962da23eda633cf02262990094a18a55371a"},
++    {file = "pillow-10.3.0-cp312-cp312-musllinux_1_1_aarch64.whl", hash = "sha256:d886f5d353333b4771d21267c7ecc75b710f1a73d72d03ca06df49b09015a9ef"},
++    {file = "pillow-10.3.0-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:4b5ec25d8b17217d635f8935dbc1b9aa5907962fae29dff220f2659487891cd3"},
++    {file = "pillow-10.3.0-cp312-cp312-win32.whl", hash = "sha256:51243f1ed5161b9945011a7360e997729776f6e5d7005ba0c6879267d4c5139d"},
++    {file = "pillow-10.3.0-cp312-cp312-win_amd64.whl", hash = "sha256:412444afb8c4c7a6cc11a47dade32982439925537e483be7c0ae0cf96c4f6a0b"},
++    {file = "pillow-10.3.0-cp312-cp312-win_arm64.whl", hash = "sha256:798232c92e7665fe82ac085f9d8e8ca98826f8e27859d9a96b41d519ecd2e49a"},
++    {file = "pillow-10.3.0-cp38-cp38-macosx_10_10_x86_64.whl", hash = "sha256:4eaa22f0d22b1a7e93ff0a596d57fdede2e550aecffb5a1ef1106aaece48e96b"},
++    {file = "pillow-10.3.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:cd5e14fbf22a87321b24c88669aad3a51ec052eb145315b3da3b7e3cc105b9a2"},
++    {file = "pillow-10.3.0-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:1530e8f3a4b965eb6a7785cf17a426c779333eb62c9a7d1bbcf3ffd5bf77a4aa"},
++    {file = "pillow-10.3.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:5d512aafa1d32efa014fa041d38868fda85028e3f930a96f85d49c7d8ddc0383"},
++    {file = "pillow-10.3.0-cp38-cp38-manylinux_2_28_aarch64.whl", hash = "sha256:339894035d0ede518b16073bdc2feef4c991ee991a29774b33e515f1d308e08d"},
++    {file = "pillow-10.3.0-cp38-cp38-manylinux_2_28_x86_64.whl", hash = "sha256:aa7e402ce11f0885305bfb6afb3434b3cd8f53b563ac065452d9d5654c7b86fd"},
++    {file = "pillow-10.3.0-cp38-cp38-musllinux_1_1_aarch64.whl", hash = "sha256:0ea2a783a2bdf2a561808fe4a7a12e9aa3799b701ba305de596bc48b8bdfce9d"},
++    {file = "pillow-10.3.0-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:c78e1b00a87ce43bb37642c0812315b411e856a905d58d597750eb79802aaaa3"},
++    {file = "pillow-10.3.0-cp38-cp38-win32.whl", hash = "sha256:72d622d262e463dfb7595202d229f5f3ab4b852289a1cd09650362db23b9eb0b"},
++    {file = "pillow-10.3.0-cp38-cp38-win_amd64.whl", hash = "sha256:2034f6759a722da3a3dbd91a81148cf884e91d1b747992ca288ab88c1de15999"},
++    {file = "pillow-10.3.0-cp39-cp39-macosx_10_10_x86_64.whl", hash = "sha256:2ed854e716a89b1afcedea551cd85f2eb2a807613752ab997b9974aaa0d56936"},
++    {file = "pillow-10.3.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:dc1a390a82755a8c26c9964d457d4c9cbec5405896cba94cf51f36ea0d855002"},
++    {file = "pillow-10.3.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:4203efca580f0dd6f882ca211f923168548f7ba334c189e9eab1178ab840bf60"},
++    {file = "pillow-10.3.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3102045a10945173d38336f6e71a8dc71bcaeed55c3123ad4af82c52807b9375"},
++    {file = "pillow-10.3.0-cp39-cp39-manylinux_2_28_aarch64.whl", hash = "sha256:6fb1b30043271ec92dc65f6d9f0b7a830c210b8a96423074b15c7bc999975f57"},
++    {file = "pillow-10.3.0-cp39-cp39-manylinux_2_28_x86_64.whl", hash = "sha256:1dfc94946bc60ea375cc39cff0b8da6c7e5f8fcdc1d946beb8da5c216156ddd8"},
++    {file = "pillow-10.3.0-cp39-cp39-musllinux_1_1_aarch64.whl", hash = "sha256:b09b86b27a064c9624d0a6c54da01c1beaf5b6cadfa609cf63789b1d08a797b9"},
++    {file = "pillow-10.3.0-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:d3b2348a78bc939b4fed6552abfd2e7988e0f81443ef3911a4b8498ca084f6eb"},
++    {file = "pillow-10.3.0-cp39-cp39-win32.whl", hash = "sha256:45ebc7b45406febf07fef35d856f0293a92e7417ae7933207e90bf9090b70572"},
++    {file = "pillow-10.3.0-cp39-cp39-win_amd64.whl", hash = "sha256:0ba26351b137ca4e0db0342d5d00d2e355eb29372c05afd544ebf47c0956ffeb"},
++    {file = "pillow-10.3.0-cp39-cp39-win_arm64.whl", hash = "sha256:50fd3f6b26e3441ae07b7c979309638b72abc1a25da31a81a7fbd9495713ef4f"},
++    {file = "pillow-10.3.0-pp310-pypy310_pp73-macosx_10_10_x86_64.whl", hash = "sha256:6b02471b72526ab8a18c39cb7967b72d194ec53c1fd0a70b050565a0f366d355"},
++    {file = "pillow-10.3.0-pp310-pypy310_pp73-macosx_11_0_arm64.whl", hash = "sha256:8ab74c06ffdab957d7670c2a5a6e1a70181cd10b727cd788c4dd9005b6a8acd9"},
++    {file = "pillow-10.3.0-pp310-pypy310_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:048eeade4c33fdf7e08da40ef402e748df113fd0b4584e32c4af74fe78baaeb2"},
++    {file = "pillow-10.3.0-pp310-pypy310_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9e2ec1e921fd07c7cda7962bad283acc2f2a9ccc1b971ee4b216b75fad6f0463"},
++    {file = "pillow-10.3.0-pp310-pypy310_pp73-manylinux_2_28_aarch64.whl", hash = "sha256:4c8e73e99da7db1b4cad7f8d682cf6abad7844da39834c288fbfa394a47bbced"},
++    {file = "pillow-10.3.0-pp310-pypy310_pp73-manylinux_2_28_x86_64.whl", hash = "sha256:16563993329b79513f59142a6b02055e10514c1a8e86dca8b48a893e33cf91e3"},
++    {file = "pillow-10.3.0-pp310-pypy310_pp73-win_amd64.whl", hash = "sha256:dd78700f5788ae180b5ee8902c6aea5a5726bac7c364b202b4b3e3ba2d293170"},
++    {file = "pillow-10.3.0-pp39-pypy39_pp73-macosx_10_10_x86_64.whl", hash = "sha256:aff76a55a8aa8364d25400a210a65ff59d0168e0b4285ba6
+```
+
+Generated Text: {  "message": "Bump pillow to 10.3.0 for manylinux and pypy310 on many platforms", 
+    "file": "requirements.txt"}
+
+-------------------- Time: 2024-06-09 22:19:10.513082 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: in progress
+Code changes: (partial)
+```
+-					print STDERR $msg;
+-					undef $msg;
+-				}
+-				print STDERR " $elem->[1]\n";
+-			}
+-		}
+-	' "$topic" "$not_in_next" "$not_in_master"
+-	exit 1
+-fi
+-
+-<<\DOC_END
+-
+-This sample hook safeguards topic branches that have been
+-published from being rewound.
+-
+-The workflow assumed here is:
+-
+- * Once a topic branch forks from "master", "master" is never
+-   merged into it again (either directly or indirectly).
+-
+- * Once a topic branch is fully cooked and merged into "master",
+-   it is deleted.  If you need to build on top of it to correct
+-   earlier mistakes, a new topic branch is created by forking at
+-   the tip of the "master".  This is not strictly necessary, but
+-   it makes it easier to keep your history simple.
+-
+- * Whenever you need to test or publish your changes to topic
+-   branches, merge them into "next" branch.
+-
+-The script, being an example, hardcodes the publish branch name
+-to be "next", but it is trivial to make it configurable via
+-$GIT_DIR/config mechanism.
+-
+-With this workflow, you would want to know:
+-
+-(1) ... if a topic branch has ever been merged to "next".  Young
+-    topic branches can have stupid mistakes you would rather
+-    clean up before publishing, and things that have not been
+-    merged into other branches can be easily rebased without
+-    affecting other people.  But once it is published, you would
+-    not want to rewind it.
+-
+-(2) ... if a topic branch has been fully merged to "master".
+-    Then you can delete it.  More importantly, you should not
+-    build on top of it -- other people may already want to
+-    change things related to the topic as patches against your
+-    "master", so if you need further changes, it is better to
+-    fork the topic (perhaps with the same name) afresh from the
+-    tip of "master".
+-
+-Let's look at this example:
+-
+-		   o---o---o---o---o---o---o---o---o---o "next"
+-		  /       /           /           /
+-		 /   a---a---b A     /           /
+-		/   /               /           /
+-	       /   /   c---c---c---c B         /
+-	      /   /   /             \         /
+-	     /   /   /   b---b C     \       /
+-	    /   /   /   /             \     /
+-    ---o---o---o---o---o---o---o---o---o---o---o "master"
+-
+-
+-A, B and C are topic branches.
+-
+- * A has one fix since it was merged up to "next".
+-
+- * B has finished.  It has been fully merged up to "master" and "next",
+-   and is ready to be deleted.
+-
+- * C has not merged to "next" at all.
+-
+-We would want to allow C to be rebased, refuse A, and encourage
+-B to be deleted.
+-
+-To compute (1):
+-
+-	git rev-list ^master ^topic next
+-	git rev-list ^master        next
+-
+-	if these match, topic has not merged in next at all.
+-
+-To compute (2):
+-
+-	git rev-list master..topic
+-
+-	if this is empty, it is fully merged to "master".
+-
+-DOC_END
+diff --git a/OCDG/backup/commit_diff/hooks/pre-receive.sample b/OCDG/backup/commit_diff/hooks/pre-receive.sample
+deleted file mode 100755
+index a1fd29e..0000000
+--- a/OCDG/backup/commit_diff/hooks/pre-receive.sample
++++ /dev/null
+@@ -1,24 +0,0 @@
+-#!/bin/sh
+-#
+-# An example hook script to make use of push options.
+-# The example simply echoes all push options that start with 'echoback='
+-# and rejects all pushes when the "reject" push option is used.
+-#
+-# To enable this hook, rename this file to "pre-receive".
+-
+-if test -n "$GIT_PUSH_OPTION_COUNT"
+-then
+-	i=0
+-	while test "$i" -lt "$GIT_PUSH_OPTION_COUNT"
+-	do
+-		eval "value=\$GIT_PUSH_OPTION_$i"
+-		case "$value" in
+-		echoback=*)
+-			echo "echo from the pre-receive-hook: ${value#*=}" >&2
+-			;;
+-		reject)
+-			exit 1
+-		esac
+-		i=$((i + 1))
+-	done
+-fi
+diff --git a/OCDG/backup/commit_diff/hooks/prepare-commit-msg.sample b/OCDG/backup/commit_diff/hooks/prepare-commit-msg.sample
+deleted file mode 100755
+index 10fa14c..0000000
+--- a/OCDG/backup/commit_diff/hooks/prepare-commit-msg.sample
++++ /dev/null
+@@ -1,42 +0,0 @@
+-#!/bin/sh
+-#
+-# An example hook script to prepare the commit log message.
+-# Called by "git commit" with the name of the file that has the
+-# commit message, followed by the description of the commit
+-# message's source.  The hook's purpose is to edit the commit
+-# message file.  If the hook fails with a non-zero status,
+-# the commit is aborted.
+-#
+-# To enable this hook, rename this file to "prepare-commit-msg".
+-
+-# This hook includes three examples. The first one removes the
+-# "# Please enter the commit message..." help message.
+-#
+-# The second includes the output of "git diff --name-status -r"
+-# into the message, just before the "git status" output.  It is
+-# commented because it doesn't cope with --amend or with squashed
+-# commits.
+-#
+-# The third example adds a Signed-off-by line to the message, that can
+-# still be edited.  This is rarely a good idea.
+-
+-COMMIT_MSG_FILE=$1
+-COMMIT_SOURCE=$2
+-SHA1=$3
+-
+-/usr/bin/perl -i.bak -ne 'print unless(m/^. Please enter the commit message/..m/^#$/)' "$COMMIT_MSG_FILE"
+-
+-# case "$COMMIT_SOURCE,$SHA1" in
+-#  ,|template,)
+-#    /usr/bin/perl -i.bak -pe '
+-#       print "\n" . `git diff --cached --name-status -r`
+-# 	 if /^#/ && $first++ == 0' "$COMMIT_MSG_FILE" ;;
+-#  *) ;;
+-# esac
+-
+-# SOB=$(git var GIT_COMMITTER_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
+-# git interpret-trailers --in-place --trailer "$SOB" "$COMMIT_MSG_FILE"
+-# if test -z "$COMMIT_SOURCE"
+-# then
+-#   /usr/bin/perl -i.bak -pe 'print "\n" if !$first_line++' "$COMMIT_MSG_FILE"
+-# fi
+diff --git a/OCDG/backup/commit_diff/hooks/push-to-checkout.sample b/OCDG/backup/commit_diff/hooks/push-to-checkout.sample
+deleted file mode 100755
+index af5a0c0..0000000
+--- a/OCDG/backup/commit_diff/hooks/push-to-checkout.sample
++++ /dev/null
+@@ -1,78 +0,0 @@
+-#!/bin/sh
+-
+-# An example hook script to update a checked-out tree on a git push.
+-#
+-# This hook is invoked by git-receive-pack(1) when it reacts to git
+-# push and updates reference(s) in its repository, and when the push
+-# tries to update the branch that is currently checked out and the
+-# receive.denyCurrentBranch configuration variable is set to
+-# updateInstead.
+-#
+-# By default, such a push is refused if the working tree and the index
+-# of the remote repository has any difference from the currently
+-# checked out commit; when both the working tree and the index match
+-# the current commit, they are updated to match the newly pushed tip
+-# of the branch. This hook is to be used to override the default
+-# behaviour; however the code below reimplements the default behaviour
+-# as a starting point for convenient modification.
+-#
+-# The hook receives the commit with which the tip of the current
+-# branch is going to be updated:
+-commit=$1
+-
+-# It can exit with a non-zero status to refuse the push (when it does
+-# so, it must not modify the index or the working tree).
+-die () {
+-	echo >&2 "$*"
+-	exit 1
+-}
+-
+-# Or it can make any necessary changes to the working tree and to the
+-# index to bring them to the desired state when the tip of the current
+-# branch is updated to the new commit, and exit with a zero status.
+-#
+-# For example, the hook can simply run git read-tree -u -m HEAD "$1"
+-# in order to emulate git fetch that is run in the reverse direction
+-# with git push, as the two-tree form of git read-tree -u -m is
+-# essentially the same as git switch or git checkout that switches
+-# branches while keeping the local changes in the working tree that do
+-# not interfere with the difference between the branches.
+-
+-# The below is a more-or-less exact translation to shell of the C code
+-# for the default behaviour for git's push-to-checkout hook defined in
+-# the push_to_deploy() function in builtin/receive-pack.c.
+-#
+-# Note that the hook will be executed from the repository directory,
+-# not from the working tree, so if you want to perform operations on
+-# the working tree, you will have to adapt your code accordingly, e.g.
+-# by adding "cd .." or using relative paths.
+-
+```
+
+Generated Text: { "type": "commit-message", "message": "Deleted files in hooks directory" }
+
+-------------------- Time: 2024-06-09 22:19:23.524487 -------------------- 
+System Prompt: 
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+
+Prompt: 
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: update
+Code changes: (partial)
+```
+mport GitAnalyzer
+-from message_generation import MessageGenerator
++from OCDG.utils import run_git_command, log_message, find_closing_brace_index, parse_output_string, generate_commit_multi
+ 
++logger = logging.getLogger(__name__)
+ # Import other necessary modules
+ 
+ def main():
+     # Parse command-line arguments
+-    parser = argparse.ArgumentParser()
+-    parser.add_argument("repo_url", help="URL of the GitHub repository")
+-    parser.add_argument("client", choices=["openai", "groq", "replicate"], help="AI client to use")
++    parser = argparse.ArgumentParser(description="Revitalize old commit messages using LLMs.")
++    parser.add_argument("repo_path", help="Path to the Git repository (local path or URL).")
++    parser.add_argument("-b", "--backup_dir",
++                        default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "backup"),
++                        help="Directory for repository backup.")
++    parser.add_argument("-l", "--llm", choices=["openai", "groq", "replicate"], default="openai", help="Choice of LLM.")
++    parser.add_argument("-m", "--model", default="meta/llama3-70b-instruct", help="Choice of LLM model.")
+     # Add more arguments as needed...
+     args = parser.parse_args()
++
++    # Configure logging
++    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
++    # Load configuration
+     config = load_configuration()
+     os.makedirs(config['COMMIT_DIFF_DIRECTORY'], exist_ok=True)
+ 
+-    # Create client instance
+-    client = create_client(args.client)
+-    repo = args.repo_url
+-    commits = repo.get_commits()
+-
+-    db = Database()
+-    analyzer = GitAnalyzer(args.repo_url)
+-    generator = MessageGenerator(client)
+-
+-    # Get commits from the Git repository
+-    commits = analyzer.get_commits()  # Implement logic to retrieve commits based on arguments
+-
+-    # Process each commit
+-    for commit in commits:
+-        # Generate diff
+-        diff = analyzer.get_diff(commit)
+-
+-        # Generate new commit message
+-        new_message = generator.generate_commit_message(diff, commit.message)
+-
+-        # Update commit message in Git and database
+-        analyzer.update_commit_message(commit, new_message)
+-        commit.message = new_message  # Update commit object
+-        db.update_commit(commit)
+-
+-
+-
+-
+-
+-
+-    # ... rest of the application logic ...
++    # Determine repository type and get URL
++    if args.repo_path.startswith(("http", "git@")):
++        repo_url = args.repo_path
++        repo_path = os.path.join(config['COMMIT_DIFF_DIRECTORY'], os.path.basename(repo_url).replace(".git", ""))
++        # Clone if the directory doesn't exist
++        if not os.path.exists(repo_path):
++            logging.info(f"Cloning remote repository to {repo_path}")
++            git.Repo.clone_from(repo_url, repo_path)
++    else:
++        # Get absolute path for local repositories
++        repo_path = os.path.abspath(args.repo_path)
++        logging.info(f"Using local repository path: {repo_path}")
++        repo_url = GitAnalyzer.get_repo_url(repo_path)
++        if not repo_url:
++            logging.error("Failed to get repository URL from local path. Exiting...")
++            return
++
++    # 1. Backup Repository
++    backup_dir = os.path.join(args.backup_dir, os.path.basename(repo_url))
++    if os.path.exists(backup_dir):
++        user_input = input(
++            f"Backup directory '{backup_dir}' already exists. Do you want to overwrite it? (yes/no): "
++        ).lower()
++        if user_input != 'yes':
++            print("Exiting...")
++            return
++
++        try:
++            shutil.rmtree(backup_dir)
++            print(f"Removed existing backup directory: {backup_dir}")
++        except Exception as e:
++            print(f"Error removing existing backup directory: {e}")
++            return
++
++    if args.backup_dir:
++        logging.info("Creating repository backup...")
++        try:
++            run_git_command(["clone", "--mirror", repo_url, backup_dir])
++            logging.info(f"Repository backed up to '{backup_dir}'")
++        except Exception as e:
++            logging.error(f"Error creating backup: {e}")
++            return
++    else:
++        logging.warning("Skipping repository backup. Proceed with caution!")
++
++    # 2. Load Commit History
++    logging.info("Loading commit history...")
++    try:
++        analyzer = GitAnalyzer(repo_path)
++        commits = analyzer.get_commits()
++        # Get the repo object from the analyzer
++        repo = analyzer.repo
++    except Exception as e:
++        logging.error(f"Failed to load commit history: {e}")
++        return
++
++    logging.info(f"Loaded {len(commits)} commits from repository.")
++
++    # 3. Initialize LLM Interface
++    client = create_client(args.llm, config)
++
++    # 4. Process each commit
++    for i, commit in enumerate(commits):
++        logging.info(f"Processing commit {i + 1}/{len(commits)}: {commit.hexsha}")
++        try:
++            diff = repo.git.diff(f'{commit.hexsha}~1', f'{commit.hexsha}')
++            new_message = generate_commit_description(diff, commit.message, client, args.model)
++            if new_message is None:
++                logging.warning(f"Skipping commit {commit.hexsha} - No new message generated")
++                continue
++
++            # 5. Update Commit Message
++            try:
++                with repo.commit(commit.hexsha).edit() as commit_editor:
++                    commit_editor.message = new_message
++                logging.info(f"Updated commit message for commit {commit.hexsha}")
++            except Exception as e:
++                logging.error(f"Error updating commit message for commit {commit.hexsha}: {e}")
++                return
++
++        except Exception as e:
++            logging.error(f"Error processing commit {commit.hexsha}: {traceback.format_exc()} {e}")
++            return
++
++    logging.info("OCDG process completed!")
+ 
+ 
+ if __name__ == "__main__":
+diff --git a/message_generation.py b/message_generation.py
+deleted file mode 100644
+index 35642b8..0000000
+--- a/message_generation.py
++++ /dev/null
+@@ -1,11 +0,0 @@
+-class MessageGenerator:
+-    def __init__(self, client):
+-        self.client = client
+-
+-    def generate_commit_message(self, diff, old_message):
+-        # Construct prompt using diff and old message
+-        prompt = f"... (Your prompt template here) ..."
+-
+-        # Generate new message using the client
+-        new_message = self.client.generate_text(prompt, max_tokens=2000)
+-        return new_message
+\ No newline at end of file
+diff --git a/poetry.lock b/poetry.lock
+index 55b3563..778a28d 100644
+@@ -392,6 +392,38 @@ files = [
+     {file = "frozenlist-1.4.1.tar.gz", hash = "sha256:c037a86e8513059a2613aaba4d817bb90b9d9b6b69aace3ce9c877e8c8ed402b"},
+ ]
+ 
++[[package]]
++name = "gitdb"
++version = "4.0.11"
++description = "Git Object Database"
++optional = false
++python-versions = ">=3.7"
++files = [
++    {file = "gitdb-4.0.11-py3-none-any.whl", hash = "sha256:81a3407ddd2ee8df444cbacea00e2d038e40150acfa3001696fe0dcf1d3adfa4"},
++    {file = "gitdb-4.0.11.tar.gz", hash = "sha256:bf5421126136d6d0af55bc1e7c1af1c397a34f5b7bd79e776cd3e89785c2b04b"},
++]
++
++[package.dependencies]
++smmap = ">=3.0.1,<6"
++
++[[package]]
++name = "gitpython"
++version = "3.1.43"
++description = "GitPython is a Python library used to interact with Git repositories"
++optional = false
++python-versions = ">=3.7"
++files = [
++    {file = "GitPython-3.1.43-py3-none-any.whl", hash = "sha256:eec7ec56b92aad751f9912a73404bc02ba212a23adb2c7098ee668417051a1ff"},
++    {file = "GitPython-3.1.43.tar.gz", hash = "sha256:35f314a9f878467f5453cc1fee295c3e18e52f1b99f10f6cf5b1682e968a9e7c"},
++]
++
++[package.dependencies]
++gitdb = ">=4.0.1,<5"
++
++[package.extras]
++doc = ["sphinx (==4.3.2)", "sphinx-autodoc-typehints", "sphinx-rtd-theme", "sphinxcontrib-applehelp (>=1.0.2,<=1.0.4)", "sphinxcontrib-
+```
+
+Generated Text: { "message": "print(\"Exiting...\")\n+            return\n+\n+        try:\n+            shutil.rmtree(backup_dir)\n+            print(f\"Removed existing backup directory: {backup_dir}\")\n+        except Exception as e:\n+            print(f\"Error removing existing backup directory: {e}\")\n+            return\n+\n+    if args.backup_dir:\n+        logging.info(\"Creating repository backup...\")\n+        try:\n+            run_git_command([\"clone\", \"--mirror\", repo_url, backup_dir])\n+            logging.info(f\"Repository backed up to '{backup_dir}'\")\n+        except Exception as e:\n+            logging.error(f\"Error creating backup: {e}\")\n+            return\n+\n+    else:\n+        logging.warning(\"Skipping repository backup. Proceed with caution!\")\n+\n+    # 2. Load Commit History\n+    logging.info(\"Loading commit history...\")\n+    try:\n+        analyzer = GitAnalyzer(repo_path)\n+        commits = analyzer.get_commits()\n+        # Get the repo object from the analyzer\n+        repo = analyzer.repo\n+\n+    except Exception as e:\n+        logging.error(f\"Failed to load commit history: {e}\")\n+        return\n+\n+    logging.info(f\"Loaded {len(commits)} commits from repository.\")\n+\n+    # 3. Initialize LLM Interface\n+    client = create_client(args.llm, config)\n+\n+    # 4. Process each commit\n+    for i, commit in enumerate(commits):\n+        logging.info(f\"Processing commit {i + 1}/{len(commits)}: {commit.hexsha}\")\n+        try:\n+            diff = repo.git.diff(f'{commit.hexsha}~1', f'{commit.hexsha}')\n+            new_message = generate_commit_description(diff, commit.message, client, args.model)\n+            if new_message is None:\n+                logging.warning(f\"Skipping commit {commit.hexsha} - No new message generated\")\n+                continue\n+\n+            # 5. Update Commit Message\n+            try:\n+                with repo.commit(commit.hexsha).edit() as commit_editor:\n+                    commit_editor.message = new_message\n+                logging.info(f\"Updated commit message for commit {commit.hexsha}\")\n+            except Exception as e:\n+                logging.error(f\"Error updating commit message for commit {commit.hexsha}: {e}\")\n+                return\n+\n+        except Exception as e:\n+            logging.error(f\"Error processing commit {commit.hexsha}: {traceback.format_exc()} {e}\")\n+        return\n+\n+    logging.info(\"OCDG process completed!\")" }
+

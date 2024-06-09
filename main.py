@@ -5,41 +5,21 @@ import os
 import logging
 import re
 import tempfile
-import traceback
 from typing import Any, List, Dict
 
 from loguru import logger
 import git
 
 from clients import create_client
-from config import load_configuration
+from config import load_configuration, COMMIT_MESSAGES_LOG_FILE, MAX_CONCURRENT_REQUESTS, IGNORED_SECTION_PATTERNS, \
+    IGNORED_LINE_PATTERNS
+
 
 # Global variable to store log file path
-COMMIT_MESSAGES_LOG_FILE = "commit_messages.log"
-
-MAX_CONCURRENT_REQUESTS = 4  # Adjust this value based on Ollama's capacity
 
 # Define file/folder paths and patterns to ignore ENTIRE SECTIONS
-IGNORED_SECTION_PATTERNS = {
-    r'venv.*',  # Ignore any path containing 'venv'
-    r'.idea.*'  # Ignore any path containing '.idea'
-    r'node_modules.*',  # Ignore any path containing 'node_modules'
-    r'__pycache__.*',  # Ignore any path containing '__pycache__
-}
 
 # Define file extensions and patterns to ignore
-IGNORED_LINE_PATTERNS = {
-    r'.*\.(png|jpg|jpeg|gif|bmp|tiff|svg|ico|raw|psd|ai)$',
-    r'.*\.(xlsx|xls|docx|pptx|pdf)$', r'.*\.(pack|idx|DS_Store|sys|ini|bat|plist)$',
-    r'.*\.(exe|dll|so|bin)$', r'.*\.(zip|rar|7z|tar|gz|bz2)$',
-    r'.*\.(mp3|wav|aac|flac)$', r'.*\.(mp4|avi|mov|wmv|flv)$',
-    r'.*\.(db|sqlitedb|mdb)$', r'.*\.(ttf|otf|woff|woff2)$',
-    r'.*\.(tmp|temp|swp|swo)$', r'.*\.(o|obj|pyc|class)$',
-    r'.*\.(cer|pem|crt|key)$', r'.*\.(conf|cfg|config)$',
-    r'.*\.(env)$', r'node_modules', r'.*\.(pyo)$',
-    r'(package-lock\.json|poetry\.lock|yarn\.lock|Gemfile\.lock)',
-    r'.*\.(err|stderr|stdout|log)$', r'.*\.(cache|cached)$'
-}
 
 def user_confirms_rewrite(commit_history):
     """Presents the proposed changes to the user and asks for confirmation."""
@@ -249,6 +229,7 @@ def _split_text_at_boundaries(text: str, max_chunk_size: int = 7900) -> List[str
     logger.info(f"Splitting text into chunks, attempting to break at code block boundaries...")
     logger.debug(f"Full text being split: \n{text}\n") # Print the full diff for inspection
     try:
+
         # Define a regular expression to find code block boundaries
         code_block_boundary = re.compile(r'```(?:\w+)?\n')  # Matches "```" followed by optional language specifier
 
@@ -321,7 +302,7 @@ def _split_text_aggressively(text: str, max_chunk_size: int = 7900, overlap: int
         raise
 
 
-def _generate_single_commit_message_json(
+async def _generate_single_commit_message_json(
     diff_chunk: str,
     commit_message: str,
     client: Any,
@@ -332,24 +313,36 @@ def _generate_single_commit_message_json(
     """
     Generates a single commit message in JSON format, handling potential JSON decoding errors.
     """
-    system_prompt = (
-        f""""
-        You are a helpful AI assistant that generates commit messages based on code changes and previous descriptions. Follow the commit guidelines of the GitHub repository.
-        Previous commit message: {commit_message}
-        Code changes: {'(partial)' if chunk_index != total_chunks - 1 else ''} 
-        ```
-        {diff_chunk}
-        ```
-        Generate a new commit message based on these changes. Output only in JSON Format, without any additional text or code blocks.
-        {{
-        "Short analysis": "str",
-        "New Commit Title": "str",
-        "New Detailed Commit Message": "str",
-        "Code Changes": {{"filename": "str", "filename2": "str"}}
-        }}
-        """
-    )
-    chat_completion = client.generate_text(system_prompt)
+    system_prompt = """
+## Role: You are a Git commit message generator.
+## Goal: Analyze code diffs and produce Conventional Commit messages in JSON.
+
+## JSON Structure:
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...(<type>[optional scope]: <description> - max 50 chars)", 
+ "new_detailed_commit_message": "...(explain what & why, max 72 chars/line, use bullet points)",
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
+## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
+## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
+"""
+    # User Prompt Template
+    user_prompt = f"""
+Analyze this diff and generate a commit message in JSON format.
+Previous commit message: {commit_message}
+Code changes: {'(partial)' if chunk_index != total_chunks - 1 else ''}
+```
+{diff_chunk}
+```
+"""
+    chat_completion = await client.async_generate_text(system_prompt, user_prompt)
     try:
         # Extract JSON using a regular expression
         json_match = re.search(r'\{.*\}', chat_completion, re.DOTALL)
@@ -362,16 +355,16 @@ def _generate_single_commit_message_json(
         logger.error(f"Error decoding JSON: {e} - {chat_completion}")
         return {}
 
-def _generate_commit_message_parts(diff: str, commit_message: str, client: Any, model: str, chunk_size: int = 7900) -> List[Dict[str, str]]:
+async def _generate_commit_message_parts(diff: str, commit_message: str, client: Any, model: str, chunk_size: int = 7900) -> List[Dict[str, str]]:
     """Splits a diff into chunks and generates a commit message for each chunk."""
     logger.info("Split diff into chunks")
     try:
-        diff_chunks = [diff[i:i + 6000] for i in range(0, len(diff), 6000)]
+        diff_chunks = [diff[i:i + chunk_size] for i in range(0, len(diff), chunk_size)]
         # diff_chunks = list(_split_text_aggressively(diff, chunk_size))
         commit_messages = []
         for i, diff_chunk in enumerate(diff_chunks):
             commit_messages.append(
-                _generate_single_commit_message_json(
+                await _generate_single_commit_message_json(
                     diff_chunk, commit_message, client, model, i, len(diff_chunks)
                 )
             )
@@ -382,22 +375,40 @@ def _generate_commit_message_parts(diff: str, commit_message: str, client: Any, 
         raise
 
 
-def combine_messages(multi_commit: List[Dict[str, str]], client: Any, model: str) -> dict:
+async def combine_messages(multi_commit: List[Dict[str, str]], client: Any, model: str) -> dict:
     """Combines multiple commit messages into a single commit message."""
-    prompt = f"""Combine the following messages into a single commit message in JSON format:
-    ```json
-    {json.dumps(multi_commit)}
-    ```
-    Output only in JSON Format, without any additional text or code blocks.
-    {{
-    "Short analysis": "str",
-    "New Commit Title": "str",
-    "New Detailed Commit Message": "str",
-    "Code Changes": {{"filename": "str", "filename2": "str"}}
-    }}
-    """
-    combined_message = client.generate_text(
-        prompt,
+    system_prompt = f"""
+## Role: You are a Git commit message expert, combining multiple messages into one. 
+## Goal: Create a concise, informative commit message in JSON that adheres to Conventional Commits.
+## Input: Multiple JSON-formatted commit messages (see structure below).
+## Output: A single, combined JSON-formatted commit message.
+
+## JSON Structure (for both input and output):
+```json
+{
+ "short_analysis": "...", 
+ "new_commit_title": "...", 
+ "new_detailed_commit_message": "...", 
+ "code_changes": { 
+  "files_changed": [...], 
+  "functions_modified": [...], 
+  "other_observations": [...] 
+ }}
+```
+## Key Points:
+* **Analyze the COMBINED impact of all changes, not just individual messages.**
+* **Be concise and technical. Use bullet points in the detailed message.**
+* **Strictly follow Conventional Commits (<https://www.conventionalcommits.org/>) for the title.**
+"""
+    user_prompt = f"""
+Combine the following commit messages into a single, well-structured commit message, adhering to the guidelines and 
+JSON format defined in the system prompt.
+```json
+{json.dumps(multi_commit)}
+```
+"""
+    combined_message = await client.async_generate_text(
+        system_prompt, user_prompt
     )
     try:
         # Extract JSON using a regular expression
@@ -414,18 +425,20 @@ def combine_messages(multi_commit: List[Dict[str, str]], client: Any, model: str
 
 
 
-async def generate_commit_description(diff: str, old_description: str, client: Any, model: str) -> str | None:
+async def generate_commit_description(diff: str, old_description: str, client: Any, model: str, max_tokens: int = 7900) -> str | None:
     """Generates a commit description for a potentially large diff."""
     try:
-        if len(diff) >= 7900:
+        if model == "llama3":
+            max_tokens = 100_000
+        if len(diff) >= max_tokens:
             logger.info("Diff is too long. Start splitting it into chunks.")
-            multi_commit = _generate_commit_message_parts(diff, old_description, client, model)
+            multi_commit = await _generate_commit_message_parts(diff, old_description, client, model, max_tokens)
             if not multi_commit:
                 logger.warning("Failed to generate multi-commit message. Skipping...")
                 return None
             generated_message = combine_messages(multi_commit, client, model)
         else:
-            generated_message = _generate_single_commit_message_json(
+            generated_message = await _generate_single_commit_message_json(
                 diff, old_description, client, model, 0, 1
             )
         new_description = "\n".join(
@@ -524,6 +537,8 @@ class GitAnalyzer:
 
     def get_commit_diff(self, commit_hash: str, commit: 'Commit'):
         """Fetches the diff for a specific commit."""
+        # get_commit_diff = self.repo.git.diff(f"{commit_hash}~1", f"{commit.hash}")
+        # logger.info(f"Get commit diff: {get_commit_diff} /n /n")
         return self.repo.git.diff(f"{commit_hash}~1", f"{commit.hash}")
 
 
@@ -655,34 +670,6 @@ async def main():
     semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
     tasks = [process_commit(commit, analyzer, client, args.model, repo_path, semaphore) for commit in commits]
     await asyncio.gather(*tasks)  # Execute tasks concurrently
-    # # 4. Process each commit
-    # initial_commit_hash = run_git_command(['rev-list', '--max-parents=0', 'HEAD'], repo_path).strip()
-    # for i, commit in enumerate(commits):
-    #     logging.info(f"Processing commit {i + 1}/{len(commits)}: {commit.hash}")
-    #     try:
-    #         if commit.hash == initial_commit_hash:
-    #             logging.info(f"Skipping diff for initial commit: {commit.hash}")
-    #             diff = ""  # Or handle the initial commit differently
-    #         else:
-    #             diff = analyzer.get_commit_diff(commit.hash, commit) # Fetch diff here
-    #         filtered_diff = filter_diff(diff)
-    #         new_message = generate_commit_description(
-    #             filtered_diff, commit.message, client, args.model
-    #         )
-    #
-    #         if new_message is None:
-    #             logging.warning(
-    #                 f"Skipping commit {commit.hash} - No new message generated"
-    #             )
-    #             continue
-    #
-    #         commit.new_message = new_message  # Store the new message
-    #
-    #     except Exception as e:
-    #         logging.error(
-    #             f"Error processing commit {commit.hash}: {traceback.format_exc()} {e}"
-    #         )
-    #         return
 
     # 5. User Confirmation before Rewrite
     if user_confirms_rewrite(commit_history):

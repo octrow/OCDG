@@ -8,7 +8,6 @@ import pytest
 
 # Import various functions and classes from the 'main' module (your main script).
 from main import (
-    COMMIT_MESSAGES_LOG_FILE,
     RepositoryUpdater,
     CommitHistory,
     save_commit_messages_to_log,
@@ -27,7 +26,7 @@ from main import (
     GitAnalyzer,
 )
 from clients import create_client, OpenAIClient, GroqClient  # Import client-related classes.
-from config import load_configuration  # Import configuration loading function.
+from config import load_configuration, COMMIT_MESSAGES_LOG_FILE  # Import configuration loading function.
 
 # Load test configuration
 TEST_CONFIG = load_configuration()  # Load configuration specifically for testing.

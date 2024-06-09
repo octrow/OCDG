@@ -1,9 +1,11 @@
+from datetime import datetime
+
 import ollama
 
 from clients.base_client import Client
 
 from ollama import Client as OllClient
-from config import load_configuration
+from config import load_configuration, COMMIT_MESSAGES_LOG_FILE, GENERATED_MESSAGES_LOG_FILE
 from loguru import logger
 config = load_configuration()
 
@@ -23,7 +25,7 @@ class OllamaClient(Client):
         )
         self.model = 'llama3'
 
-    async def async_generate_text(self, prompt, **kwargs):  # Make generate_text asynchronous
+    async def async_generate_text(self, system_prompt, prompt, **kwargs):  # Make generate_text asynchronous
         try:
             logger.info(f"Sending request to Ollama API (model: {self.model})...")
             logger.debug(f"Prompt: {prompt}")
@@ -31,7 +33,7 @@ class OllamaClient(Client):
 
             response = await self.async_client.chat(  # Use await
                 model=self.model,
-                messages=[{"role": "user", "content": prompt}],
+                messages=[{"role": "system", "content": system_prompt},{"role": "user", "content": prompt}],
                 format='json',
                 **kwargs
             )
@@ -39,6 +41,7 @@ class OllamaClient(Client):
             logger.debug(f"Full response: {response}")
             text_content = response['message']['content'].strip()
             logger.debug(f"Generated text: {text_content[:50]}...")
+            save_llama_messages_to_log(system_prompt, prompt, text_content)
             return text_content
 
         except Exception as e:
@@ -78,3 +81,16 @@ class OllamaClient(Client):
             # Log general exceptions
             logger.error(f"Unexpected error during LLM Ollama API call: {e}")
             raise
+
+def save_llama_messages_to_log(system_prompt, prompt, text_content):
+    """Saves sysem prompt, prompt and generated text to a log file."""
+    try:
+        with open(GENERATED_MESSAGES_LOG_FILE, "a") as log_file:
+            if text_content:
+                log_file.write(f"{20*'-'} Time: {datetime.now()} {20*'-'} \n")
+                log_file.write(f"System Prompt: {system_prompt}\n")
+                log_file.write(f"Prompt: {prompt}\n")
+                log_file.write(f"Generated Text: {text_content}\n\n")
+        logger.info(f"Generated text saved to {GENERATED_MESSAGES_LOG_FILE}.")
+    except Exception as e:
+        logger.error(f"Failed to save generated text to log file: {e}")
