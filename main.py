@@ -1,9 +1,9 @@
 import argparse
+import asyncio
 import json
 import os
 import logging
 import re
-import subprocess
 import tempfile
 import traceback
 from typing import Any, List, Dict
@@ -16,6 +16,8 @@ from config import load_configuration
 
 # Global variable to store log file path
 COMMIT_MESSAGES_LOG_FILE = "commit_messages.log"
+
+MAX_CONCURRENT_REQUESTS = 4  # Adjust this value based on Ollama's capacity
 
 # Define file/folder paths and patterns to ignore ENTIRE SECTIONS
 IGNORED_SECTION_PATTERNS = {
@@ -347,7 +349,7 @@ def _generate_single_commit_message_json(
         }}
         """
     )
-    chat_completion = client.generate_text(system_prompt, model=model)
+    chat_completion = client.generate_text(system_prompt)
     try:
         # Extract JSON using a regular expression
         json_match = re.search(r'\{.*\}', chat_completion, re.DOTALL)
@@ -364,7 +366,8 @@ def _generate_commit_message_parts(diff: str, commit_message: str, client: Any, 
     """Splits a diff into chunks and generates a commit message for each chunk."""
     logger.info("Split diff into chunks")
     try:
-        diff_chunks = list(_split_text_aggressively(diff, chunk_size))
+        diff_chunks = [diff[i:i + 6000] for i in range(0, len(diff), 6000)]
+        # diff_chunks = list(_split_text_aggressively(diff, chunk_size))
         commit_messages = []
         for i, diff_chunk in enumerate(diff_chunks):
             commit_messages.append(
@@ -395,7 +398,6 @@ def combine_messages(multi_commit: List[Dict[str, str]], client: Any, model: str
     """
     combined_message = client.generate_text(
         prompt,
-        model=model
     )
     try:
         # Extract JSON using a regular expression
@@ -412,7 +414,7 @@ def combine_messages(multi_commit: List[Dict[str, str]], client: Any, model: str
 
 
 
-def generate_commit_description(diff: str, old_description: str, client: Any, model: str) -> str | None:
+async def generate_commit_description(diff: str, old_description: str, client: Any, model: str) -> str | None:
     """Generates a commit description for a potentially large diff."""
     try:
         if len(diff) >= 7900:
@@ -537,16 +539,44 @@ class GitAnalyzer:
             logging.error(f"Error updating commit message for commit {commit.hash}: {e}")
             raise
 
+async def process_commit(commit, analyzer, client, model, repo_path, semaphore):
+    """Processes a single commit asynchronously, limited by a semaphore."""
+    async with semaphore:  # Acquire the semaphore, wait if necessary
+        logger.info(f"Processing commit: {commit.hash}")
 
+        # 1. Get the Diff (fetch diff here)
+        initial_commit_hash = run_git_command(['rev-list', '--max-parents=0', 'HEAD'], repo_path).strip()
+        if commit.hash == initial_commit_hash:
+            logger.info(f"Skipping diff for initial commit: {commit.hash}")
+            diff = ""  # Or handle the initial commit differently
+        else:
+            diff = analyzer.get_commit_diff(commit.hash, commit)
 
-def main():
+        # 2. Filter the Diff
+        filtered_diff = filter_diff(diff)
+
+        # 3. Generate New Commit Message (using await)
+        new_message = await generate_commit_description(
+            filtered_diff, commit.message, client, model
+        )
+
+        # 4. Handle Generated Message
+        if new_message is None:
+            logger.warning(
+                f"Skipping commit {commit.hash} - No new message generated"
+            )
+        else:
+            commit.new_message = new_message  # Store the new message
+            logger.info(f"New message generated for commit {commit.hash}")
+
+async def main():
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Revitalize old commit messages using LLMs.")
     parser.add_argument("repo_path", help="Path to the Git repository (local path or URL).")
     parser.add_argument("-b", "--backup_dir",
                         default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "backup"),
                         help="Directory for repository backup.")
-    parser.add_argument("-l", "--llm", choices=["openai", "groq", "replicate"], default="openai", help="Choice of LLM.")
+    parser.add_argument("-l", "--llm", choices=["openai", "groq", "replicate", "ollama"], default="ollama", help="Choice of LLM.")
     parser.add_argument("-m", "--model", default="meta/llama3-70b-instruct", help="Choice of LLM model.")
     parser.add_argument("-f", "--force-push", action="store_true", help="Force push to remote after rewrite.")
     parser.add_argument(
@@ -621,34 +651,38 @@ def main():
     client = create_client(args.llm, config)
     logging.info(f"Initialized LLM client: {client}")
 
-    # 4. Process each commit
-    initial_commit_hash = run_git_command(['rev-list', '--max-parents=0', 'HEAD'], repo_path).strip()
-    for i, commit in enumerate(commits):
-        logging.info(f"Processing commit {i + 1}/{len(commits)}: {commit.hash}")
-        try:
-            if commit.hash == initial_commit_hash:
-                logging.info(f"Skipping diff for initial commit: {commit.hash}")
-                diff = ""  # Or handle the initial commit differently
-            else:
-                diff = analyzer.get_commit_diff(commit.hash, commit) # Fetch diff here
-            filtered_diff = filter_diff(diff)
-            new_message = generate_commit_description(
-                filtered_diff, commit.message, client, args.model
-            )
-
-            if new_message is None:
-                logging.warning(
-                    f"Skipping commit {commit.hash} - No new message generated"
-                )
-                continue
-
-            commit.new_message = new_message  # Store the new message
-
-        except Exception as e:
-            logging.error(
-                f"Error processing commit {commit.hash}: {traceback.format_exc()} {e}"
-            )
-            return
+    # 4. Process each commit asynchronously, limited by semaphore
+    semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
+    tasks = [process_commit(commit, analyzer, client, args.model, repo_path, semaphore) for commit in commits]
+    await asyncio.gather(*tasks)  # Execute tasks concurrently
+    # # 4. Process each commit
+    # initial_commit_hash = run_git_command(['rev-list', '--max-parents=0', 'HEAD'], repo_path).strip()
+    # for i, commit in enumerate(commits):
+    #     logging.info(f"Processing commit {i + 1}/{len(commits)}: {commit.hash}")
+    #     try:
+    #         if commit.hash == initial_commit_hash:
+    #             logging.info(f"Skipping diff for initial commit: {commit.hash}")
+    #             diff = ""  # Or handle the initial commit differently
+    #         else:
+    #             diff = analyzer.get_commit_diff(commit.hash, commit) # Fetch diff here
+    #         filtered_diff = filter_diff(diff)
+    #         new_message = generate_commit_description(
+    #             filtered_diff, commit.message, client, args.model
+    #         )
+    #
+    #         if new_message is None:
+    #             logging.warning(
+    #                 f"Skipping commit {commit.hash} - No new message generated"
+    #             )
+    #             continue
+    #
+    #         commit.new_message = new_message  # Store the new message
+    #
+    #     except Exception as e:
+    #         logging.error(
+    #             f"Error processing commit {commit.hash}: {traceback.format_exc()} {e}"
+    #         )
+    #         return
 
     # 5. User Confirmation before Rewrite
     if user_confirms_rewrite(commit_history):
@@ -699,4 +733,4 @@ def main():
     logging.info("OCDG process completed!")
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
