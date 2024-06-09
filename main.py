@@ -6,7 +6,7 @@ import logging
 import re
 import tempfile
 from typing import Any, List, Dict
-
+from jsonschema import validate, ValidationError
 from loguru import logger
 import git
 
@@ -201,7 +201,31 @@ def filter_diff(diff: str) -> str:
 
     return "\n".join(filtered_lines)
 
+async def check_json_schema(json_data: str, client: Any) -> bool:
+    """Checks if the JSON response from the LLM conforms to a simplified schema."""
+    try:
+        json_data = json.loads(json_data)
 
+        # Check for required top-level keys
+        required_keys = ["short_analysis", "new_commit_title", "new_detailed_commit_message"]
+        if not all(key in json_data for key in required_keys):
+            logger.error(f"Missing required keys in JSON: {required_keys}")
+            return False
+
+        # Check for "code_changes" key, but it's not strictly required
+        if "code_changes" in json_data:
+            code_changes = json_data["code_changes"]
+            # Simplified check: code_changes should be a dictionary or a string
+            if not isinstance(code_changes, (dict, str)):
+                logger.error(f"Invalid 'code_changes' type: {type(code_changes)}")
+                return False
+
+        logger.debug("JSON validated successfully against the simplified schema.")
+        return True
+
+    except json.JSONDecodeError as e:
+        logger.error(f"Invalid JSON format: {e}")
+        return False
 
 def run_git_command(command: List[str], repo_path: str = ".") -> str:
     """Executes a Git command and returns the output."""
@@ -329,6 +353,8 @@ async def _generate_single_commit_message_json(
   "other_observations": [...] 
  }}
 ```
+IMPORTANT: REQUIRED KEYS IN JSON: ['short_analysis', 'new_commit_title', 'new_detailed_commit_message'].
+
 ## Conventional Commit Types: feat, fix, docs, style, refactor, test, chore. 
 ## Code Analysis (Required): Note modified lines, new/changed functions/classes, logic changes.
 ## Empty Diffs: Return "No code changes detected" for 'short_analysis' and 'new_commit_title'.  
@@ -342,15 +368,21 @@ Code changes: {'(partial)' if chunk_index != total_chunks - 1 else ''}
 {diff_chunk}
 ```
 """
-    chat_completion = await client.async_generate_text(system_prompt, user_prompt)
     try:
-        # Extract JSON using a regular expression
-        json_match = re.search(r'\{.*\}', chat_completion, re.DOTALL)
-        if json_match:
-            return json.loads(json_match.group(0))
-        else:
-            logger.error(f"No valid JSON found in response: {chat_completion}")
-            return {}
+        is_valid_json = False
+        count = 0
+        while is_valid_json is False and count < 3:
+            chat_completion = await client.async_generate_text(system_prompt, user_prompt)
+            is_valid_json = await check_json_schema(chat_completion, client)
+            if is_valid_json:
+                # Extract JSON
+                logger.success(f"Valid JSON found in response: {chat_completion}")
+                return json.loads(chat_completion)
+            else:
+                count += 1
+                # Handle invalid JSON (log, retry, or attempt to fix)
+                logger.warning(f"Invalid JSON response from LLM. Trying number {count}/3 Skipping...")
+
     except json.JSONDecodeError as e:
         logger.error(f"Error decoding JSON: {e} - {chat_completion}")
         return {}
@@ -395,6 +427,8 @@ async def combine_messages(multi_commit: List[Dict[str, str]], client: Any, mode
   "other_observations": [...] 
  }}
 ```
+IMPORTANT: REQUIRED KEYS IN JSON: ['short_analysis', 'new_commit_title', 'new_detailed_commit_message'].
+
 ## Key Points:
 * **Analyze the COMBINED impact of all changes, not just individual messages.**
 * **Be concise and technical. Use bullet points in the detailed message.**
@@ -411,14 +445,18 @@ JSON format defined in the system prompt.
         system_prompt, user_prompt
     )
     try:
-        # Extract JSON using a regular expression
-        json_match = re.search(r'\{.*\}', combined_message, re.DOTALL)
-        if json_match:
-            logger.success(f"Combined messages: {json_match.group(0)}")
-            return json.loads(json_match.group(0))
-        else:
-            logger.error(f"No valid JSON found in response: {combined_message}")
-            return {}
+        is_valid_json = False
+        count = 0
+        while is_valid_json is False and count < 3:
+            combined_message = await client.async_generate_text(system_prompt, user_prompt)
+            is_valid_json = await check_json_schema(combined_message, client)
+            if is_valid_json:
+                logger.success(f"Valid JSON found in response: {combined_message}")
+                return json.loads(combined_message)
+            else:
+                count += 1
+                # Handle invalid JSON (log, retry, or attempt to fix)
+                logger.warning(f"Invalid JSON response from LLM. Trying number {count}/3 Skipping...")
     except json.JSONDecodeError as e:
         logger.error(f"Error decoding JSON: {e} - {combined_message}")
         return {}
