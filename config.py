@@ -3,17 +3,24 @@ from dotenv import load_dotenv
 
 
 
-def load_configuration():
+def load_configuration(llm_choice='ollama'):
     load_dotenv()
     config = {
         'GROQ_API_KEY': os.getenv('GROQ_API_KEY'),
         'NVIDIA_API_KEY': os.getenv('NVIDIA_API_KEY'),
         'OPENAI_API_KEY': os.getenv('OPENAI_API_KEY'),
+        'REPLICATE_API_TOKEN': os.getenv('REPLICATE_API_TOKEN'),
         'COMMIT_DIFF_DIRECTORY': 'commit_diff'
     }
 
-    if config['NVIDIA_API_KEY'] is None:
-        raise ValueError("Please set the NVIDIA_API_KEY environment variable.")
+    # Validate required API keys based on LLM choice
+    if llm_choice == 'openai' and not config['NVIDIA_API_KEY']:
+        raise ValueError("NVIDIA_API_KEY required for OpenAI client")
+    elif llm_choice == 'groq' and not config['GROQ_API_KEY']:
+        raise ValueError("GROQ_API_KEY required for Groq client")
+    elif llm_choice == 'replicate' and not config['REPLICATE_API_TOKEN']:
+        raise ValueError("REPLICATE_API_TOKEN required for Replicate client")
+    # Ollama doesn't require API key
 
     return config
 
@@ -23,7 +30,7 @@ GENERATED_MESSAGES_LOG_FILE = "generated_messages.log"
 MAX_CONCURRENT_REQUESTS = 4  # Adjust this value based on Ollama's capacity
 IGNORED_SECTION_PATTERNS = {
     r'venv.*',  # Ignore any path containing 'venv'
-    r'.idea.*'  # Ignore any path containing '.idea'
+    r'.idea.*',  # Ignore any path containing '.idea'
     r'node_modules.*',  # Ignore any path containing 'node_modules'
     r'__pycache__.*',  # Ignore any path containing '__pycache__
 }
