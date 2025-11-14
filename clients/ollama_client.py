@@ -7,9 +7,8 @@ import ollama
 from clients.base_client import Client
 
 from ollama import Client as OllClient
-from config import load_configuration, COMMIT_MESSAGES_LOG_FILE, GENERATED_MESSAGES_LOG_FILE
+from config import COMMIT_MESSAGES_LOG_FILE, GENERATED_MESSAGES_LOG_FILE
 from loguru import logger
-config = load_configuration()
 
 
 class OllamaClient(Client):

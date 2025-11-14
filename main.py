@@ -640,8 +640,8 @@ async def main():
     # Add more arguments as needed...
     args = parser.parse_args()
 
-    # Load configuration
-    config = load_configuration()
+    # Load configuration with LLM choice for proper validation
+    config = load_configuration(args.llm)
     os.makedirs(config['COMMIT_DIFF_DIRECTORY'], exist_ok=True)
 
     # Determine repository type and get URL

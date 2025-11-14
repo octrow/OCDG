@@ -1,24 +1,24 @@
+import os
 import openai
 
 from clients.base_client import Client
 
 from openai import OpenAI, AsyncOpenAI
-from config import load_configuration
 from loguru import logger
-config = load_configuration()
 
 
 class OpenAIClient(Client):
     def __init__(self, api_key):
         super().__init__(api_key)
+        nvidia_key = os.getenv('NVIDIA_API_KEY', api_key)
         self.client = OpenAI(
             base_url="https://integrate.api.nvidia.com/v1",  # NVIDIA API base URL
-            api_key=config['NVIDIA_API_KEY'],
+            api_key=nvidia_key,
             timeout=10,  # Set a timeout (in seconds)
         )
         self.async_client = AsyncOpenAI(
             base_url="https://integrate.api.nvidia.com/v1",
-            api_key=config['NVIDIA_API_KEY'],
+            api_key=nvidia_key,
             timeout=10,
         )
         self.model = "meta/llama3-70b-instruct"  # Default model
