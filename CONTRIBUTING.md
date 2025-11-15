@@ -7,7 +7,8 @@ git clone https://github.com/octrow/OCDG.git
 cd OCDG
 python3 -m venv .venv
 source .venv/bin/activate
-poetry install
+poetry install --with dev
+pre-commit install
 ```
 
 ## Code Style
@@ -49,10 +50,24 @@ Update:
 3. `.env.example` - Add key placeholder
 4. `main.py` - Add to CLI choices
 
-## Testing
+## Quality Checks
 
+**Run all checks**
 ```bash
-poetry run pytest -v
+poetry run pytest -v --cov=.
+poetry run ruff check .
+poetry run mypy main.py config.py retry_utils.py
+```
+
+**Auto-format**
+```bash
+poetry run black .
+poetry run ruff check --fix .
+```
+
+**Pre-commit (auto-runs on commit)**
+```bash
+pre-commit run --all-files
 ```
 
 ## Commit Messages
@@ -75,16 +90,17 @@ Categories: Fix, Feature, Refactor, Docs, CI, Test
 1. Fork repository
 2. Create feature branch: `git checkout -b feature/name`
 3. Implement changes
-4. Run tests: `poetry run pytest`
-5. Check syntax: `python -m py_compile main.py config.py clients/*.py`
-6. Commit with clear message
-7. Push: `git push origin feature/name`
-8. Create PR with description
+4. Run quality checks: `pytest -v --cov=. && ruff check . && mypy main.py config.py retry_utils.py`
+5. Commit with clear message (pre-commit runs automatically)
+6. Push: `git push origin feature/name`
+7. Create PR with description
 
 ## CI Pipeline
 
 GitHub Actions runs:
-- Python 3.11/3.12 tests
+- Python 3.11/3.12 tests with coverage
+- Ruff linting
+- Mypy type checking
 - Syntax validation
 - Import checks
 - Docker build

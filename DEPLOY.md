@@ -1,42 +1,28 @@
-# Production Deployment
+# Production
 
-## Pre-deployment Checklist
+## Pre-deployment
 
-### Environment
+**Environment**
+- [ ] Python 3.11+, Poetry, Git, Docker
+- [ ] API keys for LLM provider
 
-- [ ] Python 3.11+ installed
-- [ ] Poetry installed (`curl -sSL https://install.python-poetry.org | python3 -`)
-- [ ] Git installed
-- [ ] Docker installed (for containerized deployment)
-- [ ] API keys obtained for chosen LLM provider
+**Configuration**
+- [ ] `cp .env.example .env`
+- [ ] Set keys: `NVIDIA_API_KEY`, `GROQ_API_KEY`, `REPLICATE_API_TOKEN` (Ollama: none)
+- [ ] Verify `.env` not in version control
 
-### Configuration
+**Testing**
+- [ ] `python -m py_compile main.py config.py clients/*.py`
+- [ ] `python -c "import main; from clients import create_client"`
+- [ ] `python main.py --help`
+- [ ] Test on small repo first
 
-- [ ] Copy `.env.example` to `.env`
-- [ ] Set API keys in `.env`:
-  - `NVIDIA_API_KEY` (for OpenAI client)
-  - `GROQ_API_KEY` (for Groq client)
-  - `REPLICATE_API_TOKEN` (for Replicate client)
-  - Ollama: no key required
-- [ ] Verify `.env` not committed to version control
-
-### Testing
-
-- [ ] Run syntax validation: `python -m py_compile main.py config.py clients/*.py`
-- [ ] Test import: `python -c "import main; from clients import create_client"`
-- [ ] Test LLM connection: `python main.py --help`
-- [ ] Run on test repository first
-
-### Docker Deployment
+## Docker
 
 ```bash
-# Build image
 docker build -t ocdg:0.2.0-beta .
-
-# Test run
 docker run --rm --env-file .env ocdg:0.2.0-beta --help
 
-# Production run with volumes
 docker run --rm \
   -v /path/to/repos:/app/repos \
   -v /path/to/logs:/app \
@@ -44,134 +30,83 @@ docker run --rm \
   ocdg:0.2.0-beta /app/repos/target-repo -l groq
 ```
 
-### Docker Compose Deployment
+## Compose
 
 ```bash
-# Start Ollama (if using local LLM)
 docker-compose --profile local-llm up -d ollama
-
-# Wait for Ollama to start (5-10s)
 sleep 10
-
-# Pull Ollama model
 docker exec ollama ollama pull llama3
-
-# Run OCDG
 docker-compose run --rm ocdg /app/repos/target-repo -l ollama
 ```
 
-## Production Recommendations
+## Resources
 
-### Resource Limits
+**Memory**
+- OCDG: 2GB min, 4GB recommended
+- Ollama: 8GB (llama3-70b), 4GB (llama3-7b)
+- CPU: 2+ cores
 
-Docker memory limits:
-- OCDG: 2GB minimum, 4GB recommended
-- Ollama: 8GB minimum for llama3-70b, 4GB for llama3-7b
+**Volumes**
+- `/app/repos` - Repositories
+- `/app/commit_diff` - Temp clones
+- `/app/commit_messages.log` - Old/new log
+- `/app/generated_messages.log` - LLM responses
 
-CPU: 2+ cores recommended for async processing
+**Network**
+- Cloud: HTTPS 443 outbound
+- Ollama: Port 11434, bridge network
 
-### Volume Mounts
+**Security**
+- [ ] Secrets manager for keys
+- [ ] Read-only mounts
+- [ ] Non-root containers
+- [ ] Network segmentation
+- [ ] Review messages for sensitive data
 
-Required:
-- `/app/repos` - Repository storage
-- `/app/commit_diff` - Temporary clone directory
+## Backup
 
-Optional:
-- `/app/commit_messages.log` - Old/new message log
-- `/app/generated_messages.log` - LLM response log
+**Auto**: OCDG backs up refs before run
+**Manual**: `git bundle create backup.bundle --all`
+**Restore**: `python main.py /repo -r` or `git clone backup.bundle restored-repo`
 
-### Network Configuration
+## Monitoring
 
-Cloud LLMs (OpenAI, Groq, Replicate):
-- Outbound HTTPS (443) required
-- No inbound ports needed
+**Logs**
+- `commit_messages.log` - Audit
+- `generated_messages.log` - LLM validation
+- `docker logs ocdg`
 
-Ollama (local):
-- Port 11434 for OCDG → Ollama communication
-- Use Docker bridge network for container-to-container
+**Metrics**
+- API retry count (rate limits)
+- Processing time/commit
+- Memory usage
 
-### Security
+## Scaling
 
-- [ ] Store API keys in secrets manager (not .env in production)
-- [ ] Use read-only volume mounts where possible
-- [ ] Run containers as non-root user
-- [ ] Network segmentation for Ollama
-- [ ] Review commit message generation for sensitive data exposure
+**Concurrent**: Default 4 (`MAX_CONCURRENT_REQUESTS`), increase for throughput, respect rate limits
+**Batch**: Sequential repos or parallel containers
 
-### Backup Strategy
+## Errors
 
-Before each run:
-- Git refs automatically backed up by OCDG
-- Manual backup: `git bundle create backup.bundle --all`
+**Retry exhausted**: Check API key, network, rate limits
+**OOM**: Reduce `MAX_CONCURRENT_REQUESTS`, increase memory
+**Rebase fail**: `python main.py /repo -r`, check `git status`, manual fix
 
-Restore:
-- OCDG restore: `python main.py /repo -r`
-- Manual restore: `git clone backup.bundle restored-repo`
+## Validation
 
-### Monitoring
-
-Log to external system:
-- `commit_messages.log` - Audit trail
-- `generated_messages.log` - LLM response validation
-- Docker logs: `docker logs ocdg`
-
-Metrics to track:
-- API retry count (indicates rate limiting)
-- Processing time per commit
-- Memory usage for large repositories
-
-### Scaling
-
-Concurrent processing:
-- Default: 4 concurrent requests (`MAX_CONCURRENT_REQUESTS`)
-- Increase for higher throughput
-- Respect API rate limits
-
-Batch processing:
-- Process repositories sequentially
-- Use separate containers for parallel repo processing
-
-### Error Handling
-
-Retry exhausted:
-- Check API key validity
-- Verify network connectivity
-- Review rate limits
-
-Out of memory:
-- Reduce `MAX_CONCURRENT_REQUESTS`
-- Increase Docker memory limit
-- Process smaller repositories
-
-Rebase failures:
-- Use restore: `python main.py /repo -r`
-- Check repository state: `git status`
-- Manual intervention may be required
-
-## Post-deployment Validation
-
-- [ ] Verify backup created: Check `.git/refs_backup` existence
-- [ ] Review generated messages: Check `generated_messages.log`
-- [ ] Compare old vs new: Check `commit_messages.log`
-- [ ] Test restore: Run with `-r` flag on test repo
-- [ ] Verify remote push (if using `-f`): Check remote repository
+- [ ] `.git/refs_backup` exists
+- [ ] Review `generated_messages.log`
+- [ ] Check `commit_messages.log`
+- [ ] Test restore with `-r`
+- [ ] Verify remote if `-f` used
 
 ## Rollback
 
-Automatic:
-```bash
-python main.py /repo -r
-```
-
-Manual:
-```bash
-cd /repo
-git reflog
-git reset --hard <commit-before-ocdg>
-```
+**Auto**: `python main.py /repo -r`
+**Manual**: `cd /repo && git reflog && git reset --hard <commit>`
 
 ## Support
 
 Issues: https://github.com/octrow/OCDG/issues
-Contributing: See CONTRIBUTING.md
+Contributing: CONTRIBUTING.md
 License: MIT
