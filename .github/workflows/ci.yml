@@ -36,15 +36,15 @@ jobs:
 
     - name: Install dependencies
       run: |
-        poetry install --no-interaction --no-ansi
+        poetry install --no-interaction --no-ansi --with dev
 
-    - name: Run tests
+    - name: Run tests with coverage
       run: |
-        poetry run pytest -v || echo "Tests not fully enabled yet"
+        poetry run pytest -v --cov=. --cov-report=term
 
     - name: Check code syntax
       run: |
-        poetry run python -m py_compile main.py config.py clients/*.py
+        poetry run python -m py_compile main.py config.py retry_utils.py clients/*.py
 
   lint:
     runs-on: ubuntu-latest
@@ -64,11 +64,19 @@ jobs:
 
     - name: Install dependencies
       run: |
-        poetry install --no-interaction --no-ansi
+        poetry install --no-interaction --no-ansi --with dev
 
     - name: Check imports
       run: |
         poetry run python -c "import main; import config; from clients import create_client"
+
+    - name: Lint with ruff
+      run: |
+        poetry run ruff check .
+
+    - name: Type check with mypy
+      run: |
+        poetry run mypy main.py config.py retry_utils.py --ignore-missing-imports
 
   docker:
     runs-on: ubuntu-latest
