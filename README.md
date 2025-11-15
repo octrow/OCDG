@@ -79,14 +79,39 @@ python main.py /path/to/repo -l openai -m meta/llama3-70b-instruct -f
 python main.py /path/to/repo -r
 ```
 
+## Docker
+
+### Docker Build
+
+```bash
+docker build -t ocdg .
+docker run --rm -v $(pwd)/repos:/app/repos --env-file .env ocdg /app/repos/your-repo
+```
+
+### Docker Compose
+
+```bash
+# Copy and configure .env
+cp .env.example .env
+
+# Run with cloud LLM (OpenAI, Groq, Replicate)
+docker-compose run --rm ocdg /app/repos/your-repo -l groq
+
+# Run with local Ollama
+docker-compose --profile local-llm up -d ollama
+docker-compose run --rm ocdg /app/repos/your-repo -l ollama
+```
+
 ## Features
 
 - Async concurrent processing
 - Automatic Git backup/restore
+- Exponential backoff retry logic (3 retries, 1s→2s→4s)
 - Intelligent diff chunking for large commits
 - JSON schema validation for LLM responses
 - Multi-provider LLM support
 - Configurable ignore patterns for binaries/dependencies
+- Docker and Docker Compose support
 
 ## Architecture
 
@@ -100,6 +125,7 @@ python main.py /path/to/repo -r
   - `groq_client.py`: Groq async client
   - `replicate_client.py`: Replicate async client
 - `config.py`: Environment config, ignore patterns
+- `retry_utils.py`: Exponential backoff retry decorator
 - `test_ocdg.py`: Unit tests
 
 ### Classes
@@ -128,12 +154,24 @@ Default ignored:
 - Automatic restore on errors
 - Force-push requires explicit `-f` flag
 
+## Retry Logic
+
+API failures automatically retry with exponential backoff:
+- Max retries: 3
+- Initial delay: 1s
+- Backoff: 1s → 2s → 4s (max 60s)
+- Handles: Rate limits, API errors, connection failures
+
 ## Limitations
 
-- Alpha stage, not production-ready
+- Beta stage
 - Interactive rebase may fail in non-TTY environments
 - Large repositories: memory-intensive
 - No incremental processing
+
+## Contributing
+
+See CONTRIBUTING.md for development guidelines.
 
 ## License
 
