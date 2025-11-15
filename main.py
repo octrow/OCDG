@@ -2,7 +2,6 @@ import argparse
 import asyncio
 import json
 import os
-import logging
 import re
 import tempfile
 from typing import Any, List, Dict
@@ -65,25 +64,25 @@ class RepositoryUpdater:
                     ],
                     self.repo_path,
                 )
-            logging.info("Backed up refs to '.git/refs_backup'")
+            logger.info("Backed up refs to '.git/refs_backup'")
         except Exception as e:
-            logging.error(f"Error backing up refs: {e}")
+            logger.error(f"Error backing up refs: {e}")
             raise
 
     def restore_refs(self):
         """Restores refs from the backup file."""
         try:
             if not hasattr(self, 'refs_backup_file') or not os.path.exists(self.refs_backup_file):
-                logging.warning(
+                logger.warning(
                     f"Refs backup file not found. Skipping restore."
                 )
                 return
             run_git_command(
                 ["update-ref", "--stdin", "<", self.refs_backup_file], self.repo_path
             )
-            logging.info("Restored refs from backup.")
+            logger.info("Restored refs from backup.")
         except Exception as e:
-            logging.error(f"Error restoring refs: {e}")
+            logger.error(f"Error restoring refs: {e}")
             raise
         finally:
             # Clean up the backup file after restore attempt
@@ -111,10 +110,10 @@ class RepositoryUpdater:
             rebase_process.stdin.write('\n'.join(rebase_instructions))
             rebase_process.stdin.close()
 
-            logging.info("Commit messages rewritten successfully.")
+            logger.info("Commit messages rewritten successfully.")
 
         except Exception as e:
-            logging.error(f"Error rewriting commit messages: {e}")
+            logger.error(f"Error rewriting commit messages: {e}")
             self.restore_refs()  # Attempt restore on error
             raise
 
@@ -174,9 +173,9 @@ def save_commit_messages_to_log(commit_history: 'CommitHistory'):
                     log_file.write(f"Commit: {commit.hash}\n")
                     log_file.write(f"Old Message: {commit.message}\n")
                     log_file.write(f"New Message: {commit.new_message}\n\n")
-        logging.info(f"Old and new commit messages saved to '{COMMIT_MESSAGES_LOG_FILE}'")
+        logger.info(f"Old and new commit messages saved to '{COMMIT_MESSAGES_LOG_FILE}'")
     except Exception as e:
-        logging.error(f"Failed to save commit messages to log file: {e}")
+        logger.error(f"Failed to save commit messages to log file: {e}")
 
 def filter_diff(diff: str) -> str:
     """Removes unwanted lines from the diff based on file extensions and patterns."""
@@ -189,7 +188,7 @@ def filter_diff(diff: str) -> str:
             # Check if the section should be skipped
             if any(re.search(pattern, line) for pattern in IGNORED_SECTION_PATTERNS):
                 skip_section = True
-                logging.info(f"Skipping section: {line}")
+                logger.info(f"Skipping section: {line}")
                 continue # Skip to the next line
             else:
                 skip_section = False  # Reset the flag for the new section
@@ -474,7 +473,7 @@ async def generate_commit_description(diff: str, old_description: str, client: A
             if not multi_commit:
                 logger.warning("Failed to generate multi-commit message. Skipping...")
                 return None
-            generated_message = combine_messages(multi_commit, client, model)
+            generated_message = await combine_messages(multi_commit, client, model)
         else:
             generated_message = await _generate_single_commit_message_json(
                 diff, old_description, client, model, 0, 1
@@ -529,7 +528,7 @@ class GitAnalyzer:
         try:
             return run_git_command(remote_command, self.repo.working_dir).strip()
         except RuntimeError as e:
-            logger.error(f"Error retrieving repository URL: {e}", level="error")
+            logger.error(f"Error retrieving repository URL: {e}")
             return None
 
     def get_commit_message(self, commit_hash: str) -> str:
@@ -538,7 +537,7 @@ class GitAnalyzer:
             commit = self.repo.commit(commit_hash)
             return commit.message.strip()
         except Exception as e:
-            logging.error(f"Error getting commit message for {commit_hash}: {e}")
+            logger.error(f"Error getting commit message for {commit_hash}: {e}")
             raise
 
     def get_commits(self, limit=None, since=None) -> List['Commit']:
@@ -560,7 +559,7 @@ class GitAnalyzer:
         log_output = run_git_command(log_command, self.repo.working_dir)
 
         if not log_output:
-            logging.warning(
+            logger.warning(
                 "Repository seems to be empty. No commits found."
             )
             return commits
@@ -589,7 +588,7 @@ class GitAnalyzer:
                 author=commit.author
             )
         except Exception as e:
-            logging.error(f"Error updating commit message for commit {commit.hash}: {e}")
+            logger.error(f"Error updating commit message for commit {commit.hash}: {e}")
             raise
 
 async def process_commit(commit, analyzer, client, model, repo_path, semaphore):
@@ -641,8 +640,8 @@ async def main():
     # Add more arguments as needed...
     args = parser.parse_args()
 
-    # Load configuration
-    config = load_configuration()
+    # Load configuration with LLM choice for proper validation
+    config = load_configuration(args.llm)
     os.makedirs(config['COMMIT_DIFF_DIRECTORY'], exist_ok=True)
 
     # Determine repository type and get URL
@@ -651,15 +650,16 @@ async def main():
         repo_path = os.path.join(config['COMMIT_DIFF_DIRECTORY'], os.path.basename(repo_url).replace(".git", ""))
         # Clone if the directory doesn't exist
         if not os.path.exists(repo_path):
-            logging.info(f"Cloning remote repository to {repo_path}")
+            logger.info(f"Cloning remote repository to {repo_path}")
             git.Repo.clone_from(repo_url, repo_path)
     else:
         # Get absolute path for local repositories
         repo_path = os.path.abspath(args.repo_path)
-        logging.info(f"Using local repository path: {repo_path}")
-        repo_url = GitAnalyzer.get_repo_url(repo_path)
+        logger.info(f"Using local repository path: {repo_path}")
+        analyzer = GitAnalyzer(repo_path)
+        repo_url = analyzer.get_repo_url()
         if not repo_url:
-            logging.error("Failed to get repository URL from local path. Exiting...")
+            logger.error("Failed to get repository URL from local path. Exiting...")
             return
 
     # 1. Backup Repository
@@ -672,18 +672,18 @@ async def main():
             print("Restore complete. Exiting.")
             return  # Exit after restore
         except Exception as e:
-            logging.critical(f"Error during restore: {e}")
+            logger.critical(f"Error during restore: {e}")
             return  # Exit on restore error
     # BACKUP REFS IMMEDIATELY AFTER LOADING REPOSITORY
     try:
-        logging.info("Backing up refs before any operations...")
+        logger.info("Backing up refs before any operations...")
         updater.backup_refs()
     except Exception as e:
-        logging.critical(f"Error during initial backup: {e}")
+        logger.critical(f"Error during initial backup: {e}")
         return  # Exit on backup error
 
     # 2. Load Commit History
-    logging.info("Loading commit history...")
+    logger.info("Loading commit history...")
     try:
         analyzer = GitAnalyzer(repo_path)
         commits = analyzer.get_commits() # Now get commits with diffs

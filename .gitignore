@@ -1,13 +1,54 @@
-/.venv/
-/venv
-/venv/*
-.env
-/OCDG/backup/*
-/backup/*
-/backup
-/commit_diff
-/commit_diff/*
-/__pycache__
-/.idea
-/OCDG/__pycache__
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
 venv/
+ENV/
+env/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+
+# Logs
+*.log
+commit_messages.log
+generated_messages.log
+
+# Repository clones and backups
+commit_diff/
+repos/
+backup/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Poetry
+poetry.lock
