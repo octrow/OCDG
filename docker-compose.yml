@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  ocdg:
+    build: .
+    image: ocdg:latest
+    container_name: ocdg
+    env_file:
+      - .env
+    volumes:
+      - ./repos:/app/repos
+      - ./commit_diff:/app/commit_diff
+      - ./commit_messages.log:/app/commit_messages.log
+      - ./generated_messages.log:/app/generated_messages.log
+    command: --help
+    networks:
+      - ocdg-network
+
+  # Optional: Ollama service for local LLM
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - ocdg-network
+    profiles:
+      - local-llm
+
+networks:
+  ocdg-network:
+    driver: bridge
+
+volumes:
+  ollama-data:

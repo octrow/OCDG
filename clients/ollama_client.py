@@ -9,6 +9,7 @@ from clients.base_client import Client
 from ollama import Client as OllClient
 from config import COMMIT_MESSAGES_LOG_FILE, GENERATED_MESSAGES_LOG_FILE
 from loguru import logger
+from retry_utils import retry_with_backoff
 
 
 class OllamaClient(Client):
@@ -26,64 +27,38 @@ class OllamaClient(Client):
         )
         self.model = 'llama3'
 
-    async def async_generate_text(self, system_prompt, prompt, **kwargs):  # Make generate_text asynchronous
-        try:
-            logger.info(f"Sending request to Ollama API (model: {self.model})...")
-            # logger.debug(f"Prompt: {prompt}")
-            # logger.debug(f"Additional parameters: {kwargs}")
+    @retry_with_backoff(max_retries=3, exceptions=(ollama.ResponseError, ollama.RequestError))
+    async def async_generate_text(self, system_prompt, prompt, **kwargs):
+        logger.info(f"Sending request to Ollama API (model: {self.model})...")
+        response = await self.async_client.generate(
+            model=self.model,
+            prompt=prompt,
+            system=system_prompt,
+            format='json',
+            **kwargs
+        )
+        logger.info("Ollama API response received.")
+        text_content = response['response'].strip()
+        logger.debug(f"Generated text: {text_content[:50]}...")
+        await save_llama_messages_to_log(system_prompt, prompt, text_content)
+        return text_content
 
-            response = await self.async_client.generate(  # Use await
-                model=self.model,
-                prompt=prompt,
-                system=system_prompt,
-                # messages=[{"role": "system", "content": system_prompt},{"role": "user", "content": prompt}],
-                format='json',
-                **kwargs
-            )
-            logger.info("Ollama API response received.")
-            # logger.debug(f"Full response: {response}")
-            text_content = response['response'].strip()
-            logger.debug(f"Generated text: {text_content[:50]}...")
-            await save_llama_messages_to_log(system_prompt, prompt, text_content)
-            return text_content
-
-        except Exception as e:
-            logger.error(f"Unexpected error during LLM Ollama API call: {e}")
-            raise
-
+    @retry_with_backoff(max_retries=3, exceptions=(ollama.ResponseError, ollama.RequestError))
     def generate_text(self, prompt, **kwargs):
-        try:
-            # Log the request parameters (prompt and other kwargs)
-            logger.info(f"Sending request to Ollama API (model: {self.model})...")
-            logger.debug(f"Prompt: {prompt}")
-            logger.debug(f"Additional parameters: {kwargs}")
-            response = self.client.chat(
-                model=self.model,  # or the model you want to use
-                messages=[{"role": "user", "content": prompt}],
-                format='json',
-                # temperature=0.5,
-                # top_p=1,
-                # max_tokens=4000,
-                **kwargs
-            )
-            # Log the raw response from the API
-            logger.info("Ollama API response received.")
-            logger.debug(f"Full response: {response}")  # Full response logged at DEBUG
-            # Extract and return the text content
-            text_content = response['message']['content'].strip()
-            logger.debug(f"Generated text: {text_content[:50]}...")
-            return text_content
-        except ollama.ResponseError as e:
-            # Handle API error here, e.g. retry or log
-            print(f"Ollama API returned an ResponseError: {e}")
-            raise
-        except ollama.RequestError as e:
-            print(f"Ollama API returned an RequestError: {e}")
-            raise
-        except Exception as e:
-            # Log general exceptions
-            logger.error(f"Unexpected error during LLM Ollama API call: {e}")
-            raise
+        logger.info(f"Sending request to Ollama API (model: {self.model})...")
+        logger.debug(f"Prompt: {prompt}")
+        logger.debug(f"Additional parameters: {kwargs}")
+        response = self.client.chat(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            format='json',
+            **kwargs
+        )
+        logger.info("Ollama API response received.")
+        logger.debug(f"Full response: {response}")
+        text_content = response['message']['content'].strip()
+        logger.debug(f"Generated text: {text_content[:50]}...")
+        return text_content
 
 async def save_llama_messages_to_log(system_prompt, prompt, text_content):
     """Saves sysem prompt, prompt and generated text to a log file."""
